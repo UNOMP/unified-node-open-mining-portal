@@ -554,7 +554,7 @@ module.exports = function(logger){
             // some shitcoins dont provide target, only bits, so we need to deal with both
             var target = response.target ? bignum(response.target, 16) : util.bignumFromBitsHex(response.bits);
             coinStatus.difficulty = parseFloat((diff1 / target.toNumber()).toFixed(9));
-            logger.debug(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
+            logger.warning(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
 
             if (coinStatus.reward == 0) {
                 coinStatus.reward = response.coinbasevalue / 100000000;
@@ -598,7 +598,7 @@ module.exports = function(logger){
                             bestCoin = profitStatus[algo][symbol].name;
                         }
                         coinStatus.btcPerMhPerHour = btcPerMhPerHour;
-                        logger.debug(logSystem, 'CALC', 'BTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
+                        logger.warning(logSystem, 'CALC', 'BTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
                     }
                     if (exchangeData.hasOwnProperty('LTC') && exchangeData['LTC'].hasOwnProperty('weightedBid')){
                         var btcPerMhPerHour = (exchangeData['LTC'].weightedBid * coinStatus.coinsPerMhPerHour) * exchangeData['LTC'].ltcToBtc;
@@ -608,11 +608,11 @@ module.exports = function(logger){
                             bestCoin = profitStatus[algo][symbol].name;
                         }
                         coinStatus.btcPerMhPerHour = btcPerMhPerHour;
-                        logger.debug(logSystem, 'CALC', 'LTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
+                        logger.warning(logSystem, 'CALC', 'LTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
                     }
                 });
             });
-            logger.debug(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
+            logger.warning(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
 
 
             var client = net.connect(portalConfig.cliPort, function () {
@@ -633,7 +633,7 @@ module.exports = function(logger){
 
 
     var checkProfitability = function(){
-        logger.debug(logSystem, 'Check', 'Collecting profitability data.');
+        logger.warning(logSystem, 'Check', 'Collecting profitability data.');
 
         profitabilityTasks = [];
         if (portalConfig.profitSwitch.usePoloniex)
