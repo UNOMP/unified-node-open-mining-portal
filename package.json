@@ -31,7 +31,7 @@
         "url": "https://github.com/UNOMP/node-open-mining-portal.git"
     },
     "dependencies": {
-        "stratum-pool": "git://github.com/KillerByte/node-merged-pool.git",
+        "stratum-pool": "git://github.com/UNOMP/node-merged-pool.git",
         "dateformat": "*",
         "node-json-minify": "*",
         "redis": "*",
