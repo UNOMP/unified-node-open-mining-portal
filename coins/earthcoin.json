@@ -1,5 +1,6 @@
 {
     "name": "Earthcoin",
     "symbol": "EAC",
-    "algorithm": "scrypt"
+    "algorithm": "scrypt",
+     "peerMagic": "c0dbf1fd"
 }
