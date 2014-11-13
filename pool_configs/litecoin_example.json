@@ -2,6 +2,19 @@
     "enabled": false,
     "coin": "litecoin.json",
 
+    "auxes": [ // Defines auxillery coins
+        {
+            "coin": "lottoshares.json",
+            "daemons": [ // It is reccomended to supply multiple daemons here for redundancy
+                {
+                    "host": "127.0.0.1",
+                    "port": 23327,
+                    "user": "lottosharesrpc",
+                    "password": "By66dCmyX44uUbA7P3qqXJQeT3Ywd8dZ4dJdfgxCAxbg"
+                }
+            ]
+        }
+    ],
     "address": "n4jSe18kZMCdGcZqaYprShXW6EH1wivUK1",
 
     "rewardRecipients": {
