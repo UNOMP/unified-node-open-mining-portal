@@ -1,14 +1,14 @@
 var async  = require('async');
 var net    = require('net');
 var bignum = require('bignum');
-var algos  = require('stratum-pool/lib/algoProperties.js');
-var util   = require('stratum-pool/lib/util.js');
+var algos  = require('merged-pool/lib/algoProperties.js');
+var util   = require('merged-pool/lib/util.js');
 
 var Cryptsy  = require('./apiCryptsy.js');
 var Poloniex = require('./apiPoloniex.js');
 var Mintpal  = require('./apiMintpal.js');
 var Bittrex  = require('./apiBittrex.js');
-var Stratum  = require('stratum-pool');
+var Stratum  = require('merged-pool');
 
 module.exports = function(logger){
 

@@ -1,4 +1,4 @@
-var Stratum = require('stratum-pool');
+var Stratum = require('merged-pool');
 var redis   = require('redis');
 var net     = require('net');
 
@@ -147,6 +147,7 @@ module.exports = function(logger){
 
             handlers.auth = function(port, workerName, password, authCallback){
                 if (poolOptions.validateWorkerUsername !== true)
+		{
 		        addresstester = new RegExp("^[0-9a-zA-Z]+$", "g");
                         isAddressSafe = addresstester.test(workerName);
                         if (isAddressSafe) {
@@ -154,7 +155,7 @@ module.exports = function(logger){
                         } else {
                                 authCallback(false);
                         }
-                else {
+               } else {
                     if (workerName.length === 40) {
                         try {
                             new Buffer(workerName, 'hex');

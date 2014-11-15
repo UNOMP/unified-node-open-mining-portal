@@ -13,7 +13,7 @@ var PaymentProcessor = require('./libs/paymentProcessor.js');
 var Website = require('./libs/website.js');
 var ProfitSwitch = require('./libs/profitSwitch.js');
 
-var algos = require('stratum-pool/lib/algoProperties.js');
+var algos = require('merged-pool/lib/algoProperties.js');
 
 JSON.minify = JSON.minify || require("node-json-minify");
 
@@ -133,6 +133,19 @@ var buildPoolConfigs = function(){
     poolConfigFiles.forEach(function(poolOptions){
 
         poolOptions.coinFileName = poolOptions.coin;
+	
+	for (var i=0; i < poolOptions.auxes.length; i++)
+	{
+		var auxFilePath = 'coins/' + poolOptions.auxes[i].coin;
+		if (!fs.existsSync(auxFilePath)){
+		    logger.error('Aux', poolOptions.auxes[i].coin, 'could not find file: ' + auxFilePath);
+		    return;
+		}
+
+		var auxProfile = JSON.parse(JSON.minify(fs.readFileSync(auxFilePath, {encoding: 'utf8'})));
+		poolOptions.auxes[i].coin = auxProfile;
+		poolOptions.auxes[i].coin.name = poolOptions.auxes[i].coin.name.toLowerCase();
+	}
 
         var coinFilePath = 'coins/' + poolOptions.coinFileName;
         if (!fs.existsSync(coinFilePath)){

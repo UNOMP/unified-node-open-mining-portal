@@ -1,5 +1,5 @@
 var redis = require('redis');
-var Stratum = require('stratum-pool');
+var Stratum = require('merged-pool');
 
 
 
@@ -72,8 +72,42 @@ module.exports = function(logger, poolConfig){
     this.handleShare = function(isValidShare, isValidBlock, shareData){
 
         var redisCommands = [];
+	myAuxes = poolConfig.auxes	
+	shareData.worker = shareData.worker.replace(/([\-_.!~*'()].*)/g, '').replace(/\s+/g, ''); // strip any extra strings from worker name.
 
-        shareData.worker = shareData.worker.replace(/([\-_.!~*'()].*)/g, '').replace(/\s+/g, ''); // strip any extra strings from worker name.
+	for (var i=0; i < myAuxes.length; i++)
+	{
+		AuxCoin = myAuxes[i].coin.name;
+
+		if (isValidShare){
+         	   redisCommands.push(['hincrbyfloat', AuxCoin + ':shares:roundCurrent', shareData.worker, shareData.difficulty]);
+         	   redisCommands.push(['hincrby', AuxCoin + ':stats', 'validShares', 1]);
+        	
+        	} else {
+            	  redisCommands.push(['hincrby', AuxCoin + ':stats', 'invalidShares', 1]);
+        	}
+
+	        /* Stores share diff, worker, and unique value with a score that is the timestamp. Unique value ensures it
+	           doesn't overwrite an existing entry, and timestamp as score lets us query shares from last X minutes to
+	           generate hashrate for each worker and pool. */
+	        var dateNow = Date.now();
+	        var hashrateData = [ isValidShare ? shareData.difficulty : -shareData.difficulty, shareData.worker, dateNow];
+	        redisCommands.push(['zadd', AuxCoin + ':hashrate', dateNow / 1000 | 0, hashrateData.join(':')]);
+
+	        if (isValidBlock){
+	            redisCommands.push(['rename', AuxCoin + ':shares:roundCurrent', coin + ':shares:round' + shareData.height]);
+	            redisCommands.push(['sadd', AuxCoin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height].join(':')]);
+	            redisCommands.push(['hincrby', AuxCoin + ':stats', 'validBlocks', 1]);
+	   	} else if (shareData.blockHash){
+            	    redisCommands.push(['hincrby', AuxCoin + ':stats', 'invalidBlocks', 1]);
+	        }
+
+        	connection.multi(redisCommands).exec(function(err, replies){
+        	    if (err)
+        	        logger.error(logSystem, logComponent, logSubCat, 'Error with share processor multi ' + JSON.stringify(err));
+        	});
+	
+	}
 
         if (isValidShare){
             redisCommands.push(['hincrbyfloat', coin + ':shares:roundCurrent', shareData.worker, shareData.difficulty]);
@@ -107,3 +141,4 @@ module.exports = function(logger, poolConfig){
     };
 
 };
+
