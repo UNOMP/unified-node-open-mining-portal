@@ -668,7 +668,7 @@ module.exports = function(logger){
 
 
     var checkProfitability = function(){
-        logger.warning(logSystem, 'Check', 'Collecting profitability data.');
+        logger.warn(logSystem, 'Check', 'Collecting profitability data.');
 
         profitabilityTasks = [];
         if (portalConfig.profitSwitch.usePoloniex)

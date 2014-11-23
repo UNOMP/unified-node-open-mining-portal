@@ -1,0 +1,5 @@
+{
+    "name": "Lottoshares",
+    "symbol": "LTS",
+    "algorithm": "scrypt"
+}

@@ -6,7 +6,7 @@ var cluster = require('cluster');
 var async = require('async');
 var extend = require('extend');
 
-var PoolLogger = require('./libs/logUtil.js');
+var PoolLogger = require('log4js');
 var CliListener = require('./libs/cliListener.js');
 var PoolWorker = require('./libs/poolWorker.js');
 var PaymentProcessor = require('./libs/paymentProcessor.js');
@@ -24,16 +24,11 @@ if (!fs.existsSync('config.json')){
 
 var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("config.json", {encoding: 'utf8'})));
 var poolConfigs;
-
-
-var logger = new PoolLogger({
-    logLevel: portalConfig.logLevel,
-    logColors: portalConfig.logColors
-});
+var logger = PoolLogger.getLogger();
 
 
 
-
+logger.info('New Relic');
 try {
     require('newrelic');
     if (cluster.isMaster)
@@ -45,11 +40,15 @@ try {
 try{
     var posix = require('posix');
     try {
+	logger.info('Setting POSIX');
         posix.setrlimit('nofile', { soft: 100000, hard: 100000 });
+	logger.info('POSIX Set');
     }
     catch(e){
-        if (cluster.isMaster)
-            logger.warning('POSIX', 'Connection Limit', '(Safe to ignore) Must be ran as root to increase resource limits');
+	logger.info(e);
+	logger.info('Must be ran as root');
+        if (cluster.isMaster){
+            logger.warn('POSIX', 'Connection Limit', '(Safe to ignore) Must be ran as root to increase resource limits');}
     }
     finally {
         // Find out which user used sudo through the environment variable
@@ -57,16 +56,19 @@ try{
         // Set our server's uid to that user
         if (uid) {
             process.setuid(uid);
+	    logger.info("UID Set");
             logger.debug('POSIX', 'Connection Limit', 'Raised to 100K concurrent connections, now running as non-root user: ' + process.getuid());
+	    logger.info('POSIX Msg');
         }
     }
 }
 catch(e){
+    logger.info('POSIX Not Installed');
     if (cluster.isMaster)
         logger.debug('POSIX', 'Connection Limit', '(Safe to ignore) POSIX module not installed and resource (connection) limit was not raised');
 }
 
-
+logger.info('Run Workers');
 if (cluster.isWorker){
 
     switch(process.env.workerType){
@@ -138,7 +140,7 @@ var buildPoolConfigs = function(){
 	{
 		var auxFilePath = 'coins/' + poolOptions.auxes[i].coin;
 		if (!fs.existsSync(auxFilePath)){
-		    logger.error('Aux', poolOptions.auxes[i].coin, 'could not find file: ' + auxFilePath);
+		    logger.warn('Aux', poolOptions.auxes[i].coin, 'could not find file: ' + auxFilePath);
 		    return;
 		}
 
@@ -149,7 +151,7 @@ var buildPoolConfigs = function(){
 
         var coinFilePath = 'coins/' + poolOptions.coinFileName;
         if (!fs.existsSync(coinFilePath)){
-            logger.error('Master', poolOptions.coinFileName, 'could not find file: ' + coinFilePath);
+            logger.warn('Master', poolOptions.coinFileName, 'could not find file: ' + coinFilePath);
             return;
         }
 
@@ -159,7 +161,7 @@ var buildPoolConfigs = function(){
 
         if (poolOptions.coin.name in configs){
 
-            logger.error('Master', poolOptions.fileName, 'coins/' + poolOptions.coinFileName
+            logger.warn('Master', poolOptions.fileName, 'coins/' + poolOptions.coinFileName
                 + ' has same configured coin name ' + poolOptions.coin.name + ' as coins/'
                 + configs[poolOptions.coin.name].coinFileName + ' used by pool config '
                 + configs[poolOptions.coin.name].fileName);
@@ -184,7 +186,7 @@ var buildPoolConfigs = function(){
         configs[poolOptions.coin.name] = poolOptions;
 
         if (!(coinProfile.algorithm in algos)){
-            logger.error('Master', coinProfile.name, 'Cannot run a pool for unsupported algorithm "' + coinProfile.algorithm + '"');
+            logger.warn('Master', coinProfile.name, 'Cannot run a pool for unsupported algorithm "' + coinProfile.algorithm + '"');
             delete configs[poolOptions.coin.name];
         }
 
@@ -206,7 +208,7 @@ var spawnPoolWorkers = function(){
     });
 
     if (Object.keys(poolConfigs).length === 0){
-        logger.warning('Master', 'PoolSpawner', 'No pool configs exists or are enabled in pool_configs folder. No pools spawned.');
+        logger.warn('Master', 'PoolSpawner', 'No pool configs exists or are enabled in pool_configs folder. No pools spawned.');
         return;
     }
 
