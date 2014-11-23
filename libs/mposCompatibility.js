@@ -1,7 +1,6 @@
 var mysql = require('mysql');
 var cluster = require('cluster');
-var bitcoin = require('bitcoin');
-var client = require('kapitalize')()
+var rpcClient = require('bitcoin');
 
 module.exports = function(logger, poolConfig){
     var mposConfig = poolConfig.mposMode;
@@ -85,17 +84,17 @@ module.exports = function(logger, poolConfig){
     }
     this.handleShare = function(isValidShare, isValidBlock, shareData){
 	myAuxes = poolConfig.auxes;
+	var coinds = [];
 
         for (var i=0; i < myAuxes.length; i++)
-        {
-	   client.auth({
+        {  
+	   coinds[i] = rpcClient.Client({
   		host: myAuxes[i].daemons.host,
   		port: myAuxes[i].daemons.port,
   		user: myAuxes[i].daemons.user,
   		pass: myAuxes[i].daemons.password,
 	   });
-	   
-	   console.log(this.getBlocks(client));
+	   console.log(coinds[0][i]);
     	   dbData = [
                 shareData.worker,
                 shareData.ip,
@@ -105,7 +104,6 @@ module.exports = function(logger, poolConfig){
                 shareData.blockHash ? shareData.blockHash : (shareData.blockHashInvalid ? shareData.blockHashInvalid : ''),
                 shareData.difficulty * (poolConfig.coin.mposDiffMultiplier || 1),
 		myAuxes[i].coin.symbol,
-		blocks,
            ];
            connection.query(
 	     	'INSERT INTO `shares` SET time = NOW(), user = ?, ip = ?, oresult = ?, uresult = ?, reason = ?, solution = ?, difficulty = ?, coin = ?, blkheight = ?',
