@@ -1,88 +1,190 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 
-<html lang="en">
-<head>
-    <meta charset="utf-8">
+		<title>{{=it.portalConfig.website.siteTitle}}</title>
+		<meta name="description" content="">
+		<meta name="author" content="">
+			
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="icon" type="image/png" href="/static/favicon.png"/>
+		<!-- Basic Styles -->
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/font-awesome.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-production-plugins.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-production.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-skins.min.css">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.4.2/pure-min.css">
+		<!-- SmartAdmin RTL Support  -->
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-rtl.min.css">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
-    <script src="/static/highcharts.js"></script>
+		<!-- FAVICONS -->
+		<link rel="shortcut icon" href="/static/img/favicon/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/static/img/favicon/favicon.ico" type="image/x-icon">
 
+		<!-- GOOGLE FONT -->
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 
-    <script src="/static/main.js"></script>
-    <link rel="stylesheet" href="/static/style.css">
+		<!-- Specifying a Webpage Icon for Web Clip 
+			 Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
+		<link rel="apple-touch-icon" href="/static/img/splash/sptouch-icon-iphone.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="/static/img/splash/touch-icon-ipad.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="/static/img/splash/touch-icon-iphone-retina.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="/static/img/splash/touch-icon-ipad-retina.png">
+		
+		<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		
+		<!-- Startup image for web apps -->
+		<link rel="apple-touch-startup-image" href="/static/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+		<link rel="apple-touch-startup-image" href="/static/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+		<link rel="apple-touch-startup-image" href="/static/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
 
-    <title>NOMP</title>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.5/d3.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+		<script src="/static/main.js"></script>
+		<script src="/static/nvd3.js"></script>
+	</head>
+	
+	<body class="">
 
-</head>
+		<!-- HEADER -->
+		<header id="header">
+			<div id="logo-group">
 
-<body>
+				<!-- PLACE YOUR LOGO HERE -->
+				<span id="logo"> <img src="/static/img/lcqoIj9.png" alt="NOMP"> </span>
+				<!-- END LOGO PLACEHOLDER -->
+			</div>
 
-<header>
-    <div class="home-menu pure-menu pure-menu-open pure-menu-horizontal">
+			<div class="pull-right">
+				
+				<!-- collapse menu button -->
+				<div id="hide-menu" class="btn-header pull-right">
+					<span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
+				</div>
+				<!-- end collapse menu -->
+			</div>
+			<!-- end pulled right: nav area -->
 
-        <a class="pure-menu-heading hot-swapper" href="/"><i class="fa fa-home"></i>&nbsp;NOMP</a>
+		</header>
+		<!-- END HEADER -->
 
-        <ul>
-            <li class="{{? it.selected === 'getting_started' }}pure-menu-selected{{?}}">
-                <a class="hot-swapper" href="/getting_started">
-                    <i class="fa fa-rocket"></i>&nbsp;
-                    Getting Started
-                </a>
-            </li>
-            <li class="{{? it.selected === 'stats' }}pure-menu-selected{{?}}">
-                <a class="hot-swapper" href="/stats">
-                    <i class="fa fa-bar-chart-o"></i>&nbsp;
-                    Stats
-                </a>
-            </li>
-            <li class="{{? it.selected === 'workers' }}pure-menu-selected{{?}}">
-                <a class="hot-swapper" href="/workers">
-                    <i class="fa fa-cogs"></i>&nbsp;
-                    Workers Stats
-                </a>
-            </li>
-            <li class="{{? it.selected === 'api' }}pure-menu-selected{{?}}">
-                <a class="hot-swapper" href="/api">
-                    <i class="fa fa-code"></i>&nbsp;
-                    API
-                </a>
-            </li>
-        </ul>
-    </div>
-</header>
+		<!-- Left panel : Navigation area -->
+		<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+		<aside id="left-panel">
+			<nav>
+				<ul>
+					<li class="{{? it.selected === 'getting_started' }}active{{?}}">
+						<a href="/getting_started" title="Dashboard"><i class="fa fa-rocket"></i> <span class="menu-item-parent">Getting Started</span></a>
+					</li>
+					<li class="{{? it.selected === 'stats' }}active{{?}}">
+						<a href="/stats"><i class="fa fa-bar-chart-o"></i> <span class="menu-item-parent">Statistics</span></a>
+					</li>
+					<li class="{{? it.selected === 'workers' }}active{{?}}">
+						<a href="/workers"><i class="fa fa-cogs"></i> <span class="menu-item-parent">Workers</span></a>4
+					</li>
+					<li class="{{? it.selected === 'api' }}active{{?}}>
+						<a href="/api"><i class="fa fa-code"></i> <span class="menu-item-parent">API</span></a>
+					</li>
+					
+				</ul>
+			</nav>
+			<span class="minifyme" data-action="minifyMenu"> 
+				<i class="fa fa-arrow-circle-left hit"></i> 
+			</span>
 
-<main>
-    {{=it.page}}
-</main>
+		</aside>
+		<!-- END NAVIGATION -->
 
+		<!-- MAIN PANEL -->
+		<div id="main" role="main">
 
-<footer>
+			<div id="ribbon">
+				<ol class="breadcrumb">
+					<li>NOMP</li><li>{{=it.selected}}</li>
+				</ol>
+			</div>
+			<!-- END RIBBON -->
 
-    <div>
-        This site is powered by the open source&nbsp;<a target="_blank" href="https://github.com/zone117x/node-open-mining-portal/">NOMP</a>&nbsp;
-        project created by Matthew Little and licensed under the&nbsp;<a href="http://www.gnu.org/licenses/gpl-2.0.html">GPL</a>
-    </div>
-    <div>
-        <i class="fa fa-heart"></i>&nbsp; Support this project by donating&nbsp;<i class="fa fa-btc"></i>&nbsp;BTC: 1KRotMnQpxu3sePQnsVLRy3EraRFYfJQFR
-    </div>
-    <div id="communityFooter">
-        Community&nbsp;<i class="fa fa-comment"></i>&nbsp;: &nbsp;<a target="_blank" href="https://kiwiirc.com/client/irc.freenode.net/nomp">#nomp IRC</a>
-        &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a target="_blank" href="http://reddit.com/r/nomp">/r/nomp</a>
-        &nbsp;&nbsp;|&nbsp;&nbsp;
-        <iframe src="http://ghbtns.com/github-btn.html?user=zone117x&repo=node-open-mining-portal&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="140" height="20"></iframe>
-    </div>
+			<!-- MAIN CONTENT -->
+			<div id="content">
+				{{=it.page}}
+			</div>
+			<!-- END MAIN CONTENT -->
 
-</footer>
+		</div>
+		<!-- END MAIN PANEL -->
 
-</body>
+		<!-- PAGE FOOTER -->
+		<div class="page-footer">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6">
+					<span class="txt-color-white">Unified Node Open Mining Portal<span class="hidden-xs"> - Forked and Improved from NOMP By AhmedBodi</span> © 2014-2015</span>
+				</div>
+			</div>
+		</div>
+		<!-- END PAGE FOOTER -->
+
+		<!--================================================== -->
+
+		<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
+		<script data-pace-options='{ "restartOnRequestAfter": true }' src="/static/js/plugin/pace/pace.min.js"></script>
+
+		<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script>
+			if (!window.jQuery) {
+				document.write('<script src="/static/js/libs/jquery-2.1.1.min.js"><\/script>');
+			}
+		</script>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		<script>
+			if (!window.jQuery.ui) {
+				document.write('<script src="/static/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+			}
+		</script>
+
+		<!-- IMPORTANT: APP CONFIG -->
+		<script src="/static/js/app.config.js"></script>
+
+		<!-- JS TOUCH : include this plugin for mobile drag / drop touch events-->
+		<script src="/static/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> 
+
+		<!-- BOOTSTRAP JS -->
+		<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+
+		<!-- JARVIS WIDGETS -->
+		<script src="/static/js/smartwidgets/jarvis.widget.min.js"></script>
+
+		<!-- JQUERY SELECT2 INPUT -->
+		<script src="/static/js/plugin/select2/select2.min.js"></script>
+
+		<!-- JQUERY UI + Bootstrap Slider -->
+		<script src="/static/js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
+
+		<!-- browser msie issue fix -->
+		<script src="/static/js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
+
+		<!-- FastClick: For mobile devices -->
+		<script src="/static/js/plugin/fastclick/fastclick.min.js"></script>
+
+		<!--[if IE 8]>
+
+		<h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
+
+		<![endif]-->
+
+		<!-- MAIN APP JS FILE -->
+		<script src="/static/js/app.min.js"></script>
+
+	</body>
+
 </html>

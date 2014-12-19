@@ -1,5 +1,5 @@
 {
-    "enabled": false,
+    "enabled": true,
     "coin": "litecoin.json",
 
     "auxes": [ // Defines auxillery coins
@@ -23,7 +23,7 @@
     },
 
     "paymentProcessing": {
-        "enabled": true,
+        "enabled": false,
         "paymentInterval": 20,
         "minimumPayment": 70,
         "daemon": {
@@ -63,10 +63,10 @@
     ],
 
     "p2p": {
-        "enabled": true,
+        "enabled": false,
         "host": "127.0.0.1",
         "port": 19333,
-        "disableTransactions": true
+        "disableTransactions": false
     },
 
     "mposMode": {
@@ -76,7 +76,7 @@
         "user": "me",
         "password": "mypass",
         "database": "ltc",
-        "checkPassword": true,
+        "checkPassword": false,
         "autoCreateWorker": false
     }
 
