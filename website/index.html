@@ -59,7 +59,7 @@
 			<div id="logo-group">
 
 				<!-- PLACE YOUR LOGO HERE -->
-				<span id="logo"> <img src="/static/img/lcqoIj9.png" alt="NOMP"> </span>
+			<!--	<span id="logo"> <img src="http://altnuts.com/static/img/logo.png" style="width:20px height:20px" alt="NOMP"> </span> -->
 				<!-- END LOGO PLACEHOLDER -->
 			</div>
 
@@ -81,8 +81,11 @@
 		<aside id="left-panel">
 			<nav>
 				<ul>
+                                        <li class="{{? it.selected === 'index' }}active{{?}}">
+                                                <a href="/"><i class="fa fa-home"></i> <span class="menu-item-parent">Home</span></a>
+                                        </li>
 					<li class="{{? it.selected === 'getting_started' }}active{{?}}">
-						<a href="/getting_started" title="Dashboard"><i class="fa fa-rocket"></i> <span class="menu-item-parent">Getting Started</span></a>
+						<a href="/getting_started"><i class="fa fa-rocket"></i> <span class="menu-item-parent">Getting Started</span></a>
 					</li>
 					<li class="{{? it.selected === 'stats' }}active{{?}}">
 						<a href="/stats"><i class="fa fa-bar-chart-o"></i> <span class="menu-item-parent">Statistics</span></a>
@@ -90,10 +93,9 @@
 					<li class="{{? it.selected === 'workers' }}active{{?}}">
 						<a href="/workers"><i class="fa fa-cogs"></i> <span class="menu-item-parent">Workers</span></a>4
 					</li>
-					<li class="{{? it.selected === 'api' }}active{{?}}>
+					<li class="{{? it.selected === 'api' }}active{{?}}">
 						<a href="/api"><i class="fa fa-code"></i> <span class="menu-item-parent">API</span></a>
 					</li>
-					
 				</ul>
 			</nav>
 			<span class="minifyme" data-action="minifyMenu"> 
@@ -108,7 +110,7 @@
 
 			<div id="ribbon">
 				<ol class="breadcrumb">
-					<li>NOMP</li><li>{{=it.selected}}</li>
+					<li>AltNuts v2</li><li>{{=it.selected}}</li>
 				</ol>
 			</div>
 			<!-- END RIBBON -->
@@ -125,8 +127,11 @@
 		<!-- PAGE FOOTER -->
 		<div class="page-footer">
 			<div class="row">
+    				<div>
+        			  <span class="txt-color-white"><i class="fa fa-heart"></i>&nbsp; Support this project by donating&nbsp;<i class="fa fa-btc icon-x2"></i>&nbsp; 1E7daukCKwb1E6sTbXUWQSDoQVsKmgWSLv</span>
+    				</div>
 				<div class="col-xs-12 col-sm-6">
-					<span class="txt-color-white">Unified Node Open Mining Portal<span class="hidden-xs"> - Forked and Improved from NOMP By AhmedBodi</span> © 2014-2015</span>
+				<!--	<span class="txt-color-white">Unified Node Open Mining Portal<span class="hidden-xs"> - Forked and Improved from NOMP By AhmedBodi</span> © 2014-2015</span> -->
 				</div>
 			</div>
 		</div>
