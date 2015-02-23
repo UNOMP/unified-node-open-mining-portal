@@ -222,7 +222,7 @@ module.exports = function(logger){
             logger.debug(logSystem, logComponent, logSubCat, 'Difficulty update to diff ' + diff + ' workerName=' + JSON.stringify(workerName));
             handlers.diff(workerName, diff);
         }).on('log', function(severity, text) {
-            logger[severity](logSystem, logComponent, logSubCat, text);
+            logger.debug(logSystem, logComponent, logSubCat, text);
         }).on('banIP', function(ip, worker){
             process.send({type: 'banIP', ip: ip});
         }).on('started', function(){
