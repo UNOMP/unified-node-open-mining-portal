@@ -1,0 +1,6 @@
+{
+    "name": "Pencilcoin",
+    "symbol": "PENC",
+    "algorithm": "x13",
+    "mposDiffMultiplier": 256
+}
