@@ -3,8 +3,8 @@ var fs = require('fs');
 var redis = require('redis');
 var async = require('async');
 
-var Stratum = require('merged-pool');
-var util = require('merged-pool/lib/util.js');
+var Stratum = require('merged-pooler');
+var util = require('merged-pooler/lib/util.js');
 
 
 module.exports = function(logger){

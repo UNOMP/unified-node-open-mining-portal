@@ -1,5 +1,5 @@
 var redis = require('redis');
-var Stratum = require('merged-pool');
+var Stratum = require('merged-pooler');
 
 
 
