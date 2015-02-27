@@ -524,7 +524,7 @@ effort. Please donate to:
 * BTC: `1E7daukCKwb1E6sTbXUWQSDoQVsKmgWSLv`
 * Cryptsy Trade Key: `197f17af3751709b2c7f076a2d3393e064022e91`
 
-Donators (email me to be added):
+Donors (email me to be added):
 * [elitemobb from altnuts.com](http://altnuts.com)
 * [mike from minerpools.com](https://minerpools.com)
 
