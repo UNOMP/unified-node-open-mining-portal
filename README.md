@@ -90,36 +90,15 @@ allow your own pool to connect upstream to a larger pool server. It will request
 redistribute the work to our own connected miners.
 
 
-### Community / Support
-IRC
-* Support / general discussion join #nomp: https://webchat.freenode.net/?channels=#nomp
-* Development discussion join #nomp-dev: https://webchat.freenode.net/?channels=#nomp-dev
-
-Join our subreddit [/r/nomp](http://reddit.com/r/nomp)!
+### Community / Support - Coming Soon
 
 *Having problems getting the portal running due to some module dependency error?* It's probably because you
 didn't follow the instructions in this README. Please __read the usage instructions__ including [requirements](#requirements) and [downloading/installing](#1-downloading--installing). If you've followed the instructions completely and are still having problems then open an issue here on github or join our #nomp IRC channel and explain your problem :).
 
-If your pool uses NOMP let us know and we will list your website here.
+If your pool uses uNOMP let us know and we will list your website here. (Please make a PR that ONLY updates the README.md)
 
-##### Some pools using NOMP or node-stratum-module:
-* http://chunkypools.com
-* http://clevermining.com
-* http://rapidhash.net
-* http://suchpool.pw
-* http://hashfaster.com
-* http://miningpoolhub.com
-* http://teamdoge.com
-* http://miningwith.us
-* http://kryptochaos.com
-* http://uberpools.org
-* http://onebtcplace.com
-* http://minr.es
-* http://mining.theminingpools.com
-* http://www.omargpools.ca/pools.html
-* http://pool.trademybit.com/
-* http://fixminer.com
-* http://poollo.com
+##### Some pools using uNOMP or merged-pooler:
+* http://bemining.net
 
 Usage
 =====
@@ -529,7 +508,7 @@ output from NOMP.
 * Use [New Relic](http://newrelic.com/) to monitor your NOMP instance and server performance.
 
 
-#### Upgrading NOMP
+#### Upgrading uNOMP
 When updating NOMP to the latest code its important to not only `git pull` the latest from this repo, but to also update
 the `node-stratum-pool` and `node-multi-hashing` modules, and any config files that may have been changed.
 * Inside your NOMP directory (where the init.js script is) do `git pull` to get the latest NOMP code.
@@ -538,6 +517,19 @@ the `node-stratum-pool` and `node-multi-hashing` modules, and any config files t
 * Compare your `config.json` and `pool_configs/coin.json` configurations to the latest example ones in this repo or the ones in the setup instructions where each config field is explained. You may need to modify or add any new changes.
 
 Donations
+---------
+Below is my donation address. The original dev addresses are listed because I felt scammy if I removed them. They no longer are supporting the current development
+effort. Please donate to:
+
+* BTC: `1E7daukCKwb1E6sTbXUWQSDoQVsKmgWSLv`
+* Cryptsy Trade Key: `197f17af3751709b2c7f076a2d3393e064022e91`
+
+Donators (email me to be added):
+* [elitemobb from altnuts.com](http://altnuts.com)
+* [mike from minerpools.com](https://minerpools.com)
+
+
+Original author (zone117x):
 ---------
 To support development of this project feel free to donate :)
 
@@ -562,8 +554,9 @@ Credits
 * [svirusxxx](//github.com/svirusxxx) - sponsored development of MPOS mode
 * [icecube45](//github.com/icecube45) - helping out with the repo wiki
 * [Fcases](//github.com/Fcases) - ordered me a pizza <3
+* [ahmedbodi](//github.com/ahmedbodi/stratum-mining) - more algo adaptions to python code and unomp dev
 * Those that contributed to [node-stratum-pool](//github.com/zone117x/node-stratum-pool#credits)
-
+* [KillerByte](//github.com/KillerByte) - for beginning this merged creation
 
 License
 -------
