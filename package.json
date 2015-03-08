@@ -1,6 +1,6 @@
 {
-    "name": "node-open-mining-portal",
-    "version": "0.0.4",
+    "name": "unifiednode-open-mining-portal",
+    "version": "0.0.5",
     "description": "An extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool",
     "keywords": [
         "stratum",
@@ -12,15 +12,16 @@
         "litecoin",
         "scrypt"
     ],
-    "homepage": "https://github.com/UNOMP/node-open-mining-portal",
+    "homepage": "https://github.com/sigwo/unified-node-open-mining-portal",
     "bugs": {
-        "url": "https://github.com/UNOMP/node-open-mining-portal/issues"
+        "url": "https://github.com/sigwo/unified-node-open-mining-portal/issues"
     },
     "license": "GPL-2.0",
     "author": "Matthew Little",
     "contributors": [
         "vekexasia",
-        "TheSeven"
+        "TheSeven",
+        "ahmed"
     ],
     "main": "init.js",
     "bin": {
@@ -28,11 +29,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/UNOMP/node-open-mining-portal.git"
+        "url": "https://github.com/sigwo/unified-node-open-mining-portal.git"
     },
     "dependencies": {
-        "stratum-pool": "git://github.com/UNOMP/node-merged-pool.git",
+        "stratum-pool": "git://github.com/sigwo/node-merged-pool.git",
         "dateformat": "*",
+	"log4js": "*",
+	"bitcoin": "*",
         "node-json-minify": "*",
         "redis": "*",
         "mysql": "*",
@@ -49,6 +52,6 @@
         "extend": "*"
     },
     "engines": {
-        "node": ">=0.10"
+        "node": ">=0.12"
     }
 }
