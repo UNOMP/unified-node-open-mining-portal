@@ -1,6 +1,6 @@
 #### Unified NOMP
 
-This repo will serve as a vanilla version of [SuperNET Multipool](//github.com/sigwo/supernet-multipool). Multipool capabilities are not included (yet) in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment.
+This repo will serve as a vanilla version of [SuperNET Multipool](//github.com/sigwo/supernet-multipool). Multipool capabilities are not included (yet) in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://bemining.net).
 
 This portal is an extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool written in Node.js. 
 It contains a merged stratum poolserver; reward/payment/share processor; and a (*not yet completed*)
