@@ -1,5 +1,5 @@
 {
-    "name": "unifiednode-open-mining-portal",
+    "name": "unified-node-open-mining-portal",
     "version": "0.0.5",
     "description": "An extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool",
     "keywords": [
@@ -10,7 +10,9 @@
         "poolserver",
         "bitcoin",
         "litecoin",
-        "scrypt"
+        "scrypt",
+	"merged",
+	"sigwo"
     ],
     "homepage": "https://github.com/sigwo/unified-node-open-mining-portal",
     "bugs": {
