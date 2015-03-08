@@ -1,8 +1,7 @@
 var mysql = require('mysql');
 var cluster = require('cluster');
-var rpcClient = require('bitcoin');
-
 module.exports = function(logger, poolConfig){
+
     var mposConfig = poolConfig.mposMode;
     var coin = poolConfig.coin.name;
 
@@ -28,7 +27,7 @@ module.exports = function(logger, poolConfig){
         }
 
         connection.query(
-            'SELECT password FROM workers WHERE name = LOWER(?)',
+            'SELECT password FROM pool_worker WHERE username = LOWER(?)',
             [workerName.toLowerCase()],
             function(err, result){
                 if (err){
@@ -40,7 +39,7 @@ module.exports = function(logger, poolConfig){
                     if(mposConfig.autoCreateWorker){
                         var account = workerName.split('.')[0];
                         connection.query(
-                            'SELECT id,username FROM user WHERE username = LOWER(?)',
+                            'SELECT id,username FROM accounts WHERE username = LOWER(?)',
                             [account.toLowerCase()],
                             function(err, result){
                                 if (err){
@@ -51,7 +50,7 @@ module.exports = function(logger, poolConfig){
                                     authCallback(false);
                                 }else{
                                     connection.query(
-                                        "INSERT INTO `workers` (`user_id`, `name`, `password`) VALUES (?, ?, ?);",
+                                        "INSERT INTO `pool_worker` (`account_id`, `username`, `password`) VALUES (?, ?, ?);",
                                         [result[0].id,workerName.toLowerCase(),password],
                                         function(err, result){
                                             if (err){
@@ -79,42 +78,27 @@ module.exports = function(logger, poolConfig){
 
     };
 
-    this.getBlocks = function(client) {
-	return client.getInfo()
-    }
     this.handleShare = function(isValidShare, isValidBlock, shareData){
-	myAuxes = poolConfig.auxes;
-	var coinds = [];
 
-        for (var i=0; i < myAuxes.length; i++)
-        {  
-	   coinds[i] = rpcClient.Client({
-  		host: myAuxes[i].daemons.host,
-  		port: myAuxes[i].daemons.port,
-  		user: myAuxes[i].daemons.user,
-  		pass: myAuxes[i].daemons.password,
-	   });
-	   console.log(coinds[0][i]);
-    	   dbData = [
-                shareData.worker,
-                shareData.ip,
-                isValidShare ? 'Y' : 'N',
-                isValidBlock ? 'Y' : 'N',
-                typeof(shareData.error) === 'undefined' ? null : shareData.error,
-                shareData.blockHash ? shareData.blockHash : (shareData.blockHashInvalid ? shareData.blockHashInvalid : ''),
-                shareData.difficulty * (poolConfig.coin.mposDiffMultiplier || 1),
-		myAuxes[i].coin.symbol,
-           ];
-           connection.query(
-	     	'INSERT INTO `shares` SET time = NOW(), user = ?, ip = ?, oresult = ?, uresult = ?, reason = ?, solution = ?, difficulty = ?, coin = ?, blkheight = ?',
-              	dbData,
-              	function(err, result) {
+        var dbData = [
+            shareData.ip,
+            shareData.worker,
+            isValidShare ? 'Y' : 'N',
+            isValidBlock ? 'Y' : 'N',
+            shareData.difficulty * (poolConfig.coin.mposDiffMultiplier || 1),
+            typeof(shareData.error) === 'undefined' ? null : shareData.error,
+            shareData.blockHash ? shareData.blockHash : (shareData.blockHashInvalid ? shareData.blockHashInvalid : '')
+        ];
+        connection.query(
+            'INSERT INTO `shares` SET time = NOW(), rem_host = ?, username = ?, our_result = ?, upstream_result = ?, difficulty = ?, reason = ?, solution = ?',
+            dbData,
+            function(err, result) {
                 if (err)
-               	     logger.error(logIdentify, logComponent, 'Insert error when adding share: ' + JSON.stringify(err));
-               	else
+                    logger.error(logIdentify, logComponent, 'Insert error when adding share: ' + JSON.stringify(err));
+                else
                     logger.debug(logIdentify, logComponent, 'Share inserted');
-		});
-	}
+            }
+        );
     };
 
     this.handleDifficultyUpdate = function(workerName, diff){
