@@ -501,7 +501,7 @@ the `merged-pooler` and `node-multi-hashing` modules, and any config files that 
 
 Donations
 ---------
-Below is my donation address. The original dev addresses are listed because I felt scammy if I removed them. They no longer are supporting the current development effort. Please donate to:
+Below is my donation address. The original [credits](//github.com/sigwo/supernet-multipool/credits.md) are listed here because I felt scammy if I totally removed them. They no longer are supporting the current development effort. Please donate to:
 
 * BTC: `19svwpxWAhD4zsfeEnnxExZgnQ46A3mrt3`
 
