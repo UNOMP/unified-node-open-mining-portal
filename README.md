@@ -1,15 +1,13 @@
-# SuperNET Multipool ![SN Logo](https://github.com/sigwo/supernet-multipool/website/static/snet.png "SuperNET Multipool Logo")
-#### SuperNET Multipool
+#### Unified NOMP
 
-This file will serve as our living White Paper and roadmap of features. Check the [Issues](//github.com/sigwo/supernet-multipool/issues) tags for
-enhancements, bugs, and anything else.
+This repo will serve as a vanilla version of [SuperNET Multipool](//github.com/sigwo/supernet-multipool). Multipool capabilities are not included (yet) in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment.
 
 This portal is an extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool written in Node.js. 
 It contains a merged stratum poolserver; reward/payment/share processor; and a (*not yet completed*)
 responsive user-friendly front-end website featuring mining instructions, in-depth live statistics, and an admin center.
 
 #### Production Usage Notice - Don't do it, yet.
-This is beta software. All of the following are things that can change and break an existing SuperNET Multipool setup: functionality of any feature,
+This is beta software. All of the following are things that can change and break an existing setup: functionality of any feature,
 structure of configuration files and structure of redis data. If you use this software in production then *DO NOT* pull new code straight into 
 production usage because it can and ~~often~~ will break your setup and require you to tweak things like config files or redis data, among other things.
 
@@ -55,14 +53,14 @@ current round so that each and every share will be rewarded.
 
 * Coin-switching ports using coin-networks and crypto-exchange APIs to detect profitability. 
 
-* Past MPOS functionality is no longer available/working. Signing up and mining pools don't mix.
+* Past MPOS functionality is no longer available/working. Signing up and mining pools don't mix. See [PR #15](//github.com/sigwo/unified-node-open-mining-portal/pull/15).
 
 #### Attack Mitigation
 * Detects and thwarts socket flooding (garbage data sent over socket in order to consume system resources).
 * Detects and thwarts zombie miners (botnet infected computers connecting to your server to use up sockets but not sending any shares).
 * Detects and thwarts invalid share attacks:
    * SuperNET Multipool is not vulnerable to the low difficulty share exploits happening to other pool servers. Other pool server
-   software has hardcoded guesstimated max difficulties for new hashing algorithms while SuperNET Multipool dynamically generates the
+   software has hardcoded guesstimated max difficulties for new hashing algorithms while UNOMP dynamically generates the
    max difficulty for each algorithm based on values founds in coin source code.
    * IP banning feature which on a configurable threshold will ban an IP for a configurable amount of time if the miner
    submits over a configurable threshold of invalid shares.
@@ -71,7 +69,7 @@ thread per connection, and clustering is also implemented so all CPU cores are t
 
 
 #### Security
-SuperNET Multipool has some implicit security advantages for pool operators and miners:
+UNOMP has some implicit security advantages for pool operators and miners:
 * Without a registration/login system, non-security-oriented miners reusing passwords across pools is no longer a concern.
 * Automated payouts by default and pool profits are sent to another address so pool wallets aren't plump with coins -
 giving hackers little reward and keeping your pool from being a target.
@@ -80,11 +78,7 @@ giving hackers little reward and keeping your pool from being a target.
 
 #### Planned Features
 
-* SuperNET Multipool API - Used by the website to display stats and information about the pool(s) on the portal's front-end website. Mostly complete.
-
-* Will support NXT/UNITY and all other sNET coins for payouts from multipooling capabilities 
-
-* InstantDEX integration (still not 100% committed yet)
+* UNOMP API - Used by the website to display stats and information about the pool(s) on the portal's front-end website. Mostly complete.
 
 * Integration of [addie.cc](http://addie.cc) usernames for multiple payout type without using a public address that may/may not work with the 
 coin (still not 100% committed yet, see Feature #7)
