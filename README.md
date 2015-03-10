@@ -7,7 +7,7 @@ It contains a merged stratum poolserver; reward/payment/share processor; and a (
 responsive user-friendly front-end website featuring mining instructions, in-depth live statistics, and an admin center.
 
 #### Production Usage Notice - Don't do it, yet.
-This is beta software. All of the following are things that can change and break an existing setup: functionality of any feature,
+This is ~~beta~~ alpha software. All of the following are things that can change and break an existing setup: functionality of any feature,
 structure of configuration files and structure of redis data. If you use this software in production then *DO NOT* pull new code straight into 
 production usage because it can and ~~often~~ will break your setup and require you to tweak things like config files or redis data, among other things.
 
