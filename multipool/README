@@ -16,6 +16,9 @@ next go to your config.json in the base folder. and change the validate worker u
        "emitInvalidBlockHashes": false,
        "validateWorkerUsername": false,
 
+for each of the coins your adding you will have to go to the multipool/bin and run either sharedis <coinname> for sha256 or scryptredis <coinname> for scrypt
+this will add each of the coins on the pool into the databasefor the profit script to check balances for these also have to match the .json file names
+
 
 line 5 of the file profit will need to be changed to inlcude the proper coin name your paying out in.
 
