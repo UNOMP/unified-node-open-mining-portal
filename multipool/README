@@ -1,0 +1,45 @@
+To run a multipool on nomp is a bit of a pain to say the least. one of the first things needed to do is edit the .json files
+in pool_configs and set a very high payment like so.
+    "paymentProcessing": {
+        "enabled": true,
+       "paymentInterval": 75,
+        "minimumPayment": 99999999999,
+        "daemon": {
+
+so that the shift is paid out by the scripts that are going to be run from this folder. either on a cron or by hand.
+
+next go to your config.json in the base folder. and change the validate worker username to false like so
+    "defaultPoolConfigs": {
+        "blockRefreshInterval": 1000,
+        "jobRebroadcastTimeout": 55,
+        "connectionTimeout": 600,
+       "emitInvalidBlockHashes": false,
+       "validateWorkerUsername": false,
+
+
+line 5 of the file profit will need to be changed to inlcude the proper coin name your paying out in.
+
+
+./profit will calculate the workers estimated earning based off of the balances they have mined in each coin and set an entry in the database for each.
+./payment will clear the workers balance and pay all of the workers from the coindaemon of your choice.
+
+
+
+Optional:
+
+REDIS COMMANDER will start on port 8081 and let you get a full view of your redis database. 
+Make sure to close off that port when installing
+To install and run
+npm install -g redis-commander
+redis-commander
+
+
+Webdis is a web interface for curling redis values from.
+To download and install
+git clone https://github.com/nicolasff/webdis.git
+cd webdis
+sudo make clean all
+after installed copy webdis.json over to your webdis folder you just cloned
+and start with 
+./webdis &
+you will now be able to curl results from your public IP address if you open port 7379 without leaving your database accessible.
