@@ -54,17 +54,19 @@ current round so that each and every share will be rewarded.
 * Coin-switching ports using coin-networks and crypto-exchange APIs to detect profitability. 
 
 * Past MPOS functionality is no longer available/working. Signing up and mining pools don't mix. See [PR #15](//github.com/sigwo/unified-node-open-mining-portal/pull/15).
+ 
+* Basic multipooling features included, but *NOT* enabled by default. You must follow the [README](//github.com/sigwo/unified-node-open-mining-portal/blob/master/multipool/README) in the [multipool](//github.com/sigwo/unified-node-open-mining-portal/blob/master/multipool) folder. More updates *WILL* happen in the multipool options and will stay open source.
 
 #### Attack Mitigation
 * Detects and thwarts socket flooding (garbage data sent over socket in order to consume system resources).
 * Detects and thwarts zombie miners (botnet infected computers connecting to your server to use up sockets but not sending any shares).
 * Detects and thwarts invalid share attacks:
-   * SuperNET Multipool is not vulnerable to the low difficulty share exploits happening to other pool servers. Other pool server
+   * UNOMP is not vulnerable to the low difficulty share exploits happening to other pool servers. Other pool server
    software has hardcoded guesstimated max difficulties for new hashing algorithms while UNOMP dynamically generates the
    max difficulty for each algorithm based on values founds in coin source code.
    * IP banning feature which on a configurable threshold will ban an IP for a configurable amount of time if the miner
    submits over a configurable threshold of invalid shares.
-* SuperNET Multipool is written in Node.js which uses a single thread (async) to handle connections rather than the overhead of one
+* UNOMP is written in Node.js which uses a single thread (async) to handle connections rather than the overhead of one
 thread per connection, and clustering is also implemented so all CPU cores are taken advantage of. Result? Fastest stratum available.
 
 
@@ -144,12 +146,12 @@ Explanation for each field:
        will also be logged. */
     "logLevel": "debug", //or "warning", "error"
     
-    /* By default SuperNET Multipool logs to console and gives pretty colors. If you direct that output to a
+    /* By default UNOMP logs to console and gives pretty colors. If you direct that output to a
        log file then disable this feature to avoid nasty characters in your log file. */
     "logColors": true, 
 
 
-    /* The SuperNET Multipool CLI (command-line interface) will listen for commands on this port. For example,
+    /* The UNOMP CLI (command-line interface) will listen for commands on this port. For example,
        blocknotify messages are sent to SuperNET Multipool through this. */
     "cliPort": 17117,
 
@@ -365,14 +367,11 @@ Description of options:
     /* Block rewards go to the configured pool wallet address to later be paid out to miners,
        except for a percentage that can go to, for examples, pool operator(s) as pool fees or
        or to donations address. Addresses or hashed public keys can be used. Here is an example
-       of rewards going to the main pool op, a pool co-owner, and SuperNET Multipool donation. */
+       of rewards going to the main pool op and a pool co-owner. Can also be set for mandatory 
+       donation coins like GRE and DMD. */
     "rewardRecipients": {
         "n37vuNFkXfk15uFnGoVyHZ6PYQxppD3QqK": 1.5, //1.5% goes to pool op
-        "mirj3LtZxbSTharhtXvotqtJXUY7ki5qfx": 0.5, //0.5% goes to a pool co-owner
-
-        /* 0.1% donation to SuperNET Multipool. This pubkey can accept any type of coin, please leave this in
-           your config to help support SuperNET Multipool development. */
-        "22851477d63a085dbc2398c8430af1c09e7343f6": 0.1
+        "mirj3LtZxbSTharhtXvotqtJXUY7ki5qfx": 0.5 //0.5% goes to a pool co-owner
     },
 
     "paymentProcessing": {
@@ -488,20 +487,20 @@ in case the master process crashes.
 for exploring your redis database.
 * Use something like [logrotator](http://www.thegeekstuff.com/2010/07/logrotate-examples/) to rotate log 
 output from SuperNET Multipool.
-* Use [New Relic](http://newrelic.com/) to monitor your SuperNET Multipool instance and server performance.
+* Use [New Relic](http://newrelic.com/) to monitor your UNOMP instance and server performance.
 
 
-#### Upgrading SuperNET Multipool
-When updating SuperNET Multipool to the latest code its important to not only `git pull` the latest from this repo, but to also update
+#### Upgrading UNOMP
+When updating UNOMP to the latest code its important to not only `git pull` the latest from this repo, but to also update
 the `merged-pooler` and `node-multi-hashing` modules, and any config files that may have been changed.
-* Inside your SuperNET Multipool directory (where the init.js script is) do `git pull` to get the latest SuperNET Multipool code.
+* Inside your UNOMP directory (where the init.js script is) do `git pull` to get the latest UNOMP code.
 * Remove the dependenices by deleting the `node_modules` directory with `rm -r node_modules`.
 * Run `npm update` to force updating/reinstalling of the dependencies.
 * Compare your `config.json` and `pool_configs/coin.json` configurations to the latest example ones in this repo or the ones in the setup instructions where each config field is explained. You may need to modify or add any new changes.
 
 Donations
 ---------
-Below is my donation address. The original [credits](//github.com/sigwo/supernet-multipool/blob/master/CREDITS.md) are listed here because I felt scammy if I totally removed them. They no longer are supporting the current development effort. Please donate to:
+Below is my donation address. The original [credits](//github.com/sigwo/unified-node-open-mining-portal/blob/master/CREDITS.md) are listed here because I felt scammy if I totally removed them. They no longer are supporting the current development effort. Please donate to:
 
 * BTC: `19svwpxWAhD4zsfeEnnxExZgnQ46A3mrt3`
 
@@ -509,7 +508,7 @@ Donors (email me to be added):
 * [elitemobb from altnuts.com](http://altnuts.com)
 * [mike from minerpools.com](https://minerpools.com)
 
-[Credits](//github.com/sigwo/supernet-multipool/blob/master/CREDITS.md)
+[Credits](//github.com/sigwo/unified-node-open-mining-portal/blob/master/CREDITS.md)
 -------
 
 License
