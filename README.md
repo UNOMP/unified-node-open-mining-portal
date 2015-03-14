@@ -132,7 +132,7 @@ cd snetmp
 npm update
 ```
 
-#### 2) Configuration - I am working on updating this to reflect the most current way to do business :)
+#### 2) Configuration
 
 ##### Portal config
 Inside the `config_example.json` file, ensure the default configuration will work for your environment, then copy the file to `config.json`.
