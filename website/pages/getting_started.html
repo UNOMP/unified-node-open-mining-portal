@@ -27,10 +27,15 @@
 								<td>{{=it.poolsConfigs[pool].coin.symbol}}</td>
 								<td>{{=it.poolsConfigs[pool].coin.algorithm}}</td>
 								<td>{{=it.portalConfig.website.stratumHost}}</td>
-								<td>Port: 5555 VARDIFF: up to 32768</td>
+								<td>
+								{{ for (var port in it.poolsConfigs[pool].ports) { }}
+									Port:{{=port}},
+									Diff:{{=it.poolsConfigs[pool].ports[port].diff}}.
+								{{ } }}
+								</td>
 							</tr>
-							{{ } }}
-							</tbody>	
+							{{ } }}	
+            						</tbody>	
 						</table>		
 					</div>
 				</div>
