@@ -591,9 +591,12 @@ module.exports = function(logger){
             coinStatus.difficulty = parseFloat((diff1 / target.toNumber()).toFixed(9));
             logger.warning(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
 
-            if (coinStatus.reward == 0) {
-                coinStatus.reward = response.coinbasevalue / 100000000;
-            };
+	    if (coinStatus.name == 'dogecoindark'){coinStatus.reward = response.coinbasevalue / 1000000;}
+	    else if (coinStatus.name == 'cryptobullion'){coinStatus.reward = response.coinbasevalue / 1000000;}
+	    else if (coinStatus.name == 'tekcoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+	    else if (coinStatus.name == 'battlecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+	    else if (coinStatus.name == 'opensourcecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else{coinStatus.reward = response.coinbasevalue / 100000000;}
             callback(null);
         });
     };
@@ -604,7 +607,10 @@ module.exports = function(logger){
         Object.keys(profitStatus).forEach(function(algo){
             Object.keys(profitStatus[algo]).forEach(function(symbol){
                 var coinStatus = profitStatus[symbolToAlgorithmMap[symbol]][symbol];
-                coinStatus.blocksPerMhPerHour = 86400 / ((coinStatus.difficulty * Math.pow(2,32)) / (1 * 1000 * 1000));
+                if (algo == "sha256"){
+	coinStatus.blocksPerMhPerHour = 86400 / ((coinStatus.difficulty * Math.pow(2,32)) / (1 * 1000 * 1000 * 1000));
+	} else {coinStatus.blocksPerMhPerHour = 86400 / ((coinStatus.difficulty * Math.pow(2,32)) / (1 * 1000 * 1000));
+}
                 coinStatus.coinsPerMhPerHour = coinStatus.reward * coinStatus.blocksPerMhPerHour;
             });
         });
@@ -648,7 +654,7 @@ module.exports = function(logger){
                 });
             });
             logger.warning(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
-
+			fs.writeFile('~/unified-node-open-mining-portal/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8));
 
             var client = net.connect(portalConfig.cliPort, function () {
                 client.write(JSON.stringify({
