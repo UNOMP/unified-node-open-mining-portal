@@ -129,8 +129,8 @@ a good pool operator. For starters be sure to read:
 Clone the repository and run `npm update` for all the dependencies to be installed:
 
 ```bash
-git clone https://github.com/sigwo/supernet-multipool.git snetmp
-cd snetmp
+git clone https://github.com/sigwo/unified-node-open-mining-portal.git unomp
+cd unomp
 npm update
 ```
 
@@ -152,7 +152,7 @@ Explanation for each field:
 
 
     /* The UNOMP CLI (command-line interface) will listen for commands on this port. For example,
-       blocknotify messages are sent to SuperNET Multipool through this. */
+       blocknotify messages are sent to UNOMP through this. */
     "cliPort": 17117,
 
     /* By default 'forks' is set to "auto" which will spawn one process/fork/worker for each CPU
@@ -467,7 +467,7 @@ node [path to cli.js] [coin name in config] [block hash symbol]
 ```
 Example: inside `dogecoin.conf` add the line
 ```
-blocknotify=node /home/snetmp/scripts/cli.js blocknotify dogecoin %s
+blocknotify=node /home/unomp/scripts/cli.js blocknotify dogecoin %s
 ```
 
 Alternatively, you can use a more efficient block notify script written in pure C. Build and usage instructions
