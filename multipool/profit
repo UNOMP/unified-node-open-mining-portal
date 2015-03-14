@@ -1,0 +1,85 @@
+#!/bin/bash
+cp -rf /var/lib/redis/dump.rdb /backup/redis.dump.rdb
+AlgoCounter=0
+now="$(date +"%s")"
+ShiftNumber=$(redis-cli hget Pool_Stats This_Shift)
+echo "Shift: $ShiftNumber"
+
+#startstring="Pool_Stats:$ShiftNumber"
+starttime=$(redis-cli hget Pool_Stats:"$ShiftNumber" starttime)
+echo "Start time: $starttime"
+endtime="$now"
+length=$(echo "$endtime - $starttime" | bc -l)
+redis-cli hset Pool_Stats CurLength $length
+dayslength=$(echo "scale=3;$length / 86400" | bc -l)
+TgtCoinPrice=$(redis-cli hget Exchange_Rates neoscoin)
+TotalEarned=0
+TotalEarnedTgtCoin=0
+redis-cli hset Pool_Stats CurDaysLength "$dayslength"
+redis-cli del Pool_Stats:CurrentShift:WorkerBtc
+redis-cli del Pool_Stats:CurrentShift:WorkerTgtCoin
+redis-cli del Pool_Stats:CurrentShift:Algos
+redis-cli del Pool_Stats:CurrentShift:AlgosTgtCoin
+redis-cli del Pool_Stats:CurrentShift:Coins
+redis-cli del Pool_Stats:CurrentShift:CoinsTgtCoin
+
+# START CALCULATING COIN PROFIT FOR CURRENT ROUND - THIS ALSO CALCULATES WORKER EARNINGS MID SHIFT.
+# PLEASE NOTE ALL COIN NAMES IN COIN_ALGO REDIS KEY MUST MATCH KEY NAMES IN EXCHANGE_RATES KEY CASE-WISE
+while read line
+do
+        AlgoTotal=0
+        AlgoTotalTgtCoin=0
+        logkey2="Pool_Stats:CurrentShift:Algos"
+        logkey2TgtCoin="Pool_Stats:CurrentShift:AlgosTgtCoin"
+        # loop through each coin for that algo
+        while read CoinName
+        do
+                coinTotal=0
+                coinTotalTgtCoin=0
+                thiskey=$CoinName":balances"
+                logkey="Pool_Stats:CurrentShift:Coins"
+                logkeyTgtCoin="Pool_Stats:CurrentShift:CoinsTgtCoin"
+                #Determine price for Coin 
+                coin2btc=$(redis-cli hget Exchange_Rates "$CoinName")
+              #  echo "$CoinName - $coin2btc"
+                workersPerCoin=$(redis-cli hlen "$thiskey")
+                if [[ "$workersPerCoin" = 0 ]]
+                then
+                        echo "do nothing" > /dev/null
+                else
+
+                        while read WorkerName
+                        do
+                                thisBalance=$(redis-cli hget "$thiskey" "$WorkerName")
+                                thisEarned=$(echo "scale=8;$thisBalance * $coin2btc" | bc -l)
+                                coinTotal=$(echo "scale=8;$coinTotal + $thisEarned" | bc -l)
+                                AlgoTotal=$(echo "scale=8;$AlgoTotal + $thisEarned" | bc -l)
+                                TgtCoinEarned=$(echo "scale=8;$thisEarned / $TgtCoinPrice" | bc -l)
+                                coinTotalTgtCoin=$(echo "scale=8;$coinTotalTgtCoin + $TgtCoinEarned" | bc -l)
+                                AlgoTotalTgtCoin=$(echo "scale=8;$AlgoTotalTgtCoin + $TgtCoinEarned" | bc -l)
+                               echo "$WorkerName earned $TgtCoinEarned from $CoinName"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerTgtCoin "Total" "$TgtCoinEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:AlgosTgtCoin "Total" "$TgtCoinEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:Algos "Total" "$thisEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerTgtCoin "$WorkerName" "$TgtCoinEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "Total" "$thisEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "$WorkerName" "$thisEarned"
+		fi
+                        done< <(redis-cli hkeys "$CoinName":balances)
+                        redis-cli hset "$logkey" "$CoinName" "$coinTotal"
+                        redis-cli hset "$logkeyTgtCoin" "$CoinName" "$coinTotalTgtCoin"
+                        #echo "$CoinName: $coinTotal"
+fi
+        done< <(redis-cli hkeys Coin_Names_"$line")
+        redis-cli hset "$logkey2" "$line" "$AlgoTotal"
+        redis-cli hset "$logkey2TgtCoin" "$line" "$AlgoTotalTgtCoin"
+TotalEarned=$(echo "scale=8;$TotalEarned + $AlgoTotal" | bc -l)
+TotalEarnedTgtCoin=$(echo "scale=8;$TotalEarnedTgtCoin + $AlgoTotalTgtCoin" | bc -l)
+
+done< <(redis-cli hkeys Coin_Algos)
+
+
+# END CALCULATING COIN PROFITS FOR CURRENT SHIFT
+
+redis-cli save
+
