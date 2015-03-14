@@ -26,7 +26,7 @@ production usage because it can and ~~often~~ will break your setup and require 
     * [Pool Config](#pool-config)
     * [Setting Up Blocknotify](#optional-recommended-setting-up-blocknotify)
   * [Starting the Portal](#3-start-the-portal)
-  * [Upgrading UNOMP](#upgrading UNOMP)
+  * [Upgrading UNOMP](#upgrading-UNOMP)
 * [Donations](#donations)
 * [Credits](#credits)
 * [License](#license)
