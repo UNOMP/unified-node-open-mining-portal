@@ -213,7 +213,7 @@ Explanation for each field:
         "host": "0.0.0.0",
         "port": 80,
         /* Used for displaying stratum connection data on the Getting Started page. */
-        "stratumHost": "cryppit.com",
+        "stratumHost": "stratum.bemining.net",
         "stats": {
             /* Gather stats to broadcast to page viewers and store in redis for historical stats
                every this many seconds. */
