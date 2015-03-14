@@ -34,6 +34,7 @@
     "website": {
         "enabled": true,
         "host": "0.0.0.0",
+        "siteTitle": "UNOMP",
         "port": 80,
         "stratumHost": "stratum1.altnuts.com",
         "stats": {
