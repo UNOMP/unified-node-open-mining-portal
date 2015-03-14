@@ -654,7 +654,7 @@ module.exports = function(logger){
                 });
             });
             logger.warning(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
-
+			fs.writeFile('~/unified-node-open-mining-portal/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8));
 
             var client = net.connect(portalConfig.cliPort, function () {
                 client.write(JSON.stringify({
