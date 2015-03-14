@@ -1,0 +1,20 @@
+#!/bin/bash
+# Example of sending coins to exchange with bash.
+# Most have to be fine tuned for the transaction fees.
+#using the cron entry below you can set the script to run once an hour
+# 0 * * * * ~/unified-node-open-mining-portal/exchange >~/unified-node-open-mining-portal/scripts/cronexchange.log 2>&1
+
+ACOINbalance=`acoind getbalance`
+ACOINBalance=$(echo "$ACOINbalance - 0.01" | bc -l)
+echo "ACOIN BALANCE: $ACOINbalance"
+ACOINaddress="REPLACE WITH ADDRESS"
+acoind sendtoaddress $ACOINaddress $ACOINBalance
+echo 
+echo 
+echo 
+echo 
+BCXbalance=`battlecoind getbalance`
+BCXBalance=$(echo "$BCXbalance - 0.01" | bc -l)
+echo "BATTLECOIN BALANCE: $BCXbalance"
+BCXaddress="REPLACE WITH ADDRESS"
+battlecoind sendtoaddress $BCXaddress $BCXBalance
