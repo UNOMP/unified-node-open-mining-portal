@@ -654,7 +654,7 @@ module.exports = function(logger){
                 });
             });
             logger.warning(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
-			fs.writeFile('~/unified-node-open-mining-portal/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8));
+			fs.writeFile('~/unomp/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8));
 
             var client = net.connect(portalConfig.cliPort, function () {
                 client.write(JSON.stringify({
@@ -664,7 +664,7 @@ module.exports = function(logger){
                 }) + '\n');
             }).on('error', function(error){
                 if (error.code === 'ECONNREFUSED')
-                    logger.error(logSystem, 'CLI', 'Could not connect to NOMP instance on port ' + portalConfig.cliPort);
+                    logger.error(logSystem, 'CLI', 'Could not connect to UNOMP instance on port ' + portalConfig.cliPort);
                 else
                     logger.error(logSystem, 'CLI', 'Socket error ' + JSON.stringify(error));
             });
