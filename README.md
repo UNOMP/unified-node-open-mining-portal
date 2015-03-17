@@ -91,7 +91,7 @@ https://github.com/joyent/node/wiki/installing-node.js-via-package-manager
 
 #### Requirements
 * Coin daemon(s) (find the coin's repo and build latest version from source)
-* [Node.js](http://nodejs.org/) >=v0.12 ([follow these installation instructions](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager))
+* [Node.js](http://nodejs.org/) >=v0.10 ([follow these installation instructions](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager))
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](http://redis.io/topics/quickstart))
 
 ##### Seriously
@@ -129,6 +129,11 @@ a good pool operator. For starters be sure to read:
 Clone the repository and run `npm update` for all the dependencies to be installed:
 
 ```bash
+sudo apt-get install build-essential libssl-dev
+curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh
+source ~/.profile
+nvm install 0.10.25
+nvm use 0.10.25
 git clone https://github.com/sigwo/unified-node-open-mining-portal.git unomp
 cd unomp
 npm update
