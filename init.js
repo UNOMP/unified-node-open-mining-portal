@@ -6,7 +6,7 @@ var cluster = require('cluster');
 var async = require('async');
 var extend = require('extend');
 
-var PoolLogger = require('log4js');
+var PoolLogger = require('./libs/logUtil.js');
 var CliListener = require('./libs/cliListener.js');
 var PoolWorker = require('./libs/poolWorker.js');
 var PaymentProcessor = require('./libs/paymentProcessor.js');
