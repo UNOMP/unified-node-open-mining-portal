@@ -24,9 +24,11 @@ if (!fs.existsSync('config.json')){
 
 var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("config.json", {encoding: 'utf8'})));
 var poolConfigs;
-var logger = PoolLogger.getLogger();
 
-
+var logger = new PoolLogger({
+    logLevel: portalConfig.logLevel,
+    logColors: portalConfig.logColors
+});
 
 logger.info('New Relic');
 try {
