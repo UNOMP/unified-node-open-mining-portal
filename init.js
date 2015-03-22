@@ -6,7 +6,7 @@ var cluster = require('cluster');
 var async = require('async');
 var extend = require('extend');
 
-var PoolLogger = require('./libs/logUtil.js');
+var PoolLogger = require('log4js');
 var CliListener = require('./libs/cliListener.js');
 var PoolWorker = require('./libs/poolWorker.js');
 var PaymentProcessor = require('./libs/paymentProcessor.js');
@@ -25,10 +25,7 @@ if (!fs.existsSync('config.json')){
 var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("config.json", {encoding: 'utf8'})));
 var poolConfigs;
 
-var logger = new PoolLogger({
-    logLevel: portalConfig.logLevel,
-    logColors: portalConfig.logColors
-});
+var logger = 
 
 logger.info('New Relic');
 try {
