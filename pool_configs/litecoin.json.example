@@ -1,5 +1,5 @@
 {
-    "enabled": true,
+    "enabled": false,
     "coin": "litecoin.json",
 
     "auxes": [ // Defines auxillery coins
