@@ -20,6 +20,9 @@ module.exports = function(logger, portalConfig, poolConfigs){
             case 'pool_stats':
                 res.end(JSON.stringify(portalStats.statPoolHistory));
                 return;
+                case 'algo_stats':
+                res.end(JSON.stringify(portalStats.statAlgoHistory));
+                return;
             case 'live_stats':
                 res.writeHead(200, {
                     'Content-Type': 'text/event-stream',
