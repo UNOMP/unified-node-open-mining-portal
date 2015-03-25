@@ -1,6 +1,6 @@
 #!/bin/bash
-cp /home/alastair/nomp/scripts/payouts /home/alastair/nomp/scripts/old_payouts
-rm /home/alastair/nomp/scripts/payouts
+cp ~/unomp/scripts/payouts ~/unomp/scripts/old_payouts
+rm ~/unomp/scripts/payouts
 
 counter=0
 		redis-cli del Pool_Stats:CurrentShift:Coins
@@ -72,10 +72,10 @@ echo "Total Earned: $TotalEarned"
 redis-cli hset Pool_Stats:"$thisShift" endtime "$now"
 nextShift=$(($thisShift + 1))
 redis-cli hincrby Pool_Stats This_Shift 1
-echo "$thisShift" >> /home/alastair/nomp/scripts/Shifts
+echo "$thisShift" >> ~/unomp/scripts/Shifts
 redis-cli hset Pool_Stats:$nextShift starttime "$now"
-echo "Printing Earnings report" >> /home/alastair/nomp/scripts/ShiftChangeLog.txt
-echo "Shift change switching from $thisShift to $nextShift at $now" >> /home/alastair/nomp/scripts/ShiftChangeErrorCheckerReport
+echo "Printing Earnings report" >> ~/unomp/scripts/ShiftChangeLog.txt
+echo "Shift change switching from $thisShift to $nextShift at $now" >> ~/unomp/scripts/ShiftChangeErrorCheckerReport
 
 ######STILL NEEDS TO BE CHANGED FOR EXTRA COINS#####
 while read WorkerName
@@ -88,7 +88,7 @@ do
         thisBalance=$(redis-cli hget Pool_Stats:CurrentRound "$WorkerName")
         TotalBalance=$(echo "scale=8;$PrevBalance + $thisBalance" | bc -l) >/dev/null
         echo "$WorkerName" "$TotalBalance"
-        echo "$WorkerName $TotalBalance - was $PrevBalance plus today's $thisBalance" >> /home/alastair/nomp/scripts/ShiftChangeErrorCheckerReport
+        echo "$WorkerName $TotalBalance - was $PrevBalance plus today's $thisBalance" >> ~/unomp/scripts/ShiftChangeErrorCheckerReport
         redis-cli zadd Pool_Stats:Balances "$TotalBalance" "$WorkerName"
         redis-cli hset Worker_Stats:Earnings:"$WorkerName" "$thisShift" "$thisBalance"
         redis-cli hincrbyfloat Worker_Stats:TotalEarned "$WorkerName" "$thisBalance"
@@ -98,7 +98,7 @@ echo "$WorkerName" "$TotalBalance"
         redis-cli hset Worker_Stats:Earnings:"$WorkerName" "$thisShift" "$thisBalance"
         redis-cli hincrbyfloat Worker_Stats:TotalEarned "$WorkerName" "$thisBalance"
 done< <(redis-cli hkeys Pool_Stats:CurrentRound)
-echo "Done adding coins, clearing balances for shift $thisShift at $now." >> /home/alastair/nomp/scripts/ShiftChangeLog.log
+echo "Done adding coins, clearing balances for shift $thisShift at $now." >> ~/unomp/scripts/ShiftChangeLog.log
 ######STILL NEEDS TO BE CHANGED FOR EXTRA COINS#####
 
 # Save the total BTC/Tgt earned for each shift into a historical key for auditing purposes.
@@ -133,7 +133,7 @@ do
 
 done< <(redis-cli hkeys Coin_Names)
 echo "Done saving coin balances in database"
-echo "Done script for shift $thisShift at $now" >> /home/alastair/nomp/scripts/ShiftChangeLog.log
+echo "Done script for shift $thisShift at $now" >> ~/unomp/scripts/ShiftChangeLog.log
 echo "Running payouts for shift $thisShift at $now"
 #Calculate workers owed in excesss of 0.01 coins and generate a report of them.
 while read PayoutLine
@@ -147,10 +147,10 @@ fi
         if [[ -z "$txn" ]]
         then
 	#log failed payout to txt file.
-        echo "shiftnumber: $thisShift payment failed! $PayoutLine" >>/home/alastair/nomp/scripts/AlertLog
+        echo "shiftnumber: $thisShift payment failed! $PayoutLine" >>~/unomp/scripts/AlertLog
 	echo "payment failed! $PayoutLine"
         else
-       		echo "$PayoutLine $amount" >> /home/alastair/nomp/scripts/payouts
+       		echo "$PayoutLine $amount" >> ~/unomp/scripts/payouts
                 newtotal=$(echo "scale=8;$amount - $roundedamount" | bc -l) >/dev/null
                 redis-cli hincrby Pool_Stats Earning_Log_Entries 1
                 redis-cli lpush Worker_Stats:Payouts:"$PayoutLine" "$amount"
