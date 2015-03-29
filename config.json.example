@@ -34,8 +34,9 @@
     "website": {
         "enabled": true,
         "host": "0.0.0.0",
+        "siteTitle": "UNOMP",
         "port": 80,
-        "stratumHost": "cryppit.com",
+        "stratumHost": "stratum1.altnuts.com",
         "stats": {
             "updateInterval": 60,
             "historicalRetention": 43200,
@@ -113,7 +114,6 @@
         "depth": 0.90,
         "usePoloniex": true,
         "useCryptsy": true,
-        "useMintpal": true,
         "useBittrex": true
     }
 }

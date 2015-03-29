@@ -6,7 +6,7 @@ var async = require('async');
 
 var os = require('os');
 
-var algos = require('merged-pool/lib/algoProperties.js');
+var algos = require('merged-pooler/lib/algoProperties.js');
 
 // redis callback Ready check failed bypass trick
 function rediscreateClient(port, host, pass, db) {
@@ -28,6 +28,7 @@ module.exports = function(logger, portalConfig, poolConfigs){
 
     this.statHistory = [];
     this.statPoolHistory = [];
+    this.statAlgoHistory = [];
 
     this.stats = {};
     this.statsString = '';
@@ -89,6 +90,7 @@ module.exports = function(logger, portalConfig, poolConfigs){
             });
             _this.statHistory.forEach(function(stats){
                 addStatPoolHistory(stats);
+                addStatAlgoHistory(stats);
             });
         });
     }
@@ -106,6 +108,20 @@ module.exports = function(logger, portalConfig, poolConfigs){
             }
         }
         _this.statPoolHistory.push(data);
+    }
+
+    function addStatAlgoHistory(stats){
+        var data = {
+            time: stats.time,
+            algos: {}
+        };
+        for (var algo in stats.algos){
+            data.algos[algo] = {
+                hashrate: stats.algos[algo].hashrate,
+                workerCount: stats.algos[algo].workerCount,
+            }
+        }
+        _this.statAlgoHistory.push(data);
     }
 
 
@@ -259,6 +275,7 @@ module.exports = function(logger, portalConfig, poolConfigs){
 
             _this.statHistory.push(portalStats);
             addStatPoolHistory(portalStats);
+            addStatAlgoHistory(portalStats);
 
             var retentionTime = (((Date.now() / 1000) - portalConfig.website.stats.historicalRetention) | 0);
 
@@ -267,6 +284,7 @@ module.exports = function(logger, portalConfig, poolConfigs){
                     if (i > 0) {
                         _this.statHistory = _this.statHistory.slice(i);
                         _this.statPoolHistory = _this.statPoolHistory.slice(i);
+                        _this.statAlgoHistory = _this.statAlgoHistory.slice(i);
                     }
                     break;
                 }

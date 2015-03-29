@@ -59,7 +59,7 @@
 			<div id="logo-group">
 
 				<!-- PLACE YOUR LOGO HERE -->
-				<span id="logo"> <img src="/static/img/lcqoIj9.png" alt="NOMP"> </span>
+			<!--	<span id="logo"> <img src="http://altnuts.com/static/img/logo.png" style="width:20px height:20px" alt="NOMP"> </span> -->
 				<!-- END LOGO PLACEHOLDER -->
 			</div>
 
@@ -72,7 +72,8 @@
 				<!-- end collapse menu -->
 			</div>
 			<!-- end pulled right: nav area -->
-
+0% fees on all stratums!
+<br><a href="http://www.miningrigrentals.com/?ref=11848" target="_blank">Need a rental?</a>
 		</header>
 		<!-- END HEADER -->
 
@@ -81,8 +82,11 @@
 		<aside id="left-panel">
 			<nav>
 				<ul>
+                                        <li class="{{? it.selected === 'index' }}active{{?}}">
+                                                <a href="/"><i class="fa fa-home"></i> <span class="menu-item-parent">Home</span></a>
+                                        </li>
 					<li class="{{? it.selected === 'getting_started' }}active{{?}}">
-						<a href="/getting_started" title="Dashboard"><i class="fa fa-rocket"></i> <span class="menu-item-parent">Getting Started</span></a>
+						<a href="/getting_started"><i class="fa fa-rocket"></i> <span class="menu-item-parent">Getting Started</span></a>
 					</li>
 					<li class="{{? it.selected === 'stats' }}active{{?}}">
 						<a href="/stats"><i class="fa fa-bar-chart-o"></i> <span class="menu-item-parent">Statistics</span></a>
@@ -90,10 +94,9 @@
 					<li class="{{? it.selected === 'workers' }}active{{?}}">
 						<a href="/workers"><i class="fa fa-cogs"></i> <span class="menu-item-parent">Workers</span></a>4
 					</li>
-					<li class="{{? it.selected === 'api' }}active{{?}}>
+					<li class="{{? it.selected === 'api' }}active{{?}}">
 						<a href="/api"><i class="fa fa-code"></i> <span class="menu-item-parent">API</span></a>
 					</li>
-					
 				</ul>
 			</nav>
 			<span class="minifyme" data-action="minifyMenu"> 
@@ -108,7 +111,7 @@
 
 			<div id="ribbon">
 				<ol class="breadcrumb">
-					<li>NOMP</li><li>{{=it.selected}}</li>
+					<li>UNOMP BETA</li><li>{{=it.selected}}</li>
 				</ol>
 			</div>
 			<!-- END RIBBON -->
@@ -125,8 +128,11 @@
 		<!-- PAGE FOOTER -->
 		<div class="page-footer">
 			<div class="row">
+    				<div>
+        			  <span class="txt-color-white"><i class="fa fa-heart"></i>&nbsp; Support this project by donating&nbsp;<i class="fa fa-btc icon-x2"></i>&nbsp; 19svwpxWAhD4zsfeEnnxExZgnQ46A3mrt3</span>
+    				</div>
 				<div class="col-xs-12 col-sm-6">
-					<span class="txt-color-white">Unified Node Open Mining Portal<span class="hidden-xs"> - Forked and Improved from NOMP By AhmedBodi</span> © 2014-2015</span>
+                                  <span class="txt-color-white"><i class="fa fa-github"></i>&nbsp; Forked and improved version of&nbsp;<a href="https://github.com/UNOMP/unified-node-open-mining-portal" target="_blank">Unified Node Open Mining Portal</a></span>
 				</div>
 			</div>
 		</div>
@@ -184,7 +190,14 @@
 
 		<!-- MAIN APP JS FILE -->
 		<script src="/static/js/app.min.js"></script>
-
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-48972758-2', 'auto');
+  ga('send', 'pageview');
+</script>
 	</body>
 
 </html>

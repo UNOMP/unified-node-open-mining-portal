@@ -3,8 +3,8 @@ var fs = require('fs');
 var redis = require('redis');
 var async = require('async');
 
-var Stratum = require('merged-pool');
-var util = require('merged-pool/lib/util.js');
+var Stratum = require('merged-pooler');
+var util = require('merged-pooler/lib/util.js');
 
 
 module.exports = function(logger){
@@ -248,12 +248,12 @@ function SetupForPool(logger, poolOptions, setupFinished){
                         var round = rounds[i];
 
                         if (tx.error && tx.error.code === -5){
-                            logger.warning(logSystem, logComponent, 'Daemon reports invalid transaction: ' + round.txHash);
+                            logger.error(logSystem, logComponent, 'Daemon reports invalid transaction: ' + round.txHash);
                             round.category = 'kicked';
                             return;
                         }
                         else if (!tx.result.details || (tx.result.details && tx.result.details.length === 0)){
-                            logger.warning(logSystem, logComponent, 'Daemon reports no details for transaction: ' + round.txHash);
+                            logger.debug(logSystem, logComponent, 'Daemon reports no details for transaction: ' + round.txHash);
                             round.category = 'kicked';
                             return;
                         }
@@ -414,7 +414,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                         //Check if payments failed because wallet doesn't have enough coins to pay for tx fees
                         if (result.error && result.error.code === -6) {
                             var higherPercent = withholdPercent + 0.01;
-                            logger.warning(logSystem, logComponent, 'Not enough funds to cover the tx fees for sending out payments, decreasing rewards by '
+                            logger.error(logSystem, logComponent, 'Not enough funds to cover the tx fees for sending out payments, decreasing rewards by '
                                 + (higherPercent * 100) + '% and retrying');
                             trySend(higherPercent);
                         }
@@ -427,7 +427,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                             logger.debug(logSystem, logComponent, 'Sent out a total of ' + (totalSent / magnitude)
                                 + ' to ' + Object.keys(addressAmounts).length + ' workers');
                             if (withholdPercent > 0) {
-                                logger.warning(logSystem, logComponent, 'Had to withhold ' + (withholdPercent * 100)
+                                logger.error(logSystem, logComponent, 'Had to withhold ' + (withholdPercent * 100)
                                     + '% of reward from miners to cover transaction fees. '
                                     + 'Fund pool wallet with coins to prevent this from happening');
                             }

@@ -1,0 +1,30 @@
+{
+        "redis_host":   "127.0.0.1",
+
+        "redis_port":   6379,
+        "redis_auth":   null,
+
+        "http_host":    "0.0.0.0",
+        "http_port":    7379,
+
+        "threads":      5,
+        "pool_size": 20,
+
+        "daemonize":    true,
+        "websockets":   true,
+        "default_root": "/GET/index.html",
+        "database":     0,
+
+        "acl": [
+                {
+                        "disabled":     ["*"]
+                },
+
+                {
+                        "enabled":              ["GET", "HGET", "ZRANGE", "ZCARD", "ZRANGEBYSCORE", "ZVAL", "LRANGE", "HGETALL", "HKEYS", "HVALS", "GETALL", "HGETALL", "ZRANGE", "SMEMBERS", "ZSCORE"]
+                }
+        ],
+
+        "verbosity": 6,
+        "logfile": "/root/webdis-home/webdis.log"
+}

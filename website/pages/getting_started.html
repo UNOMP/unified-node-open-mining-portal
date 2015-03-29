@@ -29,13 +29,13 @@
 								<td>{{=it.portalConfig.website.stratumHost}}</td>
 								<td>
 								{{ for (var port in it.poolsConfigs[pool].ports) { }}
-									Port:{{=port}},
-									Diff:{{=it.poolsConfigs[pool].ports[port].diff}}.
+									Port: {{=port}},
+									Diff: {{=it.poolsConfigs[pool].ports[port].diff}}
 								{{ } }}
 								</td>
 							</tr>
-							{{ } }}
-							</tbody>	
+							{{ } }}	
+            						</tbody>	
 						</table>		
 					</div>
 				</div>
