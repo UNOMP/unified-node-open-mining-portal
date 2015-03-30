@@ -1,0 +1,6 @@
+{
+    "name": "Cannabiscoin",
+    "symbol": "CANN",
+    "algorithm": "x11",
+    "mposDiffMultiplier": 256
+}
