@@ -1,7 +1,5 @@
 {
     "name": "Tagcoin",
     "symbol": "TAG",
-    "algorithm": "scrypt",
-    "peerMagic": "f4ede2b9",
-    "reward": 29
+    "algorithm": "scrypt"
 }
