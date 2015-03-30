@@ -1,0 +1,5 @@
+{
+    "name": "DNotes",
+    "symbol": "NOTE",
+    "algorithm": "scrypt"
+}

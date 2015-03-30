@@ -1,0 +1,5 @@
+{
+    "name": "Megacoin",
+    "symbol": "MEC",
+    "algorithm": "scrypt"
+}
