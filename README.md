@@ -2,10 +2,10 @@
 
 #### Unified NOMP
 
-This repo will serve as a vanilla version of [SuperNET Multipool](//github.com/sigwo/supernet-multipool). Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://bemining.net).
+This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://unomp.org).
 
 This portal is an extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool written in Node.js. 
-It contains a merged stratum poolserver; reward/payment/share processor; and a (*not yet completed*)
+It contains a merged stratum pool server; reward/payment/share processor for multipooling; and an (*in progress*)
 responsive user-friendly front-end website featuring mining instructions, in-depth live statistics, and an admin center.
 
 #### Production Usage Notice - Don't do it, yet.
@@ -86,6 +86,8 @@ giving hackers little reward and keeping your pool from being a target.
 
 * Integration of [addie.cc](http://addie.cc) usernames for multiple payout type without using a public address that may/may not work with the 
 coin (still not 100% committed yet, see Feature #7)
+
+* Upgrade codebase to operate in node v 0.12
 
 Usage
 =====
@@ -220,9 +222,11 @@ Explanation for each field:
         /* If you are using a reverse-proxy like nginx to display the website then set this to
            127.0.0.1 to not expose the port. */
         "host": "0.0.0.0",
+        /* Title you want for your site. */
+        "siteTitle": "UNOMP Beta",
         "port": 80,
         /* Used for displaying stratum connection data on the Getting Started page. */
-        "stratumHost": "stratum.bemining.net",
+        "stratumHost": "unomp.org",
         "stats": {
             /* Gather stats to broadcast to page viewers and store in redis for historical stats
                every this many seconds. */
