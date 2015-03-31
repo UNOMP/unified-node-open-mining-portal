@@ -1,5 +1,5 @@
 {
-    "name": "Myriadcoin",
+    "name": "Myriadcoin-SHA256",
     "symbol": "MYR",
     "algorithm": "sha256"    
 }
