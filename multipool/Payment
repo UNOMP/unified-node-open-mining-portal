@@ -58,7 +58,7 @@ fi
                         echo "$CoinName: $coinTotal"
 
                 fi
-        done< <(redis-cli hkeys Coin_names_"$line")
+        done< <(redis-cli hkeys Coin_Names_"$line")
 TotalEarned=$(echo "scale=8;$TotalEarned + $AlgoTotal" | bc -l)
 TotalEarnedTgt=$(echo "scale=8;$TotalEarnedTgt + $AlgoTotalTgt" | bc -l)
 
