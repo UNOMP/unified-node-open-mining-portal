@@ -19,11 +19,14 @@
         "url": "https://github.com/sigwo/unified-node-open-mining-portal/issues"
     },
     "license": "GPL-2.0",
-    "author": "Matthew Little",
+    "author": "Steven Grove",
     "contributors": [
         "vekexasia",
         "TheSeven",
-        "ahmed"
+        "ahmed",
+	"zone117x",
+	"elitemobb",
+	"altnuts"
     ],
     "main": "init.js",
     "bin": {
@@ -34,7 +37,7 @@
         "url": "https://github.com/sigwo/unified-node-open-mining-portal.git"
     },
     "dependencies": {
-        "stratum-pool": "git://github.com/sigwo/node-merged-pool.git",
+        "merged-pooler": "git://github.com/sigwo/node-merged-pool",
         "dateformat": "*",
 	"log4js": "*",
 	"bitcoin": "*",

@@ -1,7 +1,5 @@
 {
     "name": "Mazacoin",
     "symbol": "MZC",
-    "algorithm": "sha256",
-    "peerMagic": "f8b503df",                                                                                                                                              │·····································
-    "peerMagicTestnet": "05fea901"
+    "algorithm": "sha256"
 }
