@@ -2,7 +2,7 @@
 
 #### Unified NOMP
 
-This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://unomp.org).
+This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://pool.unomp.org).
 
 This portal is an extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool written in Node.js. 
 It contains a merged stratum pool server; reward/payment/share processor for multipooling; and an (*in progress*)
