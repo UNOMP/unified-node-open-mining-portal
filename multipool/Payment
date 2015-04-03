@@ -51,7 +51,6 @@ do
                                 redis-cli hincrbyfloat Pool_Stats:CurrentRound "$WorkerName" "$thisEarned"
                                 redis-cli hincrbyfloat Worker_Stats:TotalPaid "Total" "$thisEarned"
                                 echo "$WorkerName earned $thisEarned from $CoinName"
-fi
                         done< <(redis-cli hkeys "$CoinName":balances)
                         redis-cli hset "$logkey" "$CoinName" "$coinTotal"
                         redis-cli hset "$logkeyTgt" "$CoinName" "$coinTotalTgt"
@@ -92,7 +91,6 @@ do
         redis-cli zadd Pool_Stats:Balances "$TotalBalance" "$WorkerName"
         redis-cli hset Worker_Stats:Earnings:"$WorkerName" "$thisShift" "$thisBalance"
         redis-cli hincrbyfloat Worker_Stats:TotalEarned "$WorkerName" "$thisBalance"
-fi
 echo "$WorkerName" "$TotalBalance"
         redis-cli zadd Pool_Stats:Balances "$TotalBalance" "$WorkerName"
         redis-cli hset Worker_Stats:Earnings:"$WorkerName" "$thisShift" "$thisBalance"
@@ -143,7 +141,6 @@ do
         echo "$PayoutLine $roundedamount"
 #send all of the payments using the coin daemon
         txn=$(bitcoind sendtoaddress "$PayoutLine" "$amount")
-fi
         if [[ -z "$txn" ]]
         then
 	#log failed payout to txt file.
