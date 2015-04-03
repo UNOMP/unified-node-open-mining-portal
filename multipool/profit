@@ -64,7 +64,6 @@ redis-cli hincrbyfloat Pool_Stats:CurrentShift:Algos "Total" "$thisEarned"
 redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerTgtCoin "$WorkerName" "$TgtCoinEarned"
 redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "Total" "$thisEarned"
 redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "$WorkerName" "$thisEarned"
-		fi
                         done< <(redis-cli hkeys "$CoinName":balances)
                         redis-cli hset "$logkey" "$CoinName" "$coinTotal"
                         redis-cli hset "$logkeyTgtCoin" "$CoinName" "$coinTotalTgtCoin"
