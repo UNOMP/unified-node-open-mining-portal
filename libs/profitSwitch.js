@@ -1,9 +1,10 @@
 var async  = require('async');
 var net    = require('net');
 var bignum = require('bignum');
+var fs     = require('fs');
+
 var algos  = require('merged-pooler/lib/algoProperties.js');
 var util   = require('merged-pooler/lib/util.js');
-
 var Cryptsy  = require('./apiCryptsy.js');
 var Poloniex = require('./apiPoloniex.js');
 var Mintpal  = require('./apiMintpal.js');
@@ -38,17 +39,8 @@ module.exports = function(logger){
                     checkProfitStatus();
                 }
                 break;
-        }
-        var coinStatus = {
-            name: poolConfig.coin.name,
-            symbol: poolConfig.coin.symbol,
-            difficulty: 0,
-            reward: (parseInt(poolConfig.coin.reward) || 0),
-            exchangeInfo: {}
-        };
-        profitStatus[algo][poolConfig.coin.symbol] = coinStatus;
-        symbolToAlgorithmMap[poolConfig.coin.symbol] = algo;
-    });
+	    }
+    });	        
     
     var populateProfitStatus = function() {
 
@@ -105,8 +97,8 @@ module.exports = function(logger){
         // 'API_SECRET'
     );
     var cryptsyApi =  new Cryptsy(
-        // 'API_KEY',
-        // 'API_SECRET'
+         'dc0d8c723493be207f32a8dcf70b87645c7b3fe2',
+         '08c1bcc53186dc7b14767d77c448ba388a95b758d57b88723fe28e7fb61f08c9bbbfa9db7fe35eab'
     );
     var mintpalApi =  new Mintpal(
         // 'API_KEY',
@@ -114,8 +106,8 @@ module.exports = function(logger){
     );
 
     var bittrexApi =  new Bittrex(
-        // 'API_KEY',
-        // 'API_SECRET'
+         '2971b854539d4ac99fa9f0afaf6c57c0',
+         '0b61f7b13a8c4f7b990466106fb62252'
     );
 
     // 
@@ -589,7 +581,7 @@ module.exports = function(logger){
             // some shitcoins dont provide target, only bits, so we need to deal with both
             var target = response.target ? bignum(response.target, 16) : util.bignumFromBitsHex(response.bits);
             coinStatus.difficulty = parseFloat((diff1 / target.toNumber()).toFixed(9));
-            logger.warning(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
+            logger.warn(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
 
 	    if (coinStatus.name == 'dogecoindark'){coinStatus.reward = response.coinbasevalue / 1000000;}
 	    else if (coinStatus.name == 'cryptobullion'){coinStatus.reward = response.coinbasevalue / 1000000;}
@@ -639,7 +631,7 @@ module.exports = function(logger){
                             bestCoin = profitStatus[algo][symbol].name;
                         }
                         coinStatus.btcPerMhPerHour = btcPerMhPerHour;
-                        logger.warning(logSystem, 'CALC', 'BTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
+                        logger.warn(logSystem, 'CALC', 'BTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
                     }
                     if (exchangeData.hasOwnProperty('LTC') && exchangeData['LTC'].hasOwnProperty('weightedBid')){
                         var btcPerMhPerHour = (exchangeData['LTC'].weightedBid * coinStatus.coinsPerMhPerHour) * exchangeData['LTC'].ltcToBtc;
@@ -649,13 +641,14 @@ module.exports = function(logger){
                             bestCoin = profitStatus[algo][symbol].name;
                         }
                         coinStatus.btcPerMhPerHour = btcPerMhPerHour;
-                        logger.warning(logSystem, 'CALC', 'LTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
+                        logger.warn(logSystem, 'CALC', 'LTC/' + symbol + ' on ' + exchange + ' with ' + coinStatus.btcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
                     }
                 });
             });
-            logger.warning(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
-			fs.writeFile('~/unomp/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8));
-
+            logger.warn(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
+			fs.writeFile('/home/an/unomp/unified/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8),function (err) {
+  				if (err) throw err;
+		});
             var client = net.connect(portalConfig.cliPort, function () {
                 client.write(JSON.stringify({
                     command: 'coinswitch',

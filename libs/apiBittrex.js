@@ -7,9 +7,9 @@ module.exports = function() {
     // Module dependencies
 
     // Constants
-    var version         = '0.1.0',
-        PUBLIC_API_URL  = 'https://bittrex.com/api/v1/public',
-        PRIVATE_API_URL = 'https://bittrex.com/api/v1/market',
+    var version         = '0.1.1',
+        PUBLIC_API_URL  = 'https://bittrex.com/api/v1.1/public',
+        PRIVATE_API_URL = 'https://bittrex.com/api/v1.1/market',
         USER_AGENT      = 'nomp/node-open-mining-portal'
 
     // Constructor

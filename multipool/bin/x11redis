@@ -8,5 +8,5 @@ then
   exit;
 else
   redis-cli hset Coin_Names $coin 1
-  redis-cli hset Coin_Names_sha256 $coin 1
+  redis-cli hset Coin_Names_x11 $coin 1
 fi

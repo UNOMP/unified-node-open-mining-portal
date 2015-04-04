@@ -1,3 +1,6 @@
+Install 
+sudo apt-get install jq
+
 All of these scripts were based off of the scripts posted here https://bitcointalk.org/index.php?topic=701200.0 you can follow the guide there if it is easier. but all of the scripts here have been edited and are working correctly.
 
 To run a multipool on nomp is a bit of a pain to say the least. one of the first things needed to do is edit the .json files
