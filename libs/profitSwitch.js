@@ -97,8 +97,8 @@ module.exports = function(logger){
         // 'API_SECRET'
     );
     var cryptsyApi =  new Cryptsy(
-         'dc0d8c723493be207f32a8dcf70b87645c7b3fe2',
-         '08c1bcc53186dc7b14767d77c448ba388a95b758d57b88723fe28e7fb61f08c9bbbfa9db7fe35eab'
+        // 'API_KEY',
+        // 'API_SECRET'
     );
     var mintpalApi =  new Mintpal(
         // 'API_KEY',
@@ -106,8 +106,8 @@ module.exports = function(logger){
     );
 
     var bittrexApi =  new Bittrex(
-         '2971b854539d4ac99fa9f0afaf6c57c0',
-         '0b61f7b13a8c4f7b990466106fb62252'
+        // 'API_KEY',
+        // 'API_SECRET'
     );
 
     // 
