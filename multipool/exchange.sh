@@ -25,7 +25,7 @@ WDCbalance=`worldcoind  --datadir=/media/tba/coin_data/.worldcoin getbalance`
 WDCBalance=$(echo "$WDCbalance - 0.1" | bc -l)
 echo "Worldcoin BALANCE: $WDCbalance"
 WDCaddress="WkQDWBnZJ534EfoNeQsp4nekn5YNgpN3jP"
-worldcoind  --datadir=/media/tba/coin_data/.worldcoin sendtoaddress $WDCCaddress $WDCBalance
+worldcoind  --datadir=/media/tba/coin_data/.worldcoin sendtoaddress $WDCaddress $WDCBalance
 echo
 echo
 MECbalance=`megacoind  --datadir=/media/tba/coin_data/.megacoin getbalance`
@@ -47,5 +47,4 @@ MYRBalance=$(echo "$MYRbalance - 1.0" | bc -l)
 echo "Myriadcoin BALANCE: $MYRbalance"
 MYRaddress="MSSPhtazdgjWobmAqLg3kZ8cfpZ45vQAeH"
 myriadcoind  --datadir=/media/tba/coin_data/.myriadcoin sendtoaddress $MYRaddress $MYRBalance
-echo
 echo
