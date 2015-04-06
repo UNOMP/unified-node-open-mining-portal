@@ -11,6 +11,12 @@ MEC2BTC=`curl -G 'http://pubapi.cryptsy.com/api.php?method=singlemarketdata&mark
 NEOS2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-NEOS&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
 MYR2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-MYR&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
 OPAL2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-OPAL&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
+VPN2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-VPN&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
+VRC2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-VRC&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
+NXT2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-NXT&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
+BTCD2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-BTCD&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
+LTC2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-LTC&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
+FIBRE2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-FIBRE&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
 
 redis-cli -h 172.16.1.17 hset Exchange_Rates fuelcoin $FUEL2BTC
 redis-cli -h 172.16.1.17 hset Exchange_Rates digibytecoin $DGB2BTC
@@ -20,3 +26,9 @@ redis-cli -h 172.16.1.17 hset Exchange_Rates megacoincoin $MEC2BTC
 redis-cli -h 172.16.1.17 hset Exchange_Rates neoscoin $NEOS2BTC
 redis-cli -h 172.16.1.17 hset Exchange_Rates myriadcoin $MYR2BTC
 redis-cli -h 172.16.1.17 hset Exchange_Rates opalcoin $OPAL2BTC
+redis-cli -h 172.16.1.17 hset Exchange_Rates vpncoin $VPN2BTC
+redis-cli -h 172.16.1.17 hset Exchange_Rates vericoin $VRC2BTC
+redis-cli -h 172.16.1.17 hset Exchange_Rates nxt $NXT2BTC
+redis-cli -h 172.16.1.17 hset Exchange_Rates bitcoindark $BTCD2BTC
+redis-cli -h 172.16.1.17 hset Exchange_Rates litecoin $LTC2BTC
+redis-cli -h 172.16.1.17 hset Exchange_Rates fibre $FIBRE2BTC

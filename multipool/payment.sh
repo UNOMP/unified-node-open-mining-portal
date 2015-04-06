@@ -1,35 +1,36 @@
 #!/bin/bash
-# Change to your path variables throughout, hoping to add up front global vars
+# Change this to your directory structure. Search/replace OPAL with Tgt. Search/replace redis-cli -h 172.16.1.17 with redis-cli.
+
 cp ~/unomp/unified/scripts/payouts ~/unomp/unified/scripts/old_payouts
 rm ~/unomp/unified/scripts/payouts
 
 counter=0
 redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:Coins
-redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:CoinsTgtCoin
+redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:CoinsOPALCoin
 now="$(date +"%s")"
 thisShift=$(redis-cli -h 172.16.1.17 hget Pool_Stats This_Shift)
 ShiftStart=$(redis-cli -h 172.16.1.17 hget Pool_Stats:"$thisShift" starttime)
-TgtPrice=$(redis-cli -h 172.16.1.17 hget Exchange_Rates opalcoin)
+OPALPrice=$(redis-cli -h 172.16.1.17 hget Exchange_Rates opalcoin)
 TotalEarned=0
-TotalEarnedTgt=0
+TotalEarnedOPAL=0
 
 # loop through algos
 while read line
 do
         AlgoTotal=0
-        AlgoTotalTgt=0
+        AlgoTotalOPAL=0
         logkey2="Pool_Stats:"$thisShift":Algos"
-        logkey2Tgt="Pool_Stats:"$thisShift":AlgosTgt"
+        logkey2OPAL="Pool_Stats:"$thisShift":AlgosOPAL"
 	echo "LOGKEY2: $logkey2"
 
         # loop through each coin for that algo
         while read CoinName
         do
                 coinTotal=0
-                coinTotalTgt=0
+                coinTotalOPAL=0
                 thiskey=$CoinName":balances"
                 logkey="Pool_Stats:"$thisShift":Coins"
-                logkeyTgt="Pool_Stats:"$thisShift":CoinsTgt"
+                logkeyOPAL="Pool_Stats:"$thisShift":CoinsOPAL"
                 #Determine price for Coin
                 coin2btc=`redis-cli -h 172.16.1.17 hget Exchange_Rates $CoinName`
 		echo "$CoinName - $coin2btc"
@@ -45,27 +46,27 @@ do
                                 thisEarned=$(echo "scale=8;$thisBalance * $coin2btc" | bc -l)
                                 coinTotal=$(echo "scale=8;$coinTotal + $thisEarned" | bc -l)
                                 AlgoTotal=$(echo "scale=8;$AlgoTotal + $thisEarned" | bc -l)
-                                TgtEarned=$(echo "scale=8;$thisEarned / $TgtPrice" | bc -l)
-                                coinTotalTgt=$(echo "scale=8;$coinTotalTgt + $TgtEarned" | bc -l)
-                                AlgoTotalTgt=$(echo "scale=8;$AlgoTotalTgt + $TgtEarned" | bc -l)
-                                redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentRound "Total" "$TgtEarned"
-                                redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentRound "$WorkerName" "$TgtEarned"
-                                redis-cli -h 172.16.1.17 hincrbyfloat Worker_Stats:TotalPaid "Total" "$TgtEarned"
+                                OPALEarned=$(echo "scale=8;$thisEarned / $OPALPrice" | bc -l)
+                                coinTotalOPAL=$(echo "scale=8;$coinTotalOPAL + $OPALEarned" | bc -l)
+                                AlgoTotalOPAL=$(echo "scale=8;$AlgoTotalOPAL + $OPALEarned" | bc -l)
+                                redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentRound "Total" "$OPALEarned"
+                                redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentRound "$WorkerName" "$OPALEarned"
+                                redis-cli -h 172.16.1.17 hincrbyfloat Worker_Stats:TotalPaid "Total" "$OPALEarned"
                                 echo "$WorkerName earned $thisEarned from $CoinName"
                         done< <(redis-cli -h 172.16.1.17 hkeys "$CoinName":balances)
                         redis-cli -h 172.16.1.17 hset "$logkey" "$CoinName" "$coinTotal"
-                        redis-cli -h 172.16.1.17 hset "$logkeyTgt" "$CoinName" "$coinTotalTgt"
+                        redis-cli -h 172.16.1.17 hset "$logkeyOPAL" "$CoinName" "$coinTotalOPAL"
                         echo "$CoinName: $coinTotal"
 
                 fi
         done< <(redis-cli -h 172.16.1.17 hkeys Coin_Names_"$line")
 TotalEarned=$(echo "scale=8;$TotalEarned + $AlgoTotal" | bc -l)
-TotalEarnedTgt=$(echo "scale=8;$TotalEarnedTgt + $AlgoTotalTgt" | bc -l)
+TotalEarnedOPAL=$(echo "scale=8;$TotalEarnedOPAL + $AlgoTotalOPAL" | bc -l)
 
 
 done< <(redis-cli -h 172.16.1.17 hkeys Coin_Algos)
 redis-cli -h 172.16.1.17 hset Pool_Stats:"$thisShift" Earned_BTC "$TotalEarned"
-redis-cli -h 172.16.1.17 hset Pool_Stats:"$thisShift" Earned_Tgt "$TotalEarnedTgt"
+redis-cli -h 172.16.1.17 hset Pool_Stats:"$thisShift" Earned_OPAL "$TotalEarnedOPAL"
 
 echo "Total Earned: $TotalEarned"
 
@@ -100,14 +101,14 @@ done< <(redis-cli -h 172.16.1.17 hkeys Pool_Stats:CurrentRound)
 echo "Done adding coins, clearing balances for shift $thisShift at $now." >> ~/unomp/unified/multipool/alerts/ShiftChangeLog.log
 ######STILL NEEDS TO BE CHANGED FOR EXTRA COINS#####
 
-# Save the total BTC/Tgt earned for each shift into a historical key for auditing purposes.
+# Save the total BTC/OPAL earned for each shift into a historical key for auditing purposes.
 echo "Done adding coins, Saving round for historical purposes"
 redis-cli -h 172.16.1.17 rename Pool_Stats:CurrentRound Pool_Stats:"$thisShift":Shift
-redis-cli -h 172.16.1.17 rename Pool_Stats:CurrentRoundTgt Pool_Stats:"$thisShift":ShiftTgt
+redis-cli -h 172.16.1.17 rename Pool_Stats:CurrentRoundOPAL Pool_Stats:"$thisShift":ShiftOPAL
 redis-cli -h 172.16.1.17 rename Pool_Stats:CurrentRoundBTC Pool_Stats:"$thisShift":ShiftBTC
 
 redis-cli -h 172.16.1.17 rename Pool_Stats:CurrentShift:Algos Pool_Stats:"$thisShift":Algos
-redis-cli -h 172.16.1.17 rename Pool_Stats:CurrentShift:AlgosTgtCoin Pool_Stats:"$thisShift":AlgosTgtCoin
+redis-cli -h 172.16.1.17 rename Pool_Stats:CurrentShift:AlgosOPALCoin Pool_Stats:"$thisShift":AlgosOPALCoin
 
 echo "Saving coin balances for historical purposes"
 #for every coin on the pool....
@@ -137,7 +138,7 @@ echo "Running payouts for shift $thisShift at $now"
 #Calculate workers owed in excesss of 0.01 coins and generate a report of them.
 while read PayoutLine
 do
-        amount=$(redis-cli -h 172.16.1.17 zscore Pool_Stats:Balances $PayoutLine)
+        amount=$(redis-cli -h 172.16.1.17 zscore Pool_Stats:Balances "$PayoutLine")
         roundedamount=$(echo "scale=8;$amount - 1" | bc -l)
         echo "$PayoutLine $roundedamount"
 #send all of the payments using the coin daemon
