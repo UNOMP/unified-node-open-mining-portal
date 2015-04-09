@@ -14,6 +14,15 @@ OPALPrice=$(redis-cli -h 172.16.1.17 hget Exchange_Rates opalcoin)
 TotalEarned=0
 TotalEarnedOPAL=0
 
+#Adding Profitability and AVG hashrate for this shift to API for yesterdays stats
+		while read Algo
+        	do
+thisalgoAVG=$(redis-cli -h 172.16.1.17 hget Pool_Stats:CurrentShift average_$Algo)
+thisalgoPRF=$(redis-cli -h 172.16.1.17 hget Pool_Stats:CurrentShift Profitability_$Algo)
+		redis-cli -h 172.16.1.17 hset API Average_$Algo $thisalgoAVG
+		redis-cli -h 172.16.1.17 hset API Profitability_$Algo $thisalgoPRF
+        	done< <(redis-cli -h 172.16.1.17 hkeys Coin_Algos)
+
 # loop through algos
 while read line
 do
