@@ -82,5 +82,71 @@ done< <(redis-cli -h 172.16.1.17 hkeys Coin_Algos)
 
 # END CALCULATING COIN PROFITS FOR CURRENT SHIFT
 
+# START CALCULATIN AVERAGE HASHRATES SO FAR THIS SHIFT
+echo "Start: $starttime End: $endtime"
+        AlgoCounter=0
+        while read Algo
+        do
+                AlgoCounter=$(($AlgoCounter + 1))
+                if [ $Algo = "sha256" ]
+                then
+                        Algo="sha"
+                fi
+                AlgoHRTotal=0
+                counter=0
+                loopstring="Pool_Stats:AvgHRs:"$Algo
+                while read HR
+                do
+                        IN=$HR
+                        arrIN=(${IN//:/ })
+                        amt=${arrIN[0]}
+                        counter=`echo "$counter + 1" | bc`
+                        AlgoHRTotal=`echo "$AlgoHRTotal + $amt" | bc -l`
+               done< <(redis-cli -h 172.16.1.17 zrangebyscore $loopstring $starttime $endtime)
+
+                if [ $Algo = "sha" ]
+                then
+                        Algo="sha256"
+                fi
+                thisalgoAVG=`echo "scale=8;$AlgoHRTotal / $counter" |  bc -l`
+                string="average_"$Algo
+                redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift $string $thisalgoAVG
+                string3="Pool_Stats:CurrentShift:Algos"
+                thisalgoEarned=`redis-cli -h 172.16.1.17 hget $string3 $Algo`
+		echo "thisalgoEarned: $thisalgoEarned"
+		echo "dayslength: $dayslength"
+                thisalgoP=`echo "scale=8;$thisalgoEarned / $thisalgoAVG / $dayslength" | bc -l`
+                string2="Profitability_$Algo"
+                redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift $string2 $thisalgoP
+                if [ $Algo = "keccak" ]
+                then
+                        thisalgoP=`echo "scale=8;$thisalgoP * 500" | bc -l`
+                elif [ $Algo = "sha256" ]
+                then
+                        thisalgoP=`echo "scale=8;$thisalgoP * 100" | bc -l`
+                elif [ $Algo = "x11" ]
+                then
+                        thisalgoP=`echo "scale=8;$thisalgoP * 4" | bc -l`
+                else
+                        echo "done" >/dev/null
+                fi
+                if [ -z "$thisalgoP" ]
+                then
+                        thisalgoP=0
+                fi
+
+                ProArr[$AlgoCounter]=$thisalgoP
+                NameArr[$AlgoCounter]=$Algo
+                thisShift=$(redis-cli -h 172.16.1.17 hget Pool_Stats This_Shift)
+                redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift $string2 $thisalgoP
+                redis-cli -h 172.16.1.17 hset Pool_Stats:$thisShift $string2 $thisalgoP
+                echo "For Current Shift Algo $Algo had an average of $thisalgoAVG - profitability was $thisalgoP"
+        done< <(redis-cli -h 172.16.1.17 hkeys Coin_Algos)
+
+                profitstring=${ProArr[1]}":"${ProArr[2]}":"${ProArr[3]}":"${ProArr[4]}":"${ProArr[5]}
+                stringnames=${NameArr[1]}":"${NameArr[2]}":"${NameArr[3]}":"${NameArr[4]}":"${NameArr[5]}
+redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift:Profitability $now $profitstring
+redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift NameString $stringnames
+
 redis-cli -h 172.16.1.17 save
 
