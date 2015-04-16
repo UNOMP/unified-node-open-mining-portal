@@ -73,7 +73,6 @@ module.exports = function(logger, poolConfig){
 
         var redisCommands = [];
 	myAuxes = poolConfig.auxes	
-	shareData.worker = shareData.worker.replace(/([\-_.!~*'()].*)/g, '').replace(/\s+/g, ''); // strip any extra strings from worker name.
 
 	for (var i=0; i < myAuxes.length; i++)
 	{
