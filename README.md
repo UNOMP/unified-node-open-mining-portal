@@ -98,7 +98,7 @@ https://github.com/joyent/node/wiki/installing-node.js-via-package-manager
 * [Node.js](http://nodejs.org/) >=v0.10 ([follow these installation instructions](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager))
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis))
 
-OPTIONAL: `sudo npm install posix', but you will have to start the pool `sudo node init.js`
+OPTIONAL: `sudo npm install posix`, but you will have to start the pool `sudo node init.js`
 
 ##### Seriously
 Those are legitimate requirements. If you use old versions of Node.js or Redis that may come with your system package manager then you will have problems. Follow the linked 
