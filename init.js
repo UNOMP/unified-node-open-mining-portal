@@ -45,7 +45,7 @@ try{
     }
     catch(e){
 	logger.info(e);
-	logger.info('Must be ran as root');
+	logger.error('Must be ran as root');
         if (cluster.isMaster){
             logger.warn('POSIX', 'Connection Limit', '(Safe to ignore) Must be ran as root to increase resource limits');}
     }

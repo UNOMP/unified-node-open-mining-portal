@@ -7,7 +7,6 @@ interval=300
 modifier=65536
 SHAmodifier=4294967296
 redis-cli del tmpkey
- 
 while read Algo
 do
         TotalWorkers=0
@@ -24,7 +23,7 @@ do
         while read CoinType
         do
                 echo "$CoinType"
- 
+
                 counter=0
                 CoinKeyName=$CoinType":hashrate"
                 totalhashes=`redis-cli zcard $CoinKeyName`
@@ -55,7 +54,7 @@ do
 if [[ ${arrWorkerCounts[$workername]} -eq 1 ]]
                                   then
 #       echo "c"
-                                #must have been this workers first share, so thi                                                                                                             s is a new worker
+                                #must have been this workers first share, so this is a new worker
                                 TotalWorkers=$(($TotalWorkers + 1))
 #       echo "d"
                 workercounter=$(($workercounter + 1))
@@ -81,15 +80,12 @@ if [[ ${arrWorkerCounts[$workername]} -eq 1 ]]
 #               echo "share-  $share"
 #echo "h"
 #                echo "Share: $share - arrWorkerTotalsworkername" ${arrWorkerTotals[$workername]}
- 
             fi
                         done< <(redis-cli zrangebyscore $CoinKeyName $TenMins $now)
- 
+
                         TotalHash=`echo "$TotalHash + $share" | bc -l`
 fi
                 done< <(redis-cli hkeys Coin_Names_$Algo)
- 
- 
                                 if [ $Algo = "sha256" ]
                                 then
                                         modifier=4294967296

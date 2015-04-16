@@ -1,8 +1,8 @@
 #!/bin/bash
 # Change this to your directory structure. Search/replace OPAL with Tgt. Search/replace redis-cli -h 172.16.1.17 with redis-cli.
 
-cp ~/unomp/unified/scripts/payouts ~/unomp/unified/scripts/old_payouts
-rm ~/unomp/unified/scripts/payouts
+cp /home/an/unomp/unified/multipool/alerts/opal_payouts.log /home/an/unomp/unified/multipool/alerts/opal_old_payouts.log
+rm /home/an/unomp/unified/multipool/alerts/opal_payouts.log
 
 counter=0
 redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:Coins
@@ -82,10 +82,10 @@ echo "Total Earned: $TotalEarned"
 redis-cli -h 172.16.1.17 hset Pool_Stats:"$thisShift" endtime "$now"
 nextShift=$(($thisShift + 1))
 redis-cli -h 172.16.1.17 hincrby Pool_Stats This_Shift 1
-echo "$thisShift" >> ~/unomp/unified/multipool/alerts/Shifts
+echo "$thisShift" >> /home/an/unomp/unified/multipool/alerts/Shifts
 redis-cli -h 172.16.1.17 hset Pool_Stats:$nextShift starttime "$now"
-echo "Printing Earnings report" >> ~/unomp/unified/multipool/alerts/ShiftChangeLog.txt
-echo "Shift change switching from $thisShift to $nextShift at $now" >> ~/unomp/unified/multipool/alerts/ShiftChangeErrorCheckerReport
+echo "Printing Earnings report" >> /home/an/unomp/unified/multipool/alerts/ShiftChangeLog.txt
+echo "Shift change switching from $thisShift to $nextShift at $now" >> /home/an/unomp/unified/multipool/alerts/ShiftChangeErrorCheckerReport
 
 ######STILL NEEDS TO BE CHANGED FOR EXTRA COINS#####
 while read WorkerName
@@ -98,7 +98,7 @@ do
         thisBalance=$(redis-cli -h 172.16.1.17 hget Pool_Stats:CurrentRound "$WorkerName")
         TotalBalance=$(echo "scale=8;$PrevBalance + $thisBalance" | bc -l) >/dev/null
         echo "$WorkerName" "$TotalBalance"
-        echo "$WorkerName $TotalBalance - was $PrevBalance plus today's $thisBalance" >> ~/unomp/unified/multipool/alerts/ShiftChangeErrorCheckerReport
+        echo "$WorkerName $TotalBalance - was $PrevBalance plus today's $thisBalance" >> /home/an/unomp/unified/multipool/alerts/ShiftChangeErrorCheckerReport
         redis-cli -h 172.16.1.17 zadd Pool_Stats:Balances "$TotalBalance" "$WorkerName"
         redis-cli -h 172.16.1.17 hset Worker_Stats:Earnings:"$WorkerName" "$thisShift" "$thisBalance"
         redis-cli -h 172.16.1.17 hincrbyfloat Worker_Stats:TotalEarned "$WorkerName" "$thisBalance"
@@ -107,7 +107,7 @@ echo "$WorkerName" "$TotalBalance"
         redis-cli -h 172.16.1.17 hset Worker_Stats:Earnings:"$WorkerName" "$thisShift" "$thisBalance"
         redis-cli -h 172.16.1.17 hincrbyfloat Worker_Stats:TotalEarned "$WorkerName" "$thisBalance"
 done< <(redis-cli -h 172.16.1.17 hkeys Pool_Stats:CurrentRound)
-echo "Done adding coins, clearing balances for shift $thisShift at $now." >> ~/unomp/unified/multipool/alerts/ShiftChangeLog.log
+echo "Done adding coins, clearing balances for shift $thisShift at $now." >> /home/an/unomp/unified/multipool/alerts/ShiftChangeLog.log
 ######STILL NEEDS TO BE CHANGED FOR EXTRA COINS#####
 
 # Save the total BTC/OPAL earned for each shift into a historical key for auditing purposes.
@@ -142,7 +142,7 @@ do
 
 done< <(redis-cli -h 172.16.1.17 hkeys Coin_Names)
 echo "Done saving coin balances in database"
-echo "Done script for shift $thisShift at $now" >> ~/unomp/unified/multipool/alerts/ShiftChangeLog.log
+echo "Done script for shift $thisShift at $now" >> /home/an/unomp/unified/multipool/alerts/ShiftChangeLog.log
 echo "Running payouts for shift $thisShift at $now"
 #Calculate workers owed in excesss of 0.01 coins and generate a report of them.
 while read PayoutLine
@@ -155,10 +155,10 @@ do
         if [[ -z "$txn" ]]
         then
 	#log failed payout to txt file.
-        echo "shiftnumber: $thisShift payment failed! $PayoutLine" >>~/unomp/unified/multipool/alerts/alert.log
+        echo "shiftnumber: $thisShift payment failed! $PayoutLine" >>/home/an/unomp/unified/multipool/alerts/opal_alert.log
 	echo "payment failed! $PayoutLine"
         else
-       		echo "$PayoutLine $amount" >> ~/unomp/unified/multipool/alerts/payouts
+       		echo "$PayoutLine $amount" >> /home/an/unomp/unified/multipool/alerts/opal_payouts.log
                 newtotal=$(echo "scale=8;$amount - $roundedamount" | bc -l) >/dev/null
                 redis-cli -h 172.16.1.17 hincrby Pool_Stats Earning_Log_Entries 1
                 redis-cli -h 172.16.1.17 lpush Worker_Stats:Payouts:"$PayoutLine" "$amount"
