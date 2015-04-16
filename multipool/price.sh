@@ -1,7 +1,7 @@
 #!/bin/bash
 #examples for grabbing prices from exchange orderbooks and setting them into a redis entry called Exchange_Rates
 #using the cron entry below you can set the script to run once every 5 minutes
-# [*/5 * * * * ~/unomp/price >~/unomp/scripts/cronprice.log 2>&1]
+# [*/5 * * * * ~/unomp/multipool/price.sh >~/unomp/multipool/alerts/cronprice.log 2>&1]
 
 echo "START"
 OMC2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-OMC&type=both&depth=5' | jq -r .result.buy[4].Rate|awk {' printf "%.8f",$1 '}`
@@ -29,26 +29,26 @@ CANN2BTC=`curl -G 'https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-C
 NOTE2BTC=`curl -G 'https://poloniex.com/public?command=returnTicker' | jq -r .BTC_NOTE.last`
 echo "END"
 
-redis-cli -h 172.16.1.17 hset Exchange_Rates fuelcoin $FUEL2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates digibyte $DGB2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates digitalcoin $DGC2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates worldcoin $WDC2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates megacoin $MEC2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates neoscoin $NEOS2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates myriadcoin $MYR2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates opalcoin $OPAL2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates vpncoin $VPN2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates vericoin $VRC2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates nxt $NXT2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates bitcoindark $BTCD2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates litecoin $LTC2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates mazacoin $MZC2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates fibre $FIBRE2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates cannabiscoin $CANN2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates dnotes $NOTE2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates startcoin $START2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates omnicoin $OMC2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates potcoin $POT2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates monacoin $MONA2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates titcoin $TIT2BTC
-redis-cli -h 172.16.1.17 hset Exchange_Rates goldcoin $GLD2BTC
+redis-cli hset Exchange_Rates fuelcoin $FUEL2BTC
+redis-cli hset Exchange_Rates digibyte $DGB2BTC
+redis-cli hset Exchange_Rates digitalcoin $DGC2BTC
+redis-cli hset Exchange_Rates worldcoin $WDC2BTC
+redis-cli hset Exchange_Rates megacoin $MEC2BTC
+redis-cli hset Exchange_Rates neoscoin $NEOS2BTC
+redis-cli hset Exchange_Rates myriadcoin $MYR2BTC
+redis-cli hset Exchange_Rates opalcoin $OPAL2BTC
+redis-cli hset Exchange_Rates vpncoin $VPN2BTC
+redis-cli hset Exchange_Rates vericoin $VRC2BTC
+redis-cli hset Exchange_Rates nxt $NXT2BTC
+redis-cli hset Exchange_Rates bitcoindark $BTCD2BTC
+redis-cli hset Exchange_Rates litecoin $LTC2BTC
+redis-cli hset Exchange_Rates mazacoin $MZC2BTC
+redis-cli hset Exchange_Rates fibre $FIBRE2BTC
+redis-cli hset Exchange_Rates cannabiscoin $CANN2BTC
+redis-cli hset Exchange_Rates dnotes $NOTE2BTC
+redis-cli hset Exchange_Rates startcoin $START2BTC
+redis-cli hset Exchange_Rates omnicoin $OMC2BTC
+redis-cli hset Exchange_Rates potcoin $POT2BTC
+redis-cli hset Exchange_Rates monacoin $MONA2BTC
+redis-cli hset Exchange_Rates titcoin $TIT2BTC
+redis-cli hset Exchange_Rates goldcoin $GLD2BTC

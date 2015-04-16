@@ -1,29 +1,29 @@
 #!/bin/bash
-# Change this to your directory structure. Search/replace OPAL with Tgt. Search/replace redis-cli -h 172.16.1.17 with redis-cli.
-cp -rf /var/lib/redis/6379/dump.rdb ~/unomp/unified/multipool/backup/redis.dump.rdb
+# Change this to your directory structure. Search/replace OPAL with Tgt. Search/replace redis-cli with redis-cli.
+cp -rf /var/lib/redis/6379/dump.rdb ~/unomp/multipool/backup/redis.dump.rdb
 AlgoCounter=0
 now="$(date +"%s")"
-ShiftNumber=$(redis-cli -h 172.16.1.17 hget Pool_Stats This_Shift)
+ShiftNumber=$(redis-cli hget Pool_Stats This_Shift)
 echo "Shift: $ShiftNumber"
 echo
 #startstring="Pool_Stats:$ShiftNumber"
-starttime=$(redis-cli -h 172.16.1.17 hget Pool_Stats:"$ShiftNumber" starttime)
+starttime=$(redis-cli hget Pool_Stats:"$ShiftNumber" starttime)
 echo "Start time: $starttime"
 endtime="$now"
 length=$(echo "$endtime - $starttime" | bc -l)
-redis-cli -h 172.16.1.17 hset Pool_Stats CurLength $length
+redis-cli hset Pool_Stats CurLength $length
 dayslength=$(echo "scale=3;$length / 86400" | bc -l)
 echo $dayslength
-OPALCoinPrice=$(redis-cli -h 172.16.1.17 hget Exchange_Rates opalcoin)
+OPALCoinPrice=$(redis-cli hget Exchange_Rates opalcoin)
 TotalEarned=0
 TotalEarnedOPALCoin=0
-redis-cli -h 172.16.1.17 hset Pool_Stats CurDaysLength "$dayslength"
-redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:WorkerBtc
-redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:WorkerOPALCoin
-redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:Algos
-redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:AlgosOPALCoin
-redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:Coins
-redis-cli -h 172.16.1.17 del Pool_Stats:CurrentShift:CoinsOPALCoin
+redis-cli hset Pool_Stats CurDaysLength "$dayslength"
+redis-cli del Pool_Stats:CurrentShift:WorkerBtc
+redis-cli del Pool_Stats:CurrentShift:WorkerOPALCoin
+redis-cli del Pool_Stats:CurrentShift:Algos
+redis-cli del Pool_Stats:CurrentShift:AlgosOPALCoin
+redis-cli del Pool_Stats:CurrentShift:Coins
+redis-cli del Pool_Stats:CurrentShift:CoinsOPALCoin
 
 # START CALCULATING COIN PROFIT FOR CURRENT ROUND - THIS ALSO CALCULATES WORKER EARNINGS MID SHIFT.
 # PLEASE NOTE ALL COIN NAMES IN COIN_ALGO REDIS KEY MUST MATCH KEY NAMES IN EXCHANGE_RATES KEY CASE-WISE
@@ -42,10 +42,10 @@ do
                 thiskey=$CoinName":balances"
                 logkey="Pool_Stats:CurrentShift:Coins"
                 logkeyOPALCoin="Pool_Stats:CurrentShift:CoinsOPALCoin"
-                # Determine price for Coin 
-                coin2btc=$(redis-cli -h 172.16.1.17 hget Exchange_Rates "$CoinName")
+                # Determine price for Coin
+                coin2btc=$(redis-cli hget Exchange_Rates "$CoinName")
                 #echo "$CoinName - $coin2btc"
-                workersPerCoin=$(redis-cli -h 172.16.1.17 hlen "$thiskey")
+                workersPerCoin=$(redis-cli hlen "$thiskey")
                 if [[ "$workersPerCoin" = 0 ]]
                 then
                         echo "do nothing" > /dev/null
@@ -53,7 +53,7 @@ do
 
                         while read WorkerName
                         do
-                                thisBalance=$(redis-cli -h 172.16.1.17 hget "$thiskey" "$WorkerName")
+                                thisBalance=$(redis-cli hget "$thiskey" "$WorkerName")
                                 thisEarned=$(echo "scale=8;$thisBalance * $coin2btc" | bc -l)
                                 coinTotal=$(echo "scale=8;$coinTotal + $thisEarned" | bc -l)
                                 AlgoTotal=$(echo "scale=8;$AlgoTotal + $thisEarned" | bc -l)
@@ -61,24 +61,24 @@ do
                                 coinTotalOPALCoin=$(echo "scale=8;$coinTotalOPALCoin + $OPALCoinEarned" | bc -l)
                                 AlgoTotalOPALCoin=$(echo "scale=8;$AlgoTotalOPALCoin + $OPALCoinEarned" | bc -l)
                                echo "$WorkerName earned $OPALCoinEarned from $CoinName"
-redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentShift:WorkerOPALCoin "Total" "$OPALCoinEarned"
-redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentShift:AlgosOPALCoin "Total" "$OPALCoinEarned"
-redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentShift:Algos "Total" "$thisEarned"
-redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentShift:WorkerOPALCoin "$WorkerName" "$OPALCoinEarned"
-redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "Total" "$thisEarned"
-redis-cli -h 172.16.1.17 hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "$WorkerName" "$thisEarned"
-                        done< <(redis-cli -h 172.16.1.17 hkeys "$CoinName":balances)
-                        redis-cli -h 172.16.1.17 hset "$logkey" "$CoinName" "$coinTotal"
-                        redis-cli -h 172.16.1.17 hset "$logkeyOPALCoin" "$CoinName" "$coinTotalOPALCoin"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerOPALCoin "Total" "$OPALCoinEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:AlgosOPALCoin "Total" "$OPALCoinEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:Algos "Total" "$thisEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerOPALCoin "$WorkerName" "$OPALCoinEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "Total" "$thisEarned"
+redis-cli hincrbyfloat Pool_Stats:CurrentShift:WorkerBtc "$WorkerName" "$thisEarned"
+                        done< <(redis-cli hkeys "$CoinName":balances)
+                        redis-cli hset "$logkey" "$CoinName" "$coinTotal"
+                        redis-cli hset "$logkeyOPALCoin" "$CoinName" "$coinTotalOPALCoin"
                         #echo "$CoinName: $coinTotal"
 fi
-        done< <(redis-cli -h 172.16.1.17 hkeys Coin_Names_"$line")
-        redis-cli -h 172.16.1.17 hset "$logkey2" "$line" "$AlgoTotal"
-        redis-cli -h 172.16.1.17 hset "$logkey2OPALCoin" "$line" "$AlgoTotalOPALCoin"
+        done< <(redis-cli hkeys Coin_Names_"$line")
+        redis-cli hset "$logkey2" "$line" "$AlgoTotal"
+        redis-cli hset "$logkey2OPALCoin" "$line" "$AlgoTotalOPALCoin"
 TotalEarned=$(echo "scale=8;$TotalEarned + $AlgoTotal" | bc -l)
 TotalEarnedOPALCoin=$(echo "scale=8;$TotalEarnedOPALCoin + $AlgoTotalOPALCoin" | bc -l)
 
-done< <(redis-cli -h 172.16.1.17 hkeys Coin_Algos)
+done< <(redis-cli hkeys Coin_Algos)
 
 # END CALCULATING COIN PROFITS FOR CURRENT SHIFT
 
@@ -102,7 +102,7 @@ echo "Start: $starttime End: $endtime"
                         amt=${arrIN[0]}
                         counter=`echo "$counter + 1" | bc`
                         AlgoHRTotal=`echo "$AlgoHRTotal + $amt" | bc -l`
-               done< <(redis-cli -h 172.16.1.17 zrangebyscore $loopstring $starttime $endtime)
+               done< <(redis-cli zrangebyscore $loopstring $starttime $endtime)
 
                 if [ $Algo = "sha" ]
                 then
@@ -110,14 +110,14 @@ echo "Start: $starttime End: $endtime"
                 fi
                 thisalgoAVG=`echo "scale=8;$AlgoHRTotal / $counter" |  bc -l`
                 string="average_"$Algo
-                redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift $string $thisalgoAVG
+                redis-cli hset Pool_Stats:CurrentShift $string $thisalgoAVG
                 string3="Pool_Stats:CurrentShift:Algos"
-                thisalgoEarned=`redis-cli -h 172.16.1.17 hget $string3 $Algo`
+                thisalgoEarned=`redis-cli hget $string3 $Algo`
 		echo "thisalgoEarned: $thisalgoEarned"
 		echo "dayslength: $dayslength"
                 thisalgoP=`echo "scale=8;$thisalgoEarned / $thisalgoAVG / $dayslength" | bc -l`
                 string2="Profitability_$Algo"
-                redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift $string2 $thisalgoP
+                redis-cli hset Pool_Stats:CurrentShift $string2 $thisalgoP
                 if [ $Algo = "keccak" ]
                 then
                         thisalgoP=`echo "scale=8;$thisalgoP * 500" | bc -l`
@@ -137,16 +137,15 @@ echo "Start: $starttime End: $endtime"
 
                 ProArr[$AlgoCounter]=$thisalgoP
                 NameArr[$AlgoCounter]=$Algo
-                thisShift=$(redis-cli -h 172.16.1.17 hget Pool_Stats This_Shift)
-                redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift $string2 $thisalgoP
-                redis-cli -h 172.16.1.17 hset Pool_Stats:$thisShift $string2 $thisalgoP
+                thisShift=$(redis-cli hget Pool_Stats This_Shift)
+                redis-cli hset Pool_Stats:CurrentShift $string2 $thisalgoP
+                redis-cli hset Pool_Stats:$thisShift $string2 $thisalgoP
                 echo "For Current Shift Algo $Algo had an average of $thisalgoAVG - profitability was $thisalgoP"
-        done< <(redis-cli -h 172.16.1.17 hkeys Coin_Algos)
+        done< <(redis-cli hkeys Coin_Algos)
 
                 profitstring=${ProArr[1]}":"${ProArr[2]}":"${ProArr[3]}":"${ProArr[4]}":"${ProArr[5]}
                 stringnames=${NameArr[1]}":"${NameArr[2]}":"${NameArr[3]}":"${NameArr[4]}":"${NameArr[5]}
-redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift:Profitability $now $profitstring
-redis-cli -h 172.16.1.17 hset Pool_Stats:CurrentShift NameString $stringnames
+redis-cli hset Pool_Stats:CurrentShift:Profitability $now $profitstring
+redis-cli hset Pool_Stats:CurrentShift NameString $stringnames
 
-redis-cli -h 172.16.1.17 save
-
+redis-cli save
