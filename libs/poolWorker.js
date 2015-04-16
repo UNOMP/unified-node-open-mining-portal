@@ -76,11 +76,11 @@ module.exports = function(logger){
                 var proxyPorts = Object.keys(proxySwitch[switchName].ports);
 
                 if (newCoin == oldCoin) {
-                    logger.debug(logSystem, logComponent, logSubCat, 'Switch message would have no effect - ignoring ' + newCoin);
+                    logger.warn(logSystem, logComponent, logSubCat, 'Switch message would have no effect - ignoring ' + newCoin);
                     break;
                 }
 
-                logger.debug(logSystem, logComponent, logSubCat, 'Proxy message for ' + algo + ' from ' + oldCoin + ' to ' + newCoin);
+                logger.warn(logSystem, logComponent, logSubCat, 'Proxy message for ' + algo + ' from ' + oldCoin + ' to ' + newCoin);
 
                 if (newPool) {
                     oldPool.relinquishMiners(
@@ -244,12 +244,12 @@ module.exports = function(logger){
         // Load proxy state for each algorithm from redis which allows NOMP to resume operation
         // on the last pool it was using when reloaded or restarted
         //
-        logger.debug(logSystem, logComponent, logSubCat, 'Loading last proxy state from redis');
+        logger.info(logSystem, logComponent, logSubCat, 'Loading last proxy state from redis');
 
 
 
         /*redisClient.on('error', function(err){
-            logger.debug(logSystem, logComponent, logSubCat, 'Pool configuration failed: ' + err);
+            logger.error(logSystem, logComponent, logSubCat, 'Pool configuration failed: ' + err);
         });*/
 
         redisClient.hgetall("proxyState", function(error, obj) {
@@ -300,7 +300,7 @@ module.exports = function(logger){
                     var f = net.createServer(function(socket) {
                         var currentPool = proxySwitch[switchName].currentPool;
 
-                        logger.debug(logSystem, 'Connect', logSubCat, 'Connection to '
+                        logger.warn(logSystem, 'Connect', logSubCat, 'Connection to '
                             + switchName + ' from '
                             + socket.remoteAddress + ' on '
                             + port + ' routing to ' + currentPool);
@@ -311,7 +311,7 @@ module.exports = function(logger){
                             pools[initialPool].getStratumServer().handleNewClient(socket);
 
                     }).listen(parseInt(port), function() {
-                        logger.debug(logSystem, logComponent, logSubCat, 'Switching "' + switchName
+                        logger.warn(logSystem, logComponent, logSubCat, 'Switching "' + switchName
                             + '" listening for ' + algorithm
                             + ' on port ' + port
                             + ' into ' + proxySwitch[switchName].currentPool);

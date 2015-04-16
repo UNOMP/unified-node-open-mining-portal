@@ -353,20 +353,11 @@ Description of options:
     "coin": "litecoin.json", //Reference to coin config file in 'coins' directory
     "auxes": [
         {
-            "coin": "syscoin.json",
-            "daemons": [
-                {
-                    "host": "127.0.0.1",
-                    "port": 4001,
-                    "user": "user",
-                    "password": "password"
-                }
-            ],
             "coin": "dogecoin.json",
             "daemons": [
                 {
                     "host": "127.0.0.1",
-                    "port": 4002,
+                    "port": 4001,
                     "user": "user",
                     "password": "password"
                 }
