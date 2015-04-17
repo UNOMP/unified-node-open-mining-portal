@@ -6,8 +6,7 @@ TenMins=$((now - 300))
 interval=300
 modifier=65536
 SHAmodifier=4294967296
-redis-cli -h 172.16.1.17 del tmpkey
-
+redis-cli del tmpkey
 while read Algo
 do
         TotalWorkers=0
@@ -20,14 +19,14 @@ do
         typeset -A arrWorkerNames
         AlgoCounter=0
         workercounter=0
-        redis-cli -h 172.16.1.17 del tmpkey
+        redis-cli del tmpkey
         while read CoinType
         do
                 echo "$CoinType"
 
                 counter=0
                 CoinKeyName=$CoinType":hashrate"
-                totalhashes=`redis-cli -h 172.16.1.17 zcard $CoinKeyName`
+                totalhashes=`redis-cli zcard $CoinKeyName`
         if [ -z "$totalhashes" ]
         then
                 echo "no hashes" >/dev/null
@@ -55,7 +54,7 @@ do
 if [[ ${arrWorkerCounts[$workername]} -eq 1 ]]
                                   then
 #       echo "c"
-                                #must have been this workers first share, so thi                                                                                                             s is a new worker
+                                #must have been this workers first share, so this is a new worker
                                 TotalWorkers=$(($TotalWorkers + 1))
 #       echo "d"
                 workercounter=$(($workercounter + 1))
@@ -81,15 +80,12 @@ if [[ ${arrWorkerCounts[$workername]} -eq 1 ]]
 #               echo "share-  $share"
 #echo "h"
 #                echo "Share: $share - arrWorkerTotalsworkername" ${arrWorkerTotals[$workername]}
-
             fi
-                        done< <(redis-cli -h 172.16.1.17 zrangebyscore $CoinKeyName $TenMins $now)
+                        done< <(redis-cli zrangebyscore $CoinKeyName $TenMins $now)
 
                         TotalHash=`echo "$TotalHash + $share" | bc -l`
 fi
-                done< <(redis-cli -h 172.16.1.17 hkeys Coin_Names_$Algo)
-
-
+                done< <(redis-cli hkeys Coin_Names_$Algo)
                                 if [ $Algo = "sha256" ]
                                 then
                                         modifier=4294967296
@@ -106,9 +102,9 @@ fi
                                         modifier=65536
                                         divisor=1048576
                                 fi
-
+ 
                                 TotalHR=`echo "scale=3;$TotalHash * $modifier / $interval / $divisor" | bc`
-#                redis-cli -h 172.16.1.17 zadd Pool_Stats:avgHR:$Algo $now $TotalHR":"$now
+#                redis-cli zadd Pool_Stats:avgHR:$Algo $now $TotalHR":"$now
                 #go over the array of WorkerNames and calculate each workers HR
                                 counterB=0
                 while [[ $counterB -lt $workercounter ]]
@@ -119,9 +115,9 @@ fi
                                                 workerName=${arrWorkerNames[$counterB]}
                                                 rate=${arrWorkerHashRates[$counterB]}
                                                 string=$rate":"$now
-                                                redis-cli -h 172.16.1.17 zadd Pool_Stats:WorkerHRs:$Algo:$workerName $now $string
+                                                redis-cli zadd Pool_Stats:WorkerHRs:$Algo:$workerName $now $string
                                                 echo "$Algo - $workerName -"$arrWorkerHashRates[$counterB]}
                 done
-
-
-done< <(redis-cli -h 172.16.1.17 hkeys Coin_Algos)
+ 
+ 
+done< <(redis-cli hkeys Coin_Algos)
