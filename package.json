@@ -14,9 +14,9 @@
 	"merged",
 	"sigwo"
     ],
-    "homepage": "https://github.com/sigwo/unified-node-open-mining-portal",
+    "homepage": "https://github.com/UNOMP/unified-node-open-mining-portal",
     "bugs": {
-        "url": "https://github.com/sigwo/unified-node-open-mining-portal/issues"
+        "url": "https://github.com/UNOMP/unified-node-open-mining-portal/issues"
     },
     "license": "GPL-2.0",
     "author": "Steven Grove",
@@ -34,7 +34,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/sigwo/unified-node-open-mining-portal.git"
+        "url": "https://github.com/UNOMP/unified-node-open-mining-portal.git"
     },
     "dependencies": {
         "merged-pooler": "git://github.com/sigwo/node-merged-pool",
