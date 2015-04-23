@@ -140,7 +140,7 @@ curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh
 source ~/.profile
 nvm install 0.10.25
 nvm use 0.10.25
-git clone https://github.com/sigwo/unified-node-open-mining-portal.git unomp
+git clone https://github.com/UNOMP/unified-node-open-mining-portal.git unomp
 cd unomp
 npm update
 ```
