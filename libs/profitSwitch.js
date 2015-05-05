@@ -646,7 +646,7 @@ module.exports = function(logger){
                 });
             });
             logger.warn(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
-			fs.writeFile('/home/an/unomp/unified/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8),function (err) {
+			fs.writeFile('~/unomp/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8),function (err) {
   				if (err) throw err;
 		});
             var client = net.connect(portalConfig.cliPort, function () {
