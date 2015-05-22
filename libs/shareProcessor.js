@@ -73,7 +73,7 @@ module.exports = function(logger, poolConfig){
 
         var redisCommands = [];
 	myAuxes = poolConfig.auxes	
-
+	shareData.worker = shareData.worker.trim();
 	for (var i=0; i < myAuxes.length; i++)
 	{
 		AuxCoin = myAuxes[i].coin.name;
