@@ -434,7 +434,7 @@ logger.fatal(logSystem, logComponent, 'addressAmounts:' + addressAmounts);
                             trySend(higherPercent);
                         }
                         else if (result.error && result.error.code === -5) {
-                            logger.info(logSystem, logComponent, 'Error trying to send payments with RPC sendmany ' + JSON.stringify(result.error));
+                            logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany ' + JSON.stringify(result.error));
                         }
                         else if (result.error) {
                             logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany '
