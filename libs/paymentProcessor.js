@@ -384,26 +384,41 @@ function SetupForPool(logger, poolOptions, setupFinished){
              if not sending the balance, the differnce should be +(the amount they earned this round)
              */
             function(workers, rounds, addressAccount, callback) {
-
                 var trySend = function (withholdPercent) {
+		    var test = Object.keys(workers);
                     var addressAmounts = {};
                     var totalSent = 0;
-                    for (var w in workers) {
+		      test.forEach(function(w) {
+			daemon.cmd('validateaddress', [w], function (results) {
+    			  var validWorkerAddress = results[0].response.isvalid;
+			if (!results[0].response.address) {
+			var worker = workers[w];
+                        worker.balance = worker.balance || 0;
+                        worker.reward = worker.reward || 0;
+                        var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
+			worker.balanceChange = Math.max(toSend - worker.balance, 0);
+			worker.sent = 0;
+			} else {
                         var worker = workers[w];
                         worker.balance = worker.balance || 0;
                         worker.reward = worker.reward || 0;
                         var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
-                        if (toSend >= minPaymentSatoshis) {
-                            totalSent += toSend;
-                            var address = worker.address = (worker.address || getProperAddress(w));
-                            worker.sent = addressAmounts[address] = satoshisToCoins(toSend);
-                            worker.balanceChange = Math.min(worker.balance, toSend) * -1;
-                        }
-                        else {
-                            worker.balanceChange = Math.max(toSend - worker.balance, 0);
-                            worker.sent = 0;
-                        }
-                    }
+ 			if (toSend >= minPaymentSatoshis) {
+			  var address = worker.address = (worker.address || getProperAddress(w));
+			  worker.sent = addressAmounts[address] = satoshisToCoins(toSend);
+			  worker.balanceChange = Math.min(worker.balance, toSend) * -1;
+			  totalSent += toSend;
+			} else {
+			  worker.balanceChange = Math.max(toSend - worker.balance, 0);
+			  worker.sent = 0;
+			}
+			}
+		    });
+		    });
+
+
+setTimeout(function() {
+logger.fatal(logSystem, logComponent, 'addressAmounts:' + addressAmounts);
 
                     if (Object.keys(addressAmounts).length === 0){
                         callback(null, workers, rounds);
@@ -418,13 +433,16 @@ function SetupForPool(logger, poolOptions, setupFinished){
                                 + (higherPercent * 100) + '% and retrying');
                             trySend(higherPercent);
                         }
+                        else if (result.error && result.error.code === -5) {
+                            logger.info(logSystem, logComponent, 'Error trying to send payments with RPC sendmany ' + JSON.stringify(result.error));
+                        }
                         else if (result.error) {
                             logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany '
                                 + JSON.stringify(result.error));
                             callback(true);
                         }
                         else {
-                            logger.debug(logSystem, logComponent, 'Sent out a total of ' + (totalSent / magnitude)
+                            logger.info(logSystem, logComponent, 'Sent out a total of ' + (totalSent / magnitude)
                                 + ' to ' + Object.keys(addressAmounts).length + ' workers');
                             if (withholdPercent > 0) {
                                 logger.error(logSystem, logComponent, 'Had to withhold ' + (withholdPercent * 100)
@@ -434,6 +452,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                             callback(null, workers, rounds);
                         }
                     }, true, true);
+}, 60000);
                 };
                 trySend(0);
 
