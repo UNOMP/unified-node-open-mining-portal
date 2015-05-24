@@ -1,0 +1,7 @@
+{
+    "name": "Czarcoin",
+    "symbol": "CZR",
+    "algorithm": "scrypt",
+    "peerMagic": "637a6172",
+    "peerMagicTestnet": "637a7274"
+}
