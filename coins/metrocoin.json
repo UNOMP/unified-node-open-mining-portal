@@ -1,0 +1,5 @@
+{
+    "name": "Metrocoin",
+    "symbol": "MET",
+    "algorithm": "sha256"
+}
