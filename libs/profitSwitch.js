@@ -588,6 +588,12 @@ module.exports = function(logger){
 	    else if (coinStatus.name == 'tekcoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
 	    else if (coinStatus.name == 'battlecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
 	    else if (coinStatus.name == 'opensourcecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+	    else if (coinStatus.name == 'legendarycoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+	    else if (coinStatus.name == 'novacoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+	    else if (coinStatus.name == 'tagcoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+
+
+
             else{coinStatus.reward = response.coinbasevalue / 100000000;}
             callback(null);
         });
