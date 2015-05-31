@@ -99,7 +99,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                     callback(true);
                 }
                 else if (!result.response || !result.response.ismine) {
-                    logger.error(logSystem, logComponent,
+                    logger.fatal(logSystem, logComponent,
                             'Daemon does not own pool address - payment processing can not be done with this daemon, '
                             + JSON.stringify(result.response));
                     callback(true);
@@ -392,25 +392,25 @@ function SetupForPool(logger, poolOptions, setupFinished){
 			daemon.cmd('validateaddress', [w], function (results) {
     			  var validWorkerAddress = results[0].response.isvalid;
 			if (!results[0].response.address) {
-			var worker = workers[w];
-                        worker.balance = worker.balance || 0;
-                        worker.reward = worker.reward || 0;
-                        var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
-			worker.balanceChange = Math.max(toSend - worker.balance, 0);
-			worker.sent = 0;
+                var worker = workers[w];
+                worker.balance = worker.balance || 0;
+                worker.reward = worker.reward || 0;
+                var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
+                worker.balanceChange = Math.max(toSend - worker.balance, 0);
+                worker.sent = 0;
 			} else {
-                        var worker = workers[w];
-                        worker.balance = worker.balance || 0;
-                        worker.reward = worker.reward || 0;
-                        var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
- 			if (toSend >= minPaymentSatoshis) {
-			  var address = worker.address = (worker.address || getProperAddress(w));
-			  worker.sent = addressAmounts[address] = satoshisToCoins(toSend);
-			  worker.balanceChange = Math.min(worker.balance, toSend) * -1;
-			  totalSent += toSend;
-			} else {
-			  worker.balanceChange = Math.max(toSend - worker.balance, 0);
-			  worker.sent = 0;
+                var worker = workers[w];
+                worker.balance = worker.balance || 0;
+                worker.reward = worker.reward || 0;
+                var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
+ 			    if (toSend >= minPaymentSatoshis) {
+                    var address = worker.address = (worker.address || getProperAddress(w));
+                    worker.sent = addressAmounts[address] = satoshisToCoins(toSend);
+                    worker.balanceChange = Math.min(worker.balance, toSend) * -1;
+                    totalSent += toSend;
+                } else {
+                worker.balanceChange = Math.max(toSend - worker.balance, 0);
+                worker.sent = 0;
 			}
 			}
 		    });
@@ -418,7 +418,10 @@ function SetupForPool(logger, poolOptions, setupFinished){
 
 
 setTimeout(function() {
-logger.fatal(logSystem, logComponent, 'addressAmounts:' + addressAmounts);
+logger.info(logSystem, logComponent, 'addressAccount:');
+logger.info(logSystem, logComponent, addressAccount);
+logger.info(logSystem, logComponent, 'addressAmounts:');
+logger.info(logSystem, logComponent, addressAmounts);
 
                     if (Object.keys(addressAmounts).length === 0){
                         callback(null, workers, rounds);
