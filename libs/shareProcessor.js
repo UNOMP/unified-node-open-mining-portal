@@ -74,18 +74,15 @@ module.exports = function(logger, poolConfig){
         var redisCommands = [];
 	myAuxes = poolConfig.auxes	
 	shareData.worker = shareData.worker.trim();
-	for (var i=0; i < myAuxes.length; i++)
-	{
+	for (var i=0; i < myAuxes.length; i++){
 		AuxCoin = myAuxes[i].coin.name;
-
+		
 		if (isValidShare){
          	   redisCommands.push(['hincrbyfloat', AuxCoin + ':shares:roundCurrent', shareData.worker, shareData.difficulty]);
          	   redisCommands.push(['hincrby', AuxCoin + ':stats', 'validShares', 1]);
-        	
         	} else {
             	  redisCommands.push(['hincrby', AuxCoin + ':stats', 'invalidShares', 1]);
         	}
-
 	        /* Stores share diff, worker, and unique value with a score that is the timestamp. Unique value ensures it
 	           doesn't overwrite an existing entry, and timestamp as score lets us query shares from last X minutes to
 	           generate hashrate for each worker and pool. */
@@ -94,18 +91,12 @@ module.exports = function(logger, poolConfig){
 	        redisCommands.push(['zadd', AuxCoin + ':hashrate', dateNow / 1000 | 0, hashrateData.join(':')]);
 
 	        if (isValidBlock){
-	            redisCommands.push(['rename', AuxCoin + ':shares:roundCurrent', coin + ':shares:round' + shareData.height]);
+	            redisCommands.push(['rename', AuxCoin + ':shares:roundCurrent', AuxCoin + ':shares:round' + shareData.height]);
 	            redisCommands.push(['sadd', AuxCoin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height].join(':')]);
 	            redisCommands.push(['hincrby', AuxCoin + ':stats', 'validBlocks', 1]);
 	   	} else if (shareData.blockHash){
             	    redisCommands.push(['hincrby', AuxCoin + ':stats', 'invalidBlocks', 1]);
 	        }
-
-        	connection.multi(redisCommands).exec(function(err, replies){
-        	    if (err)
-        	        logger.error(logSystem, logComponent, logSubCat, 'Error with share processor multi ' + JSON.stringify(err));
-        	});
-	
 	}
 
         if (isValidShare){
