@@ -1,7 +1,3 @@
-require('nodetime').profile({
-    accountKey: '42e0615ba41054f7d612cef0783c6886b8e991a5', 
-    appName: 'Infernopool'
-  });
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
