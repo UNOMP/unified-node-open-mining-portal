@@ -1,3 +1,7 @@
+require('nodetime').profile({
+    accountKey: '42e0615ba41054f7d612cef0783c6886b8e991a5', 
+    appName: 'Infernopool'
+  });
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
@@ -39,13 +43,13 @@ try {
 try{
     var posix = require('posix');
     try {
-	logger.info('Setting POSIX');
+    logger.info('Setting POSIX');
         posix.setrlimit('nofile', { soft: 100000, hard: 100000 });
-	logger.info('POSIX Set');
+    logger.info('POSIX Set');
     }
     catch(e){
-	logger.info(e);
-	logger.error('Must be ran as root');
+    logger.info(e);
+    logger.error('Must be ran as root');
         if (cluster.isMaster){
             logger.warn('POSIX', 'Connection Limit', '(Safe to ignore) Must be ran as root to increase resource limits');}
     }
@@ -55,9 +59,9 @@ try{
         // Set our server's uid to that user
         if (uid) {
             process.setuid(uid);
-	    logger.info("UID Set");
+        logger.info("UID Set");
             logger.debug('POSIX', 'Connection Limit', 'Raised to 100K concurrent connections, now running as non-root user: ' + process.getuid());
-	    logger.info('POSIX Msg');
+        logger.info('POSIX Msg');
         }
     }
 }
@@ -134,19 +138,23 @@ var buildPoolConfigs = function(){
     poolConfigFiles.forEach(function(poolOptions){
 
         poolOptions.coinFileName = poolOptions.coin;
-	
-	for (var i=0; i < poolOptions.auxes.length; i++)
-	{
-		var auxFilePath = 'coins/' + poolOptions.auxes[i].coin;
-		if (!fs.existsSync(auxFilePath)){
-		    logger.warn('Aux', poolOptions.auxes[i].coin, 'could not find file: ' + auxFilePath);
-		    return;
-		}
+    
+       for (var i=0; i < poolOptions.auxes.length; i++){
+            var auxFilePath = 'coins/' + poolOptions.auxes[i].coin;
+            if (!fs.existsSync(auxFilePath)){
+            logger.warn('Aux', poolOptions.auxes[i].coin, 'could not find file: ' + auxFilePath);
+            return;
+            }
 
-		var auxProfile = JSON.parse(JSON.minify(fs.readFileSync(auxFilePath, {encoding: 'utf8'})));
-		poolOptions.auxes[i].coin = auxProfile;
-		poolOptions.auxes[i].coin.name = poolOptions.auxes[i].coin.name.toLowerCase();
-	}
+            var auxProfile = JSON.parse(JSON.minify(fs.readFileSync(auxFilePath, {encoding: 'utf8'})));
+            poolOptions.auxes[i].coin = auxProfile;
+            poolOptions.auxes[i].coin.name = poolOptions.auxes[i].coin.name.toLowerCase();
+
+            if (!(auxProfile.algorithm in algos)){
+            logger.warn('Master', auxProfile.name, 'Cannot run a pool for unsupported algorithm "' + auxProfile.algorithm + '"');
+            delete configs[poolOptions.auxcoin.name];
+            }
+        }
 
         var coinFilePath = 'coins/' + poolOptions.coinFileName;
         if (!fs.existsSync(coinFilePath)){
@@ -188,12 +196,61 @@ var buildPoolConfigs = function(){
             logger.warn('Master', coinProfile.name, 'Cannot run a pool for unsupported algorithm "' + coinProfile.algorithm + '"');
             delete configs[poolOptions.coin.name];
         }
-
     });
     return configs;
 };
 
+var buildAuxConfigs = function(){
+    var configs = {};
+    var configDir = 'aux_configs/';
 
+    var poolConfigFiles = [];
+
+
+    /* Get filenames of pool config json files that are enabled */
+    fs.readdirSync(configDir).forEach(function(file){
+        if (!fs.existsSync(configDir + file) || path.extname(configDir + file) !== '.json') return;
+        var poolOptions = JSON.parse(JSON.minify(fs.readFileSync(configDir + file, {encoding: 'utf8'})));
+        if (!poolOptions.enabled) return;
+        poolOptions.fileName = file;
+        poolConfigFiles.push(poolOptions);
+    });
+
+    poolConfigFiles.forEach(function(poolOptions){
+
+        poolOptions.coinFileName = poolOptions.coin;
+
+        var poolFilePath = 'coins/' + poolOptions.coinFileName;
+        if (!fs.existsSync(poolFilePath)){
+            logger.warn('Master', poolOptions.coinFileName, 'could not find file: ' + poolFilePath);
+            return;
+        }
+
+        var poolProfile = JSON.parse(JSON.minify(fs.readFileSync(poolFilePath, {encoding: 'utf8'})));
+        poolOptions.coin = poolProfile;
+        poolOptions.coin.name = poolOptions.coin.name.toLowerCase();
+        configs[poolOptions.coin.name] = poolOptions;
+
+        for (var option in portalConfig.defaultPoolConfigs){
+            if (!(option in poolOptions)){
+                var toCloneOption = portalConfig.defaultPoolConfigs[option];
+                var clonedOption = {};
+                if (toCloneOption.constructor === Object)
+                    extend(true, clonedOption, toCloneOption);
+                else
+                    clonedOption = toCloneOption;
+                poolOptions[option] = clonedOption;
+            }
+        }
+
+        if (!(poolProfile.algorithm in algos)){
+            logger.warn('Master', coinProfile.name, 'Cannot run a pool for unsupported algorithm "' + coinProfile.algorithm + '"');
+            delete configs[poolOptions.coin.name];
+        }
+
+    });
+    return configs;
+};
 
 var spawnPoolWorkers = function(){
 
@@ -400,6 +457,32 @@ var startPaymentProcessor = function(){
     });
 };
 
+var startAuxPaymentProcessor = function(){
+
+    var enabledForAny = false;
+    for (var aux in auxConfigs){
+        var p = auxConfigs[aux];
+        var enabled = p.enabled && p.paymentProcessing && p.paymentProcessing.enabled;
+        if (enabled){
+            enabledForAny = true;
+            break;
+        }
+    }
+
+    if (!enabledForAny)
+        return;
+
+    var worker = cluster.fork({
+        workerType: 'paymentProcessor',
+        pools: JSON.stringify(auxConfigs)
+    });
+    worker.on('exit', function(code, signal){
+        logger.error('Master', 'Auxilliary Payment Processor', 'Auxilliary Payment processor died, spawning replacement...');
+        setTimeout(function(){
+            startPaymentProcessor(auxConfigs);
+        }, 2000);
+    });
+};
 
 var startWebsite = function(){
 
@@ -445,14 +528,18 @@ var startProfitSwitch = function(){
 
     poolConfigs = buildPoolConfigs();
 
-    spawnPoolWorkers();
+    auxConfigs = buildAuxConfigs();
 
+    spawnPoolWorkers();
+        setTimeout(function(){
     startPaymentProcessor();
+
+    startAuxPaymentProcessor();
 
     startWebsite();
 
     startProfitSwitch();
 
     startCliListener();
-
+        }, 10000);
 })();
