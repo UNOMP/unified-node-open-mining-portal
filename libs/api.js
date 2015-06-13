@@ -26,7 +26,7 @@ module.exports = function(logger, portalConfig, poolConfigs){
             case 'live_stats':
                 res.writeHead(200, {
                     'Content-Type': 'text/event-stream',
-                    'Cache-Control': 'max-age=300, public',
+                    'Cache-Control': 'no-cache',
                     'Connection': 'keep-alive'
                 });
                 res.write('\n');
