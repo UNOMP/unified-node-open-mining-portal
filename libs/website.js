@@ -44,6 +44,8 @@ module.exports = function(logger){
         'stats.html': 'stats',
         'workers.html': 'workers',
         'api.html': 'api',
+        'miner.html': 'miner',
+        'miner_stats.html': 'miner_stats',
         'admin.html': 'admin',
         'mining_key.html': 'mining_key'
     };
