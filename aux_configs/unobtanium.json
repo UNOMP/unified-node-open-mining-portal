@@ -1,5 +1,5 @@
 {
-    "enabled": true,
+    "enabled": false,
     "coin": "unobtanium.json",
     "paymentProcessing": {
         "enabled": true,
