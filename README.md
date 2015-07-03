@@ -4,6 +4,8 @@
 
 This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://pool.unomp.org).
 
+Join our Slack [here](http://slack.unomp.org)!
+
 This portal is an extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool written in Node.js. 
 It contains a merged stratum pool server; reward/payment/share processor for multipooling; and an (*in progress*)
 responsive user-friendly front-end website featuring mining instructions, in-depth live statistics, and an admin center.
@@ -95,7 +97,7 @@ https://github.com/joyent/node/wiki/installing-node.js-via-package-manager
 
 #### Requirements
 * Coin daemon(s) (find the coin's repo and build latest version from source)
-* [Node.js](http://nodejs.org/) >=v0.10 ([follow these installation instructions](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager))
+* `sudo apt-get install nodejs node nodejs-legacy`
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis))
 
 OPTIONAL: `sudo npm install posix`, but you will have to start the pool `sudo node init.js`

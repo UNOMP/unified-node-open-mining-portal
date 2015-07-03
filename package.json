@@ -26,7 +26,8 @@
         "ahmed",
 	"zone117x",
 	"elitemobb",
-	"altnuts"
+	"altnuts",
+	"infernoman"
     ],
     "main": "init.js",
     "bin": {
@@ -42,6 +43,9 @@
 	"log4js": "*",
 	"bitcoin": "*",
         "node-json-minify": "*",
+	"node.bittrex.api": "*",
+	"poloniex.js": "*",
+	"cryptsy": "*",
         "redis": "*",
         "mysql": "*",
         "async": "*",
