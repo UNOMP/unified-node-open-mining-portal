@@ -53,6 +53,7 @@
         "body-parser": "*",
         "compression": "*",
         "dot": "*",
+        "newrelic": "*",
         "colors": "*",
         "node-watch": "*",
         "request": "*",
