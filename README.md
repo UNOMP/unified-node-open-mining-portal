@@ -2,7 +2,7 @@
 
 #### Unified NOMP
 
-This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://pool.unomp.org).
+This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment.
 
 Join our Slack [here](http://slack.unomp.org)!
 
@@ -325,7 +325,7 @@ Here is an example of the required fields:
 ````javascript
 {
     "name": "Litecoin",
-    "symbol": "ltc",
+    "symbol": "LTC",
     "algorithm": "scrypt",
 
     /* Magic value only required for setting up p2p block notifications. It is found in the daemon
@@ -357,7 +357,7 @@ Description of options:
     "coin": "litecoin.json", //Reference to coin config file in 'coins' directory
     "auxes": [
         {
-            "coin": "dogecoin.json",
+            "coin": "viacoin.json",
             "daemons": [
                 {
                     "host": "127.0.0.1",
