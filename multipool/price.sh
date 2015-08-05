@@ -1,6 +1,8 @@
 #!/bin/bash
-#examples for grabbing prices from exchange orderbooks and setting them into a redis entry called Exchange_Rates
-#using the cron entry below you can set the script to run once every 5 minutes
+# Examples for grabbing prices from exchange orderbooks and setting them into a redis entry called Exchange_Rates
+# Cryptsy has presented some issues, try changing 'pubapi.cryptsy....' to 'pubapi2.cryptsy....' if you encounter 
+# issues (null returns in redis under 'Exchange_Rates' key)
+# Using the cron entry below you can set the script to run once every 5 minutes
 # [*/5 * * * * ~/unomp/multipool/price.sh >~/unomp/multipool/alerts/cronprice.log 2>&1]
 
 echo "START"
