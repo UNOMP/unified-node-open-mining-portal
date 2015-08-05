@@ -1,41 +1,47 @@
 Install 
 sudo apt-get install jq
 
-All of these scripts were based off of the scripts posted here https://bitcointalk.org/index.php?topic=701200.0 you can follow the guide there if it is easier. but all of the scripts here have been edited and are working correctly.
+All of these scripts were based off of the scripts posted here https://bitcointalk.org/index.php?topic=701200.0 you
+can follow the guide there if it is easier. All of the scripts here have been edited and are working correctly.
 
-To run a multipool on nomp is a bit of a pain to say the least. one of the first things needed to do is edit the .json files
-in pool_configs and set a very high payment like so.
+In pool_configs and set a very high payment like so.
     "paymentProcessing": {
         "enabled": true,
        "paymentInterval": 75,
         "minimumPayment": 99999999999,
         "daemon": {
 
-so that the shift is paid out by the scripts that are going to be run from this folder. either on a cron or by hand.
+so that the shift is paid out by the scripts that are going to be run from this folder. Either on a cron or by hand.
+Example of crontab -e could be:
 
-next go to your config.json in the base folder. and change the validate worker username to false like so
+0 */2 * * *                     ~/unomp/multipool/exchange.sh >~/unomp/multipool/alerts/cronexchange.log 2>&1
+*/30 * * * *                    ~/unomp/multipool/price.sh >~/unomp/multipool/alerts/cronprice.log 2>&1
+*/5 * * * *                     ~/unomp/multipool/average.sh >~/unomp/multipool/alerts/cronaverage.log 2>&1
+*/5 * * * *                     ~/unomp/multipool/profit.sh >~/unomp/multipool/alerts/cronprofit.log 2>&1
+
+
+Next go to your config.json in the base folder and change the validateWorkerUsername to false:
+
     "defaultPoolConfigs": {
         "blockRefreshInterval": 1000,
         "jobRebroadcastTimeout": 55,
         "connectionTimeout": 600,
-       "emitInvalidBlockHashes": false,
-       "validateWorkerUsername": false,
+        "emitInvalidBlockHashes": false,
+        "validateWorkerUsername": false,
+        /* */
 
-for each of the coins your adding you will have to go to the multipool/bin folder and run
-either sharedis <coinname> for sha256 or scryptredis <coinname> for scrypt
-this will add each of the coins on the pool into the database for the profit script
-and check worker balances. these also have to match the .json file coin names.
+For any and all coins you're adding you will have to go to the multipool/bin folder and run
+one of the *redis.sh <coinname> scripts to add them to redis. This goes for coins that are
+only on the pool to be mined! Example:
+    
+    sh sharedis.sh neoscoin
+    
+This will add each of the coins on the pool into the database for the exchange rates, profit script,
+and check worker balances. These should match the .json file coin names.
 
-
-line 5 of the file profit will need to be changed to inlcude the proper coin name your paying out in.
-
-
-./profit will calculate the workers estimated earning based off of the balances they have mined in each coin and set an entry in the database for each.
-./payment will clear the workers balance and pay all of the workers from the coindaemon of your choice.
-
-
-
-Optional:
+./profit.sh will calculate the workers estimated earning based off of the balances they have mined in each coin
+and set an entry in the database for each.
+./payment.sh will clear the workers balance and pay all of the workers from the coindaemon of your choice.
 
 REDIS COMMANDER will start on port 8081 and let you get a full view of your redis database. 
 Make sure to close off that port when installing
@@ -52,4 +58,5 @@ sudo make clean all
 after installed copy webdis.json over to your webdis folder you just cloned
 and start with 
 ./webdis &
-you will now be able to curl results from your public IP address if you open port 7379 without leaving your database accessible.
+you will now be able to curl results from your public IP address if you open port 7379 without leaving your 
+database accessible.
