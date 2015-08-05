@@ -59,9 +59,11 @@
         "request": "*",
         "nonce": "*",
         "bignum": "*",
-        "extend": "*"
+        "extend": "*",
+        "node.bittrex.api": "*",
+        "cryptsy": "*"
     },
     "engines": {
-        "node": ">=0.10"
+        "node": ">=0.12"
     }
 }
