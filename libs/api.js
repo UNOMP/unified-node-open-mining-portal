@@ -1,11 +1,13 @@
 var redis = require('redis');
 var async = require('async');
-
+var express = require('express');
 var stats = require('./stats.js');
+var compress = require('compression');
 
 module.exports = function(logger, portalConfig, poolConfigs){
 
 
+    var app = express();
     var _this = this;
 
     var portalStats = this.stats = new stats(logger, portalConfig, poolConfigs);
@@ -18,9 +20,27 @@ module.exports = function(logger, portalConfig, poolConfigs){
                 res.end(portalStats.statsString);
                 return;
             case 'pool_stats':
+                res.writeHead(200, {
+                    'Content-Type': 'text/html',
+                    'Cache-Control': 'max-age=20',
+                    'Connection': 'keep-alive'
+                });
                 res.end(JSON.stringify(portalStats.statPoolHistory));
                 return;
+            case 'worker_stats':
+                res.writeHead(200, {
+                    'Content-Type': 'text/html',
+                    'Cache-Control': 'max-age=20',
+                    'Connection': 'keep-alive'
+                });
+                res.end(JSON.stringify(portalStats.statWorkerHistory));
+                return;
                 case 'algo_stats':
+                res.writeHead(200, {
+                    'Content-Type': 'text/html',
+                    'Cache-Control': 'max-age=20',
+                    'Connection': 'keep-alive'
+                });
                 res.end(JSON.stringify(portalStats.statAlgoHistory));
                 return;
             case 'live_stats':
