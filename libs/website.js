@@ -5,7 +5,6 @@ var path = require('path');
 var async = require('async');
 var watch = require('node-watch');
 var redis = require('redis');
-
 var dot = require('dot');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -41,13 +40,50 @@ module.exports = function(logger){
         'index.html': 'index',
         'home.html': '',
         'getting_started.html': 'getting_started',
-        'stats.html': 'stats',
+        'tbs.html': 'tbs',
         'workers.html': 'workers',
-        'api.html': 'api',
         'miner.html': 'miner',
+        'tos.html': 'TOS',
+        'FAQ.html': 'FAQ',
+        'about.html': 'about',
+        'privacy.html': 'policy',
+        'DPC.html': 'DPC',
+        'stats.html':'stats',
+        'contact.html':'contact',
         'miner_stats.html': 'miner_stats',
-        'admin.html': 'admin',
-        'mining_key.html': 'mining_key'
+        'acoin.html': 'acoin',
+        'auroracoin.html': 'auroracoin',
+        'batacoin.html': 'batacoin',
+        'betacoin.html': 'betacoin',
+        'bbqcoin.html': 'bbqcoin',
+        'californium.html': 'californium',
+        'chinacoin.html': 'chinacoin',
+        'digibyte.html': 'digibyte',
+        'digitalcoin.html': 'digitalcoin',
+        'dogecoindark.html': 'dogecoindark',
+        'emerald.html': 'emerald',
+        'florincoin.html': 'florincoin',
+        'fourtytwo.html': '42coin',
+        'franko.html': 'franko',
+        'goldcoin.html': 'goldcoin',
+        'guldencoin.html': 'guldencoin',
+        'joulecoin.html': 'joulecoin',
+        'litecoin.html': 'litecoin',
+        'mazacoin.html': 'mazacoin',
+        'megacoin.html': 'megacoin',
+        'myriadcoin.html': 'myriadcoin',
+        'neoscoin.html': 'neoscoin',
+        'novacoin.html': 'novacoin',
+        'nyancoin.html': 'nyancoin',
+        'omnicoin.html': 'omnicoin',
+        'peercoin.html': 'peercoin',
+        'potcoin.html': 'potcoin',
+        'quatloo.html': 'quatloo',
+        'ronpaulcoin.html': 'ronpaulcoin',
+        'saffroncoin.html': 'saffroncoin',
+        'sexcoin.html': 'sexcoin',
+        'tagcoin.html': 'tagcoin',
+        'unit.html': 'unitcurrency'
     };
 
     var pageTemplates = {};
@@ -348,7 +384,7 @@ module.exports = function(logger){
     });
 
     app.use(compress());
-    app.use('/static', express.static('website/static'));
+    app.use('/static', express.static('website/static', { maxAge: 86400000 * 7}));
 
     app.use(function(err, req, res, next){
         console.error(err.stack);
