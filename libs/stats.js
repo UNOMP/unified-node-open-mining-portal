@@ -31,6 +31,7 @@ module.exports = function(logger, portalConfig, poolConfigs){
     this.statHistory = [];
     this.statPoolHistory = [];
     this.statAlgoHistory = [];
+    this.statWorkerHistory = [];
 
     this.stats = {};
     this.statsString = '';
@@ -92,6 +93,7 @@ fubar.push(coin);
             });
             _this.statHistory.forEach(function(stats){
                 addStatPoolHistory(stats);
+                addStatWorkerHistory(stats);
                 addStatAlgoHistory(stats);
             });
         });
@@ -110,6 +112,26 @@ fubar.push(coin);
             }
         }
         _this.statPoolHistory.push(data);
+    }
+
+    function addStatWorkerHistory(stats){
+        var data = {
+            time: stats.time,
+            worker: {}
+        };
+        for (var pool in stats.pools) {
+            for (var worker in stats.pools[pool].workers) {
+            if (data.worker[worker] == null) {
+                data.worker[worker] = {
+                    algos: {}
+                }
+            }
+                data.worker[worker].algos[stats.pools[pool].algorithm] = {
+                    hashrate: stats.pools[pool].workers[worker].hashrateString
+                }
+            }
+        }
+        _this.statWorkerHistory.push(data);
     }
 
     function addStatAlgoHistory(stats){
@@ -366,7 +388,7 @@ console.log('ERROR FROM STATS.JS ' + err);
             _this.statHistory.push(portalStats);
             addStatPoolHistory(portalStats);
             addStatAlgoHistory(portalStats);
-
+            addStatWorkerHistory(portalStats);
             var retentionTime = (((Date.now() / 1000) - portalConfig.website.stats.historicalRetention) | 0);
 
             for (var i = 0; i < _this.statHistory.length; i++){
@@ -375,6 +397,7 @@ console.log('ERROR FROM STATS.JS ' + err);
                         _this.statHistory = _this.statHistory.slice(i);
                         _this.statPoolHistory = _this.statPoolHistory.slice(i);
                         _this.statAlgoHistory = _this.statAlgoHistory.slice(i);
+                        _this.statWorkerHistory = _this.statWorkerHistory.slice(i);
                     }
                     break;
                 }
