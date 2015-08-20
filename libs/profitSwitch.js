@@ -652,9 +652,10 @@ module.exports = function(logger){
                 });
             });
             logger.warn(logSystem, 'RESULT', 'Best coin for ' + algo + ' is ' + bestCoin + ' on ' + bestExchange + ' with ' + bestBtcPerMhPerHour.toFixed(8) + ' BTC/day per Mh/s');
-			fs.writeFile('~/unomp/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8),function (err) {
-  				if (err) throw err;
-		});
+			// Uncomment for advanced reporting, not included in base repo. You must do some magic on your side ;)
+			//fs.writeFile('~/unomp/website/static/' + algo + '.txt', bestBtcPerMhPerHour.toFixed(8),function (err) {
+  			//	if (err) throw err;
+		//});
             var client = net.connect(portalConfig.cliPort, function () {
                 client.write(JSON.stringify({
                     command: 'coinswitch',
