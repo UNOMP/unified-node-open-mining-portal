@@ -96,8 +96,8 @@ Usage
 
 #### Requirements
 * Coin daemon(s) (find the coin's repo and build latest version from source)
-* `curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-sudo apt-get install -y nodejs`
+* `curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -`
+* `sudo apt-get install -y nodejs`
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis))
 
 OPTIONAL: `sudo npm install posix`, but you will have to start the pool `sudo node init.js`
