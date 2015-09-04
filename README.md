@@ -96,8 +96,7 @@ Usage
 
 #### Requirements
 * Coin daemon(s) (find the coin's repo and build latest version from source)
-* `curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -`
-* `sudo apt-get install -y nodejs`
+* Install node (correct procedure below)
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis))
 
 OPTIONAL: `sudo npm install posix`, but you will have to start the pool `sudo node init.js`
@@ -138,6 +137,10 @@ Clone the repository and run `npm update` for all the dependencies to be install
 
 ```bash
 sudo apt-get install build-essential libssl-dev
+curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh
+source ~/.profile
+nvm install 0.10.32
+nvm use 0.10.32
 git clone https://github.com/UNOMP/unified-node-open-mining-portal.git unomp
 cd unomp
 npm update
