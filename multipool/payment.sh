@@ -4,7 +4,7 @@
 # the information and change ticker as necessary. Leave things 'BTC' alone. :)
 
 #!/bin/bash
-# START CALCULATIN AVERAGE HASHRATES SO FAR THIS SHIFT
+# START CALCULATING AVERAGE HASHRATES SO FAR THIS SHIFT
 now="$(date +"%s")"
 ShiftNumber=$(redis-cli hget Pool_Stats This_Shift)
 starttime=$(redis-cli hget Pool_Stats:"$ShiftNumber" starttime)
