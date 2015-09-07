@@ -289,9 +289,25 @@ while read PayoutLine
         echo "$PayoutLine $amount"
         txn=$(potcoind sendtoaddress "$PayoutLine" "$roundedamount")
     else
+    # The below is how you can enable workernames. Each address.worker is tracked separately,
+    # but paid in the same transaction. This portion strips everything after the '.' and only
+    # uses the valid addresses. I (sigwo) am working on the fix for same-starting letter pay-
+    # out option and will eventually track all of a single address's workernames on the same
+    # page in the GUI. Elitemobb will be working on the GUI part :)
+#    echo    $PayoutLine | grep ^P
+#    if [ $? -eq 0 ]
+#    then
+#	echo "its XPYcoin for $PayoutLine"
+#	amount=$(redis-cli  zscore Pool_Stats:Balances "$PayoutLine")
+#	roundedamount=$(echo "scale=8;$amount / 1" | bc -l)
+#	stripPayoutLine=`echo $PayoutLine | sed 's/[.].*//'`
+#	echo "$stripPayoutLine $amount"
+#	txn=$(paycoind sendtoaddress "$stripPayoutLine" "$roundedamount")
+#    else
         echo "CANT FIND ADDRESS"
     fi
     fi
+    #fi
 if [[ -z "$txn" ]]
 then
 #log failed payout to txt file.
