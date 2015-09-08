@@ -96,7 +96,8 @@ Usage
 
 #### Requirements
 * Coin daemon(s) (find the coin's repo and build latest version from source)
-* Install node (correct procedure below)
+* Install node.js (correct procedure below)
+* Install npm (correct procedure below)
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis))
 
 OPTIONAL: `sudo npm install posix`, but you will have to start the pool `sudo node init.js`
@@ -136,7 +137,7 @@ a good pool operator. For starters be sure to read:
 Clone the repository and run `npm update` for all the dependencies to be installed:
 
 ```bash
-sudo apt-get install build-essential libssl-dev
+sudo apt-get install build-essential libssl-dev npm nodejs nodejs-legacy
 curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh
 source ~/.profile
 nvm install 0.10.25
