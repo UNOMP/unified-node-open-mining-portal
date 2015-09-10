@@ -44,7 +44,7 @@
 	"bitcoin": "*",
         "node-json-minify": "*",
 	"node.bittrex.api": "*",
-	"poloniex.js": "*",
+	"node-poloniex": "*",
 	"cryptsy": "*",
         "redis": "*",
         "mysql": "*",
@@ -59,9 +59,7 @@
         "request": "*",
         "nonce": "*",
         "bignum": "*",
-        "extend": "*",
-        "node.bittrex.api": "*",
-        "cryptsy": "*"
+        "extend": "*"
     },
     "engines": {
         "node": ">=0.10"
