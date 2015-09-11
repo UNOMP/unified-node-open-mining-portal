@@ -252,14 +252,14 @@ function SetupForPool(logger, poolOptions, setupFinished){
                             round.category = 'kicked';
                             return;
                         }
-                        else if (!tx.result.details || (tx.result.details && tx.result.details.length === 0)){
-                            logger.debug(logSystem, logComponent, 'Daemon reports no details for transaction: ' + round.txHash);
-                            round.category = 'kicked';
-                            return;
-                        }
-                        else if (tx.error || !tx.result){
+                        else if (tx.error || tx.result == null){
                             logger.error(logSystem, logComponent, 'Odd error with gettransaction ' + round.txHash + ' '
                                 + JSON.stringify(tx));
+                            return;
+                        }
+                        else if (tx.result.details == null || (tx.result.details && tx.result.details.length === 0)){
+                            logger.debug(logSystem, logComponent, 'Daemon reports no details for transaction: ' + round.txHash);
+                            round.category = 'kicked';
                             return;
                         }
 
@@ -492,29 +492,27 @@ logger.info(logSystem, logComponent, addressAmounts);
                 var moveSharesToCurrent = function(r){
                     var workerShares = r.workerShares;
                     Object.keys(workerShares).forEach(function(worker){
-                        orphanMergeCommands.push(['hincrby', coin + ':shares:roundCurrent',
-                            worker, workerShares[worker]]);
-                    });
+                    orphanMergeCommands.push(['hincrby', coin + ':shares:roundCurrent',
+                        worker, workerShares[worker]]);
+                        });  
                 };
 
                 rounds.forEach(function(r){
-
-                    switch(r.category){
-                        case 'kicked':
-                            movePendingCommands.push(['smove', coin + ':blocksPending', coin + ':blocksKicked', r.serialized]);
-                        case 'orphan':
-                            movePendingCommands.push(['smove', coin + ':blocksPending', coin + ':blocksOrphaned', r.serialized]);
-                            if (r.canDeleteShares){
-                                moveSharesToCurrent(r);
+                        switch(r.category){
+                            case 'kicked':
+                                movePendingCommands.push(['smove', coin + ':blocksPending', coin + ':blocksOrphaned', r.serialized]);
+                            case 'orphan':
+                                movePendingCommands.push(['smove', coin + ':blocksPending', coin + ':blocksOrphaned', r.serialized]);
+                                if (r.canDeleteShares){
+                                    moveSharesToCurrent(r);
+                                    roundsToDelete.push(coin + ':shares:round' + r.height);
+                                }
+                                return;
+                            case 'generate':
+                                movePendingCommands.push(['smove', coin + ':blocksPending', coin + ':blocksConfirmed', r.serialized]);
                                 roundsToDelete.push(coin + ':shares:round' + r.height);
-                            }
-                            return;
-                        case 'generate':
-                            movePendingCommands.push(['smove', coin + ':blocksPending', coin + ':blocksConfirmed', r.serialized]);
-                            roundsToDelete.push(coin + ':shares:round' + r.height);
-                            return;
-                    }
-
+                                return;
+                        }
                 });
 
                 var finalRedisCommands = [];
