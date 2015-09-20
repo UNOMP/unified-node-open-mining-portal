@@ -201,13 +201,13 @@ module.exports = function(logger){
                 logger.debug(logSystem, logComponent, logSubCat, 'We thought a block was found but it was rejected by the daemon, share data: ' + shareData);
 
             else if (isValidBlock)
-                logger.debug(logSystem, logComponent, logSubCat, 'Block found: ' + data.blockHash);
+                logger.info(logSystem, logComponent, logSubCat, 'Block found: ' + data.blockHash);
 
             if (isValidShare)
                 logger.debug(logSystem, logComponent, logSubCat, 'Share accepted at diff ' + data.difficulty + '/' + data.shareDiff + ' by ' + data.worker + ' [' + data.ip + ']' );
 
             else if (!isValidShare)
-                logger.debug(logSystem, logComponent, logSubCat, 'Share rejected: ' + shareData);
+                logger.fatal(logSystem, logComponent, logSubCat, 'Share rejected: ' + shareData);
 
             handlers.share(isValidShare, isValidBlock, data)
 
