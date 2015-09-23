@@ -1,6 +1,6 @@
 {
     "name": "unified-node-open-mining-portal",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "An extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool",
     "keywords": [
         "stratum",
@@ -25,8 +25,10 @@
         "TheSeven",
         "ahmed",
 	"zone117x",
+	"sigwo",
 	"elitemobb",
-	"altnuts"
+	"altnuts",
+	"infernoman"
     ],
     "main": "init.js",
     "bin": {
@@ -37,11 +39,14 @@
         "url": "https://github.com/UNOMP/unified-node-open-mining-portal.git"
     },
     "dependencies": {
-        "merged-pooler": "git://github.com/sigwo/node-merged-pool",
+        "merged-pooler": "*",
         "dateformat": "*",
 	"log4js": "*",
 	"bitcoin": "*",
         "node-json-minify": "*",
+	"node.bittrex.api": "*",
+	"node-poloniex": "*",
+	"cryptsy": "*",
         "redis": "*",
         "mysql": "*",
         "async": "*",
@@ -49,6 +54,7 @@
         "body-parser": "*",
         "compression": "*",
         "dot": "*",
+        "newrelic": "*",
         "colors": "*",
         "node-watch": "*",
         "request": "*",

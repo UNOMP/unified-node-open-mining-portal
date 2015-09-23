@@ -1,3 +1,4 @@
+//require('newrelic');
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
@@ -29,7 +30,7 @@ var logger = PoolLogger.getLogger();
 
 logger.info('New Relic');
 try {
-    require('newrelic');
+//    require('newrelic');
     if (cluster.isMaster)
         logger.debug('NewRelic', 'Monitor', 'New Relic initiated');
 } catch(e) {}

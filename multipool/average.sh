@@ -1,7 +1,5 @@
 #!/bin/bash
 counter=0
-#                redis-cli del Pool_Stats:CurrentRoundNXT
-#                redis-cli del Pool_Stats:CurrentRoundBTC
 now="`date +%s`"
 tenminsago=`echo "$now - 700" | bc`
 thisShift=`redis-cli hget Pool_Stats This_Shift`
@@ -66,7 +64,7 @@ echo "now: $now then: $tenminsago"
   total_scryptn=`echo "scale=2;$total_scryptn / $counter / (1024 * 1024)" | bc -l`
   total_keccak=`echo "scale=2;$total_keccak / $counter" | bc -l`
  
-echo "SHA: $total_sha Scrypt: $total_scrypt X11: $total_x11 Scrypt-N: $total_scryptn Keccak: $total_keccak" >>/Scripts/HashRateLog
+echo "SHA: $total_sha Scrypt: $total_scrypt X11: $total_x11 Scrypt-N: $total_scryptn Keccak: $total_keccak" >>~/unomp/multipool/alerts/cronhashrate.log
  
 redis-cli zadd Pool_Stats:AvgHRs:sha $now $total_sha":"$now
 redis-cli zadd Pool_Stats:AvgHRs:scrypt $now $total_scrypt":"$now

@@ -1,0 +1,6 @@
+{
+    "name": "Flaxscript",
+    "symbol": "FLAX",
+    "algorithm": "c11"
+    "mposDiffMultiplier": 256
+}

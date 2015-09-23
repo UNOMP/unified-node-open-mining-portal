@@ -10,7 +10,7 @@ module.exports = function() {
     var version         = '0.1.1',
         PUBLIC_API_URL  = 'https://bittrex.com/api/v1.1/public',
         PRIVATE_API_URL = 'https://bittrex.com/api/v1.1/market',
-        USER_AGENT      = 'nomp/node-open-mining-portal'
+        USER_AGENT      = 'unomp/unified-node-open-mining-portal'
 
     // Constructor
     function Bittrex(key, secret){

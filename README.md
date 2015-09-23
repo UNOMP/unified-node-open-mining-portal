@@ -2,7 +2,9 @@
 
 #### Unified NOMP
 
-This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment. Beta pool for reference is located [here](http://pool.unomp.org).
+This repo will serve as an open source multipool. Multipool capabilities are in alpha testing in this version. This will give the ability to utilize NOMP with merged capabilities but NO merged coin payouts. *ONLY* the main chain coins will payout and calculate correctly at the moment.
+
+Join our Slack [here](http://slack.unomp.org)!
 
 This portal is an extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool written in Node.js. 
 It contains a merged stratum pool server; reward/payment/share processor for multipooling; and an (*in progress*)
@@ -87,15 +89,15 @@ giving hackers little reward and keeping your pool from being a target.
 * Integration of [addie.cc](http://addie.cc) usernames for multiple payout type without using a public address that may/may not work with the 
 coin (still not 100% committed yet, see Feature #7)
 
-* Upgrade codebase to operate in node v 0.12
+* Upgrade codebase to operate in node v 0.12. Complete. If you run into problems, please open an issue.
 
 Usage
 =====
-https://github.com/joyent/node/wiki/installing-node.js-via-package-manager
 
 #### Requirements
 * Coin daemon(s) (find the coin's repo and build latest version from source)
-* [Node.js](http://nodejs.org/) >=v0.10 ([follow these installation instructions](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager))
+* Install node.js (correct procedure below)
+* Install npm (correct procedure below)
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis))
 
 OPTIONAL: `sudo npm install posix`, but you will have to start the pool `sudo node init.js`
@@ -135,7 +137,7 @@ a good pool operator. For starters be sure to read:
 Clone the repository and run `npm update` for all the dependencies to be installed:
 
 ```bash
-sudo apt-get install build-essential libssl-dev
+sudo apt-get install build-essential libssl-dev npm nodejs nodejs-legacy
 curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh
 source ~/.profile
 nvm install 0.10.25
@@ -226,9 +228,9 @@ Explanation for each field:
         "host": "0.0.0.0",
         /* Title you want for your site. */
         "siteTitle": "UNOMP Beta",
-        "port": 80,
+        "port": 8080,
         /* Used for displaying stratum connection data on the Getting Started page. */
-        "stratumHost": "unomp.org",
+        "stratumHost": "pool.unomp.org",
         "stats": {
             /* Gather stats to broadcast to page viewers and store in redis for historical stats
                every this many seconds. */
@@ -323,7 +325,7 @@ Here is an example of the required fields:
 ````javascript
 {
     "name": "Litecoin",
-    "symbol": "ltc",
+    "symbol": "LTC",
     "algorithm": "scrypt",
 
     /* Magic value only required for setting up p2p block notifications. It is found in the daemon
@@ -355,7 +357,7 @@ Description of options:
     "coin": "litecoin.json", //Reference to coin config file in 'coins' directory
     "auxes": [
         {
-            "coin": "dogecoin.json",
+            "coin": "viacoin.json",
             "daemons": [
                 {
                     "host": "127.0.0.1",
@@ -459,7 +461,7 @@ Description of options:
 You can create as many of these pool config files as you want (such as one pool per coin you which to operate).
 If you are creating multiple pools, ensure that they have unique stratum ports.
 
-For more information on these configuration options see the [pool module documentation](https://github.com/sigwo/node-merged-pool#module-usage)
+For more information on these configuration options see the [pool module documentation](https://github.com/UNOMP/node-merged-pool#module-usage)
 
 
 

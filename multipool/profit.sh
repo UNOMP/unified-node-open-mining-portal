@@ -1,5 +1,6 @@
 #!/bin/bash
-# Change this to your directory structure. Search/replace OPAL with Tgt. Search/replace redis-cli with redis-cli.
+# Search/replace OPAL with ticker symbol of your desired payout coin. To
+# enumerate for additional coins, add a line for EVERY place you see OPAL. Leave things 'BTC' alone. :)
 cp -rf /var/lib/redis/6379/dump.rdb ~/unomp/multipool/backup/redis.dump.rdb
 AlgoCounter=0
 now="$(date +"%s")"
@@ -123,10 +124,10 @@ echo "Start: $starttime End: $endtime"
                         thisalgoP=`echo "scale=8;$thisalgoP * 500" | bc -l`
                 elif [ $Algo = "sha256" ]
                 then
-                        thisalgoP=`echo "scale=8;$thisalgoP * 100" | bc -l`
+                        thisalgoP=`echo "scale=8;$thisalgoP * 1000" | bc -l`
                 elif [ $Algo = "x11" ]
                 then
-                        thisalgoP=`echo "scale=8;$thisalgoP * 4" | bc -l`
+                        thisalgoP=`echo "scale=8;$thisalgoP * 1" | bc -l`
                 else
                         echo "done" >/dev/null
                 fi
