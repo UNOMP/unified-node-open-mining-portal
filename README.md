@@ -89,7 +89,7 @@ giving hackers little reward and keeping your pool from being a target.
 * Integration of [addie.cc](http://addie.cc) usernames for multiple payout type without using a public address that may/may not work with the 
 coin (still not 100% committed yet, see Feature #7)
 
-* Upgrade codebase to operate in node v 0.12. Complete. If you run into problems, please open an issue.
+* Upgrade codebase to operate in node v 0.12. Multi-hashing module is still throwing fits.
 
 Usage
 =====
