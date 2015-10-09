@@ -5,7 +5,6 @@ var path = require('path');
 var async = require('async');
 var watch = require('node-watch');
 var redis = require('redis');
-
 var dot = require('dot');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -41,11 +40,50 @@ module.exports = function(logger){
         'index.html': 'index',
         'home.html': '',
         'getting_started.html': 'getting_started',
-        'stats.html': 'stats',
+        'tbs.html': 'tbs',
         'workers.html': 'workers',
-        'api.html': 'api',
-        'admin.html': 'admin',
-        'mining_key.html': 'mining_key'
+        'miner.html': 'miner',
+        'tos.html': 'TOS',
+        'FAQ.html': 'FAQ',
+        'about.html': 'about',
+        'privacy.html': 'policy',
+        'DPC.html': 'DPC',
+        'stats.html':'stats',
+        'contact.html':'contact',
+        'miner_stats.html': 'miner_stats',
+        'acoin.html': 'acoin',
+        'auroracoin.html': 'auroracoin',
+        'batacoin.html': 'batacoin',
+        'betacoin.html': 'betacoin',
+        'bbqcoin.html': 'bbqcoin',
+        'californium.html': 'californium',
+        'chinacoin.html': 'chinacoin',
+        'digibyte.html': 'digibyte',
+        'digitalcoin.html': 'digitalcoin',
+        'dogecoindark.html': 'dogecoindark',
+        'emerald.html': 'emerald',
+        'florincoin.html': 'florincoin',
+        'fourtytwo.html': '42coin',
+        'franko.html': 'franko',
+        'goldcoin.html': 'goldcoin',
+        'guldencoin.html': 'guldencoin',
+        'joulecoin.html': 'joulecoin',
+        'litecoin.html': 'litecoin',
+        'mazacoin.html': 'mazacoin',
+        'megacoin.html': 'megacoin',
+        'myriadcoin.html': 'myriadcoin',
+        'neoscoin.html': 'neoscoin',
+        'novacoin.html': 'novacoin',
+        'nyancoin.html': 'nyancoin',
+        'omnicoin.html': 'omnicoin',
+        'peercoin.html': 'peercoin',
+        'potcoin.html': 'potcoin',
+        'quatloo.html': 'quatloo',
+        'ronpaulcoin.html': 'ronpaulcoin',
+        'saffroncoin.html': 'saffroncoin',
+        'sexcoin.html': 'sexcoin',
+        'tagcoin.html': 'tagcoin',
+        'unit.html': 'unitcurrency'
     };
 
     var pageTemplates = {};
@@ -245,10 +283,67 @@ module.exports = function(logger){
 
     };
 
+    var minerpage = function(req, res, next){
+        var address = req.params.address || null;
+
+        if (address !== null){
+            portalStats.getBalanceByAddress(address, function(){
+                processTemplates();
+
+                res.end(indexesProcessed['miner_stats']);
+
+            });
+        }
+        else
+            next();
+    };
+
+    var payout = function(req, res, next){
+        var address = req.params.address || null;
+
+        if (address !== null){
+            portalStats.getPayout(address, function(data){
+                res.write(data.toString());
+                res.end();
+            });
+        }
+        else
+            next();
+    };
+
+
+    var shares = function(req, res, next){
+        portalStats.getCoins(function(){
+            processTemplates();
+
+            res.end(indexesProcessed['user_shares']);
+
+        });
+    };
+
+    var usershares = function(req, res, next){
+
+        var coin = req.params.coin || null;
+
+        if(coin !== null){
+            portalStats.getCoinTotals(coin, null, function(){
+                processTemplates();
+
+                res.end(indexesProcessed['user_shares']);
+
+            });
+        }
+        else
+            next();
+    };
 
 
     var app = express();
 
+     app.get('/stats/shares/:coin', usershares);
+     app.get('/stats/shares', shares);
+     app.get('/miner/:address', minerpage);
+     app.get('/payout/:address', payout);
 
     app.use(bodyParser.json());
 
@@ -266,6 +361,7 @@ module.exports = function(logger){
     });
 
     app.get('/:page', route);
+
     app.get('/', route);
 
     app.get('/api/:method', function(req, res, next){
@@ -288,7 +384,7 @@ module.exports = function(logger){
     });
 
     app.use(compress());
-    app.use('/static', express.static('website/static'));
+    app.use('/static', express.static('website/static', { maxAge: 86400000 * 7}));
 
     app.use(function(err, req, res, next){
         console.error(err.stack);

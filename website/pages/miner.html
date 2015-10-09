@@ -1,0 +1,20 @@
+<div class="row">
+        <div class="col-md-4">
+                <p class="lead" align="center">Enter Your Wallet address</p>
+                <div class="input-group" align="center">
+                        <input type="text" class="form-control input-lg" align="center">
+                        <span class="input-group-btn" align="center">
+                                <button class="btn btn-default btn-lg" type="button" align="center">Go!</button>
+                        </span>
+                </div>
+        </div>
+<div class="col-md-4"></div>
+</div>
+<script type="text/javascript">
+        $(document).ready(function(){
+
+                $('.btn-lg').click(function(){
+                        window.location = "miner/" + $('.input-lg').val();
+                });
+        });
+</script>
