@@ -3,6 +3,7 @@ node_js:
 - '0.10'
 deploy:
   provider: npm
+  sudo: false
   email: steven@bemining.net
   api_key:
     secure: NIJRQkbrDWKmp6JKQ9lbTbmGoQt6JibxWHX0nAIr4wwUJDNKtpp9a+mrYBIU4ntpT+RpDE1drt8Ktv80qTkBSw3/0MIKRQgpHB1/PhBy6PtF954VsNVgu+OaJfDq0FBo6qW8Y5kd5mkzsdAWd0lmYSSHF05OZpAmBVycjGu+j70=
