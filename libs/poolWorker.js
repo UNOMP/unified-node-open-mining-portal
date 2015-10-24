@@ -305,10 +305,14 @@ module.exports = function(logger){
                             + socket.remoteAddress + ' on '
                             + port + ' routing to ' + currentPool);
                         
-                        if (pools[currentPool])
-                            pools[currentPool].getStratumServer().handleNewClient(socket);
-                        else
-                            pools[initialPool].getStratumServer().handleNewClient(socket);
+                            if (pools[currentPool].getStratumServer() != null)
+                                try {pools[currentPool].getStratumServer().handleNewClient(socket);}
+                                    catch(err) {}
+                            else
+                            setTimeout(function(){
+                                try {pools[initialPool].getStratumServer().handleNewClient(socket);}
+                                    catch(err) {}
+                            }, 3000);
 
                     }).listen(parseInt(port), function() {
                         logger.warn(logSystem, logComponent, logSubCat, 'Switching "' + switchName
