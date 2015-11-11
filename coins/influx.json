@@ -1,0 +1,6 @@
+{
+    "name": "Influx",
+    "symbol": "INFX",
+    "algorithm": "x11",
+    "mposDiffMultiplier": 256
+}

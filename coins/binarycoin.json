@@ -1,0 +1,5 @@
+{
+    "name": "Binarycoin",
+    "symbol": "BIC",
+    "algorithm": "scrypt"
+}

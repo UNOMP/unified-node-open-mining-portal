@@ -1,0 +1,5 @@
+{
+    "name": "Dotcoin",
+    "symbol": "DOT",
+    "algorithm": "scrypt"
+}
