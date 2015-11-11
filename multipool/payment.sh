@@ -335,5 +335,5 @@ echo OPAL BALANCE:$OPAL
 redis-cli   hset Pool_Stats:$lastShift "Balance_OPAL" "$OPAL"
 redis-cli   hset Pool_Stats:$lastShift "Balance_POT" "$POT"
 
-redis-cli   save
+redis-cli   bgsave
 

@@ -149,4 +149,4 @@ echo "Start: $starttime End: $endtime"
 redis-cli hset Pool_Stats:CurrentShift:Profitability $now $profitstring
 redis-cli hset Pool_Stats:CurrentShift NameString $stringnames
 
-redis-cli save
+redis-cli bgsave
