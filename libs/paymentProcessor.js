@@ -73,6 +73,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
 
 
     var coin = poolOptions.coin.name;
+    var coinSymbol = poolOptions.coin.symbol;
     var processingConfig = poolOptions.paymentProcessing;
 
     var logSystem = 'Payments';
@@ -484,7 +485,7 @@ logger.info(logSystem, logComponent, addressAmounts);
                 }
 
 
-
+                var updateBlockStatCommands = [];
                 var movePendingCommands = [];
                 var roundsToDelete = [];
                 var orphanMergeCommands = [];
@@ -497,6 +498,10 @@ logger.info(logSystem, logComponent, addressAmounts);
                         });  
                 };
 
+                rounds.forEach(function(r){
+
+                    updateBlockStatCommands.push(['hset', 'Allblocks', coinSymbol +"-"+ r.height, r.serialized + ":" + r.category]); // hashgoal addition for update block stats for all coins
+                });
                 rounds.forEach(function(r){
                         switch(r.category){
                             case 'kicked':
@@ -528,6 +533,9 @@ logger.info(logSystem, logComponent, addressAmounts);
 
                 if (workerPayoutsCommand.length > 0)
                     finalRedisCommands = finalRedisCommands.concat(workerPayoutsCommand);
+
+                if (updateBlockStatCommands.length > 0)
+                    finalRedisCommands = finalRedisCommands.concat(updateBlockStatCommands);
 
                 if (roundsToDelete.length > 0)
                     finalRedisCommands.push(['del'].concat(roundsToDelete));
