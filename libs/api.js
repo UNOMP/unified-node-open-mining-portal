@@ -19,6 +19,12 @@ module.exports = function(logger, portalConfig, poolConfigs){
             case 'stats':
                 res.end(portalStats.statsString);
                 return;
+            // hashgoal addition for better block stats
+            case 'getblocksstats':
+                portalStats.getBlocksStats(function (data) {
+                    res.end(JSON.stringify(data));
+                });
+                return;
             case 'pool_stats':
                 res.writeHead(200, {
                     'Content-Type': 'text/html',
