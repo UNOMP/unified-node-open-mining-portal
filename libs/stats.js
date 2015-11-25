@@ -75,6 +75,20 @@ fubar.push(coin);
             logger.error(logSystem, 'Historics', 'Redis for stats had an error ' + JSON.stringify(err));
         });
     }
+    
+    this.getBlocksStats = function (cback) {
+        var client = redisClients[0].client;
+        client.hgetall("Allblocks", function (error, data) {
+            if (error) {
+                logger.log("error:-" + error);
+                cback("");
+                return;
+            }
+
+            cback(data);
+
+        });
+    };
 
     function gatherStatHistory(){
 
