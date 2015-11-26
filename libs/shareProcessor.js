@@ -19,6 +19,7 @@ module.exports = function(logger, poolConfig){
 
     var redisConfig = poolConfig.redis;
     var coin = poolConfig.coin.name;
+    var coinSymbol=poolConfig.coin.symbol; // hashgoal add for enhanced blocks api
 
 
     var forkId = process.env.forkId;
