@@ -99,7 +99,7 @@ module.exports = function(logger, poolConfig){
 
 	        if (isValidBlock){
 	            redisCommands.push(['rename', AuxCoin + ':shares:roundCurrent', AuxCoin + ':shares:round' + shareData.height]);
-	            redisCommands.push(['sadd', AuxCoin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height].join(':')]);
+	            redisCommands.push(['sadd', AuxCoin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height, shareData.worker, shareData.time , shareData.blockReward].join(':')]); // hashgoal addition
 	            redisCommands.push(['hset', 'Allblocks', AuxSymbol + "-" + shareData.height, [shareData.blockHash, shareData.txHash, shareData.height, shareData.worker, shareData.time, shareData.blockReward].join(':')]); // hashgoal addition used for block stat
 	            redisCommands.push(['hincrby', AuxCoin + ':stats', 'validBlocks', 1]);
 	   	} else if (shareData.blockHash){
@@ -127,7 +127,7 @@ module.exports = function(logger, poolConfig){
 
         if (isValidBlock){
             redisCommands.push(['rename', coin + ':shares:roundCurrent', coin + ':shares:round' + shareData.height]);
-            redisCommands.push(['sadd', coin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height].join(':')]);
+            redisCommands.push(['sadd', coin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height, shareData.worker, shareData.time,shareData.blockReward].join(':')]); // hashgoal addition
             redisCommands.push(['hset', 'Allblocks', coinSymbol + "-" + shareData.height, [shareData.blockHash, shareData.txHash, shareData.height, shareData.worker, shareData.time,shareData.blockReward].join(':')]); // hashgoal addition used for block stat
             redisCommands.push(['hincrby', coin + ':stats', 'validBlocks', 1]);
         }
