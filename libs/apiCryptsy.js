@@ -8,7 +8,7 @@ module.exports = function() {
 
     // Constants
     var version         = '0.1.0',
-        PUBLIC_API_URL  = 'http://pubapi.cryptsy.com/api.php',
+        PUBLIC_API_URL  = 'http://pubapi2.cryptsy.com/api.php',
         PRIVATE_API_URL = 'https://api.cryptsy.com/api',
         USER_AGENT      = 'unomp/unified-node-open-mining-portal'
 
