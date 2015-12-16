@@ -4,8 +4,6 @@ config.json
 pool_configs/*.json
 !pool_configs/litecoin_example.json
 npm-debug.log
-multipool/alerts/
-multipool/backup/
 multipool/inferno-payment.sh
 multipool/inferno-profit.sh
 multipool/nxt-payment.sh
