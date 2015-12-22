@@ -487,8 +487,8 @@ node init.js
 ```
 
 ###### Optional, highly-recommended enhancements for your awesome new mining pool server setup:
-* Use something like [forever](https://github.com/nodejitsu/forever) to keep the node script running
-in case the master process crashes. 
+* Use something like [forever](https://github.com/nodejitsu/forever) or [ndt](https://github.com/snailjs/ndt) to keep the node script running
+in case the master process crashes.
 * Use something like [redis-commander](https://github.com/joeferner/redis-commander) to have a nice GUI
 for exploring your redis database.
 * Use something like [logrotator](http://www.thegeekstuff.com/2010/07/logrotate-examples/) to rotate log 
