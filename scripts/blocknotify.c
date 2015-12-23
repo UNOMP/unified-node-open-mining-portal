@@ -11,7 +11,7 @@
 Contributed by Alex Petrov aka SysMan at sysman.net
 Updated by Alejandro Reyero - TodoJuegos.com
 
-Part of NOMP project
+Part of UNOMP project
 Simple lightweight & fast - a more efficient block notify script in pure C.
 
 (may also work as coin switch)
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
     if (argc < 3)
     {
         // print help
-        printf("NOMP pool block notify\n usage: <host:port> <coin> <block>\n");
+        printf("UNOMP pool block notify\n usage: <host:port> <coin> <block>\n");
         exit(1);
     }
 
