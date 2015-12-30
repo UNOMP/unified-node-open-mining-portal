@@ -90,7 +90,7 @@
                                                                 <tr>
                                                                         <th>Pool</th>
                                                                         <th>Valid Shares</th>
-                                                                        <th>Invalid Shares</th>
+                                                                        <th>Invalid Shares (Rate %)</th>
                                                                         <th>Total Blocks</th>
                                                                 </tr>
                                                         </thead>
@@ -99,7 +99,7 @@
 								<tr>
 									<td>{{=pool}}</td>
 									<td>{{=it.stats.pools[pool].poolStats.validShares}}</td>
-									<td>{{=it.stats.pools[pool].poolStats.invalidShares}}</td>
+									<td>{{=it.stats.pools[pool].poolStats.invalidShares}} ({{=it.stats.pools[pool].poolStats.invalidRate}}%)</td>
 									<td>{{=it.stats.pools[pool].poolStats.validBlocks}}</td>
 								</tr>
 					                {{ } }}

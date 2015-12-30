@@ -301,6 +301,7 @@ console.log('ERROR FROM STATS.JS ' + err);
                                 validShares: replies[i + 2] ? (replies[i + 2].validShares || 0) : 0,
                                 validBlocks: replies[i + 2] ? (replies[i + 2].validBlocks || 0) : 0,
                                 invalidShares: replies[i + 2] ? (replies[i + 2].invalidShares || 0) : 0,
+                                invalidRate: ((replies[i + 2] ? (replies[i + 2].invalidShares || 0) : 0) / (replies[i + 2] ? (replies[i + 2].validShares || 0) : 0)).toFixed(4),
                                 totalPaid: replies[i + 2] ? (replies[i + 2].totalPaid || 0) : 0
                             },
                             blocks: {
