@@ -112,6 +112,7 @@ module.exports = function(logger){
 
     var createAndStartPool = function(coin){
         var poolOptions = poolConfigs[coin];
+        var myAuxes = poolConfigs[coin].auxes;
 
         var logSystem = 'Pool';
         var logComponent = coin;
@@ -172,8 +173,8 @@ module.exports = function(logger){
 		}
    	 };
 
-            handlers.share = function(isValidShare, isValidBlock, data){
-                shareProcessor.handleShare(isValidShare, isValidBlock, data);
+            handlers.share = function(isValidShare, isValidBlock, data, coin){
+                shareProcessor.handleShare(isValidShare, isValidBlock, data, coin);
             };
         }
 
@@ -209,8 +210,12 @@ module.exports = function(logger){
             else if (!isValidShare)
                 logger.fatal(logSystem, logComponent, logSubCat, 'Share rejected: ' + shareData);
 
-            handlers.share(isValidShare, isValidBlock, data)
-
+            handlers.share(isValidShare, isValidBlock, data, poolOptions.coin.name)
+            //loop through auxcoins
+            for(var i = 0; i < myAuxes.length; i++) {
+                coin = myAuxes[i].name;
+                handlers.share(isValidShare, isValidBlock, data, coin);
+            }
 
         }).on('difficultyUpdate', function(workerName, diff){
             logger.debug(logSystem, logComponent, logSubCat, 'Difficulty update to diff ' + diff + ' workerName=' + JSON.stringify(workerName));

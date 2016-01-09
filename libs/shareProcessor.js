@@ -19,7 +19,7 @@ module.exports = function(logger, poolConfig){
 
     var redisConfig = poolConfig.redis;
     var coin = poolConfig.coin.name;
-var coinSymbol=poolConfig.coin.symbol;
+    var coinSymbol=poolConfig.coin.symbol;
 
     var forkId = process.env.forkId;
     var logSystem = 'Pool';
@@ -69,56 +69,19 @@ var coinSymbol=poolConfig.coin.symbol;
     });
 
 
-    this.handleShare = function(isValidShare, isValidBlock, shareData){
+    this.handleShare = function(isValidShare, isValidBlock, shareData, coin){
 
         var redisCommands = [];
-	myAuxes = poolConfig.auxes
-	shareData.worker = shareData.worker.trim();
-	for (var i=0; i < myAuxes.length; i++){
-		AuxCoin = myAuxes[i].coin.name;
-		AuxSymbol=myAuxes[i].coin.symbol;
-
-		if (isValidShare){
-         	   redisCommands.push(['hincrbyfloat', AuxCoin + ':shares:roundCurrent', shareData.worker, shareData.difficulty]);
-         	   redisCommands.push(['hincrby', AuxCoin + ':stats', 'validShares', 1]);
-
-                redisCommands.push(['hincrbyfloat', 'Pool_Stats:CurrentShift:stats', 'validShares', shareData.difficulty]); //addition for multipool round total share state
-                redisCommands.push(['hincrbyfloat', 'Pool_Stats:CurrentShift:stats', shareData.worker, shareData.difficulty]); //addition for multipool round worker share state
-
-
-
-            } else {
-            	  redisCommands.push(['hincrby', AuxCoin + ':stats', 'invalidShares', 1]);
-                redisCommands.push(['hincrbyfloat', 'Pool_Stats:CurrentShift:stats', 'invalidShares', shareData.difficulty]); //addition for multipool round total share state
-
-
-            }
-	        /* Stores share diff, worker, and unique value with a score that is the timestamp. Unique value ensures it
-	           doesn't overwrite an existing entry, and timestamp as score lets us query shares from last X minutes to
-	           generate hashrate for each worker and pool. */
-	        var dateNow = Date.now();
-	        var hashrateData = [ isValidShare ? shareData.difficulty : -shareData.difficulty, shareData.worker, dateNow];
-	        redisCommands.push(['zadd', AuxCoin + ':hashrate', dateNow / 1000 | 0, hashrateData.join(':')]);
-
-	        if (isValidBlock){
-	            redisCommands.push(['rename', AuxCoin + ':shares:roundCurrent', AuxCoin + ':shares:round' + shareData.height]);
-	            redisCommands.push(['sadd', AuxCoin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height, shareData.worker, shareData.time , shareData.blockReward].join(':')]);
-	            redisCommands.push(['hset', 'Allblocks', AuxSymbol + "-" + shareData.height, [shareData.blockHash, shareData.txHash, shareData.height, shareData.worker, shareData.time, shareData.blockReward].join(':')]); //used for block stat
-	            redisCommands.push(['hincrby', AuxCoin + ':stats', 'validBlocks', 1]);
-	   	} else if (shareData.blockHash){
-                redisCommands.push(['hincrby', AuxCoin + ':stats', 'invalidBlocks', 1]);
-
-	        }
-	}
+        shareData.worker = shareData.worker.trim();
 
         if (isValidShare){
             //add currentShift shares
             redisCommands.push(['hincrbyfloat', coin + ':shares:roundCurrent', shareData.worker, shareData.difficulty]);
             redisCommands.push(['hincrby', coin + ':stats', 'validShares', 1]);
-
+ 
             redisCommands.push(['hincrbyfloat', 'Pool_Stats:CurrentShift:stats', 'validShares', shareData.difficulty]); //addition for multipool round total share state
             redisCommands.push(['hincrbyfloat', 'Pool_Stats:CurrentShift:stats', shareData.worker, shareData.difficulty]); //addition for multipool round worker share state
-
+ 
         }
         else{
             redisCommands.push(['hincrby', coin + ':stats', 'invalidShares', 1]);
@@ -145,7 +108,6 @@ var coinSymbol=poolConfig.coin.symbol;
             if (err)
                 logger.error(logSystem, logComponent, logSubCat, 'Error with share processor multi ' + JSON.stringify(err));
         });
-
 
     };
 
