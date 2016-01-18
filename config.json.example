@@ -34,9 +34,9 @@
     "website": {
         "enabled": true,
         "host": "0.0.0.0",
-        "siteTitle": "UNOMP",
+        "siteTitle": "UNOMP Beta",
         "port": 80,
-        "stratumHost": "stratum1.altnuts.com",
+        "stratumHost": "pool.unomp.org",
         "stats": {
             "updateInterval": 60,
             "historicalRetention": 43200,
