@@ -12,100 +12,101 @@ bittrex.options({
   'baseUrl': 'https://bittrex.com/api/v1.1'
 });
 
-var foobar = [];
+var exchangeBalances = [];
 
 
 
-function bitcoinwithdraw() {
-  bittrex.getbalances(function(data) {
-    console.log('Withdrawing Bitcoin');
-    fubar=data.result
-    Object.keys(fubar).forEach(function(coin) {
-      var Name = data.result[coin].Currency;
-      var Balance = data.result[coin].Balance;
-      foobar[Name] = {
-        Balance: data.result[coin].Balance,
-        Available: data.result[coin].Available,
-        Pending: data.result[coin].Pending,
-        Exchange: 0
-      };
-      client.hget("Exchange_Rates", Name, function(err, exchange) {
-        if (exchange == null) {
-          exchange = 0;
-        }
-        else {
-          foobar[Name].Exchange = parseFloat(exchange)
-        }
-      client.quit();
-    });
-  });
-  bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/account/withdraw?apikey=API-KEY&currency=BTC&quantity=' + foobar.BTC.Available + '&address=ADDRESS', function( data ) {
+function bitcoinwithdraw(exchangeBalances, callback) {
+  console.log('Withdrawing Bitcoin');
+  bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/account/withdraw?apikey=539221df75b74af299958012e09c3912&currency=BTC&quantity=' + exchangeBalances.BTC.Available + '&address=ADDRESS', function( data ) {
     console.log( data );
-    console.log('Done withdrawing Bitcoin');
-  }, true);  
-});
+    callback(null, exchangeBalances);
+  }, true);
 };
 
 // Sell Coins on Bittrex //
 function coinsell() {
   console.log('Selling coins');
   bittrex.getbalances(function(data) {
-    fubar=data.result
-    Object.keys(fubar).forEach(function(coin) {
-      var Name = data.result[coin].Currency;
-      var Balance = data.result[coin].Balance;
-      foobar[Name] = {
-        Balance: data.result[coin].Balance,
-        Available: data.result[coin].Available,
-        Pending: data.result[coin].Pending,
-        Exchange: 0
-      };
-      client.hget("Exchange_Rates", Name, function(err, exchange) {
-        if (exchange == null) {
-          exchange = 0;
-        }
-        else {
-          foobar[Name].Exchange = parseFloat(exchange)
-        }
-      client.quit();
-      });
+    getbalance=data.result
+    async.waterfall([
+      function(callback){
+        Object.keys(getbalance).forEach(function(coin) {
+          var Name = data.result[coin].Currency;
+          var Balance = data.result[coin].Balance;
+          exchangeBalances[Name] = {
+            Balance: data.result[coin].Balance,
+            Available: data.result[coin].Available,
+            Pending: data.result[coin].Pending
+          };
+        });
+        callback(null, exchangeBalances);
+      }, function(exchangeBalances, callback){
+        client.hget("Exchange_Rates", "californium", function(err, exchange) {
+          bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-CF&quantity=' + exchangeBalances.CF.Available + '&rate=' + exchange, function( data ) {
+            console.log( data );
+            callback(null, exchangeBalances);
+          }, true);
+        });
+      }, function(exchangeBalances, callback){
+        client.hget("Exchange_Rates", "florincoin", function(err, exchange) {
+          bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-FLO&quantity=' + exchangeBalances.FLO.Available + '&rate=' + exchange, function( data ) {
+            console.log( data );
+            callback(null, exchangeBalances);
+          }, true);
+        });
+      }, function(exchangeBalances, callback){
+        client.hget("Exchange_Rates", "omnicoin", function(err, exchange) {
+          bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-OMC&quantity=' + exchangeBalances.OMC.Available + '&rate=' + exchange, function( data ) {
+            console.log( data );
+            callback(null, exchangeBalances);
+          }, true);
+        });
+      }, function(exchangeBalances, callback){
+        client.hget("Exchange_Rates", "quatloo", function(err, exchange) {
+          bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-QTL&quantity=' + exchangeBalances.QTL.Available + '&rate=' + exchange, function( data ) {
+            console.log( data );
+            callback(null, exchangeBalances);
+          }, true);
+        });
+      }, function(exchangeBalances, callback){
+        client.hget("Exchange_Rates", "unitcurrency", function(err, exchange) {
+          bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-UNIT&quantity=' + exchangeBalances.UNIT.Available + '&rate=' + exchange, function( data ) {
+            console.log( data );
+            callback(null, exchangeBalances);
+          }, true);
+        });
+      }
+    ], function() {
+      console.log("Done selling coins");
     });
-    client.hget("Exchange_Rates", "californium", function(err, exchange) {
-      bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-CF&quantity=' + foobar.CF.Available + '&rate=' + exchange, function( data ) {
-        console.log( data );
-      }, true);
-    });
-    client.hget("Exchange_Rates", "florincoin", function(err, exchange) {
-      bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-FLO&quantity=' + foobar.FLO.Available + '&rate=' + exchange, function( data ) {
-        console.log( data );
-      }, true);
-    });
-    client.hget("Exchange_Rates", "omnicoin", function(err, exchange) {
-      bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-OMC&quantity=' + foobar.OMC.Available + '&rate=' + exchange, function( data ) {
-        console.log( data );
-      }, true);
-    });
-    client.hget("Exchange_Rates", "quatloo", function(err, exchange) {
-      bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-QTL&quantity=' + foobar.QTL.Available + '&rate=' + exchange, function( data ) {
-        console.log( data );
-      }, true);
-    });
-    client.hget("Exchange_Rates", "unitcurrency", function(err, exchange) {
-      bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/market/selllimit?apikey=API-KEY&market=BTC-UNIT&quantity=' + foobar.UNIT.Available + '&rate=' + exchange, function( data ) {
-        console.log( data );
-      }, true);
-    });
-  });    
+  });
 }
 
 console.log('Withdraws bitcoin daily + Sells coins every 6 hours');
 var j = schedule.scheduleJob('0 4 * * *', function(){
-async.parallel([
-    function(){ bitcoinwithdraw(); }
-]);
+    async.waterfall([
+        function(callback){
+            bittrex.getbalances(function(data) {
+                getbalance=data.result
+                Object.keys(getbalance).forEach(function(coin) {
+                    var Name = data.result[coin].Currency;
+                    var Balance = data.result[coin].Balance;
+                    exchangeBalances[Name] = {
+                        Balance: data.result[coin].Balance,
+                        Available: data.result[coin].Available,
+                        Pending: data.result[coin].Pending,
+                        Exchange: 0
+                    };
+                });
+                callback(null, exchangeBalances);
+            });
+        }, 
+        bitcoinwithdraw(exchangeBalances, callback)
+    ], function() {
+        console.log('Done withdrawing Coins');
+    });
 });
 var j = schedule.scheduleJob('0 0/6 * * *', function(){
-async.parallel([
-    function(){ coinsell(); }
-]);
+  coinsell();
 });
