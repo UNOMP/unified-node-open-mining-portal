@@ -14,7 +14,7 @@ bittrex.options({
 
 var exchangeBalances = [];
 
-
+console.log('Withdraws bitcoin daily + Sells coins every 6 hours');
 
 function bitcoinwithdraw(exchangeBalances, callback) {
   console.log('Withdrawing Bitcoin');
@@ -83,7 +83,6 @@ function coinsell() {
   });
 }
 
-console.log('Withdraws bitcoin daily + Sells coins every 6 hours');
 var j = schedule.scheduleJob('0 4 * * *', function(){
     async.waterfall([
         function(callback){
@@ -101,12 +100,15 @@ var j = schedule.scheduleJob('0 4 * * *', function(){
                 });
                 callback(null, exchangeBalances);
             });
-        }, 
-        bitcoinwithdraw(exchangeBalances, callback)
+        },
+        function(exchangeBalances, callback){
+            bitcoinwithdraw(exchangeBalances, callback)
+        }
     ], function() {
         console.log('Done withdrawing Coins');
     });
 });
+
 var j = schedule.scheduleJob('0 0/6 * * *', function(){
   coinsell();
 });
