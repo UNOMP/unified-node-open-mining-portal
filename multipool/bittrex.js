@@ -7,7 +7,7 @@ bittrex.options({
   'apikey': 'KEY',
   'apisecret': 'SECRET',
   'stream': true,
-  'verbose': true,
+  'verbose': false,
   'cleartext': true,
   'baseUrl': 'https://bittrex.com/api/v1.1'
 });
