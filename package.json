@@ -1,6 +1,6 @@
 {
     "name": "unified-node-open-mining-portal",
-    "version": "0.0.6",
+    "version": "1.0.0",
     "description": "An extremely efficient, highly scalable, all-in-one, easy to setup cryptocurrency mining pool",
     "keywords": [
         "stratum",
@@ -12,23 +12,23 @@
         "litecoin",
         "scrypt",
 	"merged",
-	"sigwo"
+	"multipool",
+	"multicoin"
     ],
     "homepage": "https://github.com/UNOMP/unified-node-open-mining-portal",
     "bugs": {
         "url": "https://github.com/UNOMP/unified-node-open-mining-portal/issues"
     },
     "license": "GPL-2.0",
-    "author": "Steven Grove",
     "contributors": [
         "vekexasia",
         "TheSeven",
         "ahmed",
 	"zone117x",
-	"sigwo",
 	"elitemobb",
 	"altnuts",
-	"infernoman"
+	"infernoman",
+	"sigwo"
     ],
     "main": "init.js",
     "bin": {
