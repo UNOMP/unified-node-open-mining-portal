@@ -67,17 +67,6 @@
         "host": "127.0.0.1",
         "port": 19333,
         "disableTransactions": false
-    },
-
-    "mposMode": {
-        "enabled": false,
-        "host": "127.0.0.1",
-        "port": 3306,
-        "user": "me",
-        "password": "mypass",
-        "database": "ltc",
-        "checkPassword": false,
-        "autoCreateWorker": false
     }
 
 }
