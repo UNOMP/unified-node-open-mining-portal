@@ -453,7 +453,7 @@ Description of options:
            feature that prevents the daemon from spamming our peer node with unnecessary
            transaction data. Assume its supported but if you have problems try disabling it. */
         "disableTransactions": true
-    },
+    }
 }
 
 ````
