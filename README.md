@@ -57,7 +57,7 @@ current round so that each and every share will be rewarded.
 
 * Coin-switching ports using coin-networks and crypto-exchange APIs to detect profitability. 
 
-* Past MPOS functionality is no longer available/working. Signing up and mining pools don't mix. See [PR #15](//github.com/sigwo/unified-node-open-mining-portal/pull/15).
+* Past MPOS functionality is no longer maintained, althought it is working for now.
  
 * Basic multipooling features included, but *NOT* enabled by default. You must follow the [README](//github.com/sigwo/unified-node-open-mining-portal/blob/master/multipool/README) in the [multipool](//github.com/sigwo/unified-node-open-mining-portal/blob/master/multipool) folder. More updates *WILL* happen in the multipool options and will stay open source.
 
