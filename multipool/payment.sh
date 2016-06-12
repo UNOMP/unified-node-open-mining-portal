@@ -61,6 +61,9 @@ echo "Start: $starttime End: $endtime"
                 elif [ $Algo = "x11" ]
                 then
                         thisalgoP=`echo "scale=8;$thisalgoP * 1" | bc -l`> /dev/null
+                elif [ $Algo = "x13" ]
+                then
+                        thisalgoP=`echo "scale=8;$thisalgoP * 1" | bc -l`> /dev/null
                 else
                         echo "done" >/dev/null
                 fi
@@ -75,6 +78,7 @@ done< <(redis-cli hkeys Coin_Algos)
 redis-cli hget API sha256 > ~/unomp/website/static/sha256_profit.txt
 redis-cli hget API scrypt > ~/unomp/website/static/scrypt_profit.txt
 redis-cli hget API x11 > ~/unomp/website/static/x11_profit.txt
+redis-cli hget API x13 > ~/unomp/website/static/x13_profit.txt
 
 # Change to your path variables throughout, hoping to add up front global vars
 cp ~/unomp/multipool/alerts/payouts.log ~/unomp/multipool/alerts/old_payouts.log
