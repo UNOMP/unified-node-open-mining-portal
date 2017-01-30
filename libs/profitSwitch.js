@@ -515,7 +515,7 @@ module.exports = function(logger){
                 return;
             }
             var depth = new Number(0);
-            if (response.hasOwnProperty('result')){
+            if (response.hasOwnProperty('result') && response.success == true){
                 var totalQty = new Number(0);
                 response['result'].forEach(function(order){
                     var price = new Number(order.Rate);
@@ -527,7 +527,11 @@ module.exports = function(logger){
                        totalQty += qty;
                     }
                 });
-            }
+            } else {
+		logger.error(logSystem, symbolB, 'Error while getting Bittrex market information: ' + response.message);
+		callback();
+                return;
+	    }
 
             var marketData = profitStatus[symbolToAlgorithmMap[symbolB]][symbolB].exchangeInfo['Bittrex'];
             marketData[symbolA].depth = depth;
