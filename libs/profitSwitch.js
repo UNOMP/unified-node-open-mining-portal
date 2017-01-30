@@ -5,9 +5,7 @@ var fs     = require('fs');
 
 var algos  = require('merged-pooler/lib/algoProperties.js');
 var util   = require('merged-pooler/lib/util.js');
-var Cryptsy  = require('./apiCryptsy.js');
 var Poloniex = require('./apiPoloniex.js');
-var Mintpal  = require('./apiMintpal.js');
 var Bittrex  = require('./apiBittrex.js');
 var Stratum  = require('merged-pooler');
 
@@ -96,15 +94,6 @@ module.exports = function(logger){
         // 'API_KEY',
         // 'API_SECRET'
     );
-    var cryptsyApi =  new Cryptsy(
-        // 'API_KEY',
-        // 'API_SECRET'
-    );
-    var mintpalApi =  new Mintpal(
-        // 'API_KEY',
-        // 'API_SECRET'
-    );
-
     var bittrexApi =  new Bittrex(
         // 'API_KEY',
         // 'API_SECRET'
@@ -227,205 +216,6 @@ module.exports = function(logger){
     };
 
     
-    this.getProfitDataCryptsy = function(callback){
-        async.series([
-            function(taskCallback){
-                cryptsyApi.getTicker(function(err, data){
-                    if (err || data.success != 1){
-                        taskCallback(err);
-                        return;
-                    }
-
-                    Object.keys(symbolToAlgorithmMap).forEach(function(symbol){
-                        var exchangeInfo = profitStatus[symbolToAlgorithmMap[symbol]][symbol].exchangeInfo;
-                        if (!exchangeInfo.hasOwnProperty('Cryptsy'))
-                            exchangeInfo['Cryptsy'] = {};
-
-                        var marketData = exchangeInfo['Cryptsy'];
-                        var results    = data.return.markets;
-
-                        if (results && results.hasOwnProperty(symbol + '/BTC')) {
-                            if (!marketData.hasOwnProperty('BTC'))
-                                marketData['BTC'] = {};
-
-                            var btcData = results[symbol + '/BTC'];
-                            marketData['BTC'].last = new Number(btcData.lasttradeprice);
-                            marketData['BTC'].baseVolume = new Number(marketData['BTC'].last / btcData.volume);
-                            marketData['BTC'].quoteVolume = new Number(btcData.volume);
-                            if (btcData.sellorders != null)
-                                marketData['BTC'].ask = new Number(btcData.sellorders[0].price);
-                            if (btcData.buyorders != null) {
-                                marketData['BTC'].bid = new Number(btcData.buyorders[0].price);
-                                var limit = new Number(marketData['BTC'].bid * portalConfig.profitSwitch.depth);
-                                var depth = new Number(0);
-                                var totalQty = new Number(0);
-                                btcData['buyorders'].forEach(function(order){
-                                    var price = new Number(order.price);
-                                    var qty = new Number(order.quantity);
-                                    if (price >= limit){
-                                        depth += (qty * price);
-                                        totalQty += qty;
-                                    }
-                               });
-                               marketData['BTC'].depth = depth;
-                               if (totalQty > 0)
-                                   marketData['BTC'].weightedBid = new Number(depth / totalQty);
-                           }
-                        }
-
-                        if (results && results.hasOwnProperty(symbol + '/LTC')) {
-                            if (!marketData.hasOwnProperty('LTC'))
-                                marketData['LTC'] = {};
-
-                            var ltcData = results[symbol + '/LTC'];
-                            marketData['LTC'].last = new Number(ltcData.lasttradeprice);
-                            marketData['LTC'].baseVolume = new Number(marketData['LTC'].last / ltcData.volume);
-                            marketData['LTC'].quoteVolume = new Number(ltcData.volume);
-                            if (ltcData.sellorders != null)
-                                marketData['LTC'].ask = new Number(ltcData.sellorders[0].price);
-                            if (ltcData.buyorders != null) {
-                                marketData['LTC'].bid = new Number(ltcData.buyorders[0].price);
-                                var limit = new Number(marketData['LTC'].bid * portalConfig.profitSwitch.depth);
-                                var depth = new Number(0);
-                                var totalQty = new Number(0);
-                                ltcData['buyorders'].forEach(function(order){
-                                    var price = new Number(order.price);
-                                    var qty = new Number(order.quantity);
-                                    if (price >= limit){
-                                        depth += (qty * price);
-                                        totalQty += qty;
-                                    }
-                               });
-                               marketData['LTC'].depth = depth;
-                               if (totalQty > 0)
-                                   marketData['LTC'].weightedBid = new Number(depth / totalQty);
-                           }
-                        }
-                    });
-                    taskCallback();
-                });
-            }
-        ], function(err){
-            if (err){
-                callback(err);
-                return;
-            }
-            callback(null);
-        });
-        
-    };
-
-
-    this.getProfitDataMintpal = function(callback){
-        async.series([
-            function(taskCallback){
-                mintpalApi.getTicker(function(err, response){
-                    if (err || !response.data){
-                        taskCallback(err);
-                        return;
-                    }
-
-                    Object.keys(symbolToAlgorithmMap).forEach(function(symbol){
-                        response.data.forEach(function(market){
-                            var exchangeInfo = profitStatus[symbolToAlgorithmMap[symbol]][symbol].exchangeInfo;
-                            if (!exchangeInfo.hasOwnProperty('Mintpal'))
-                                exchangeInfo['Mintpal'] = {};
-
-                            var marketData = exchangeInfo['Mintpal'];
-
-                            if (market.exchange == 'BTC' && market.code == symbol) {
-                                if (!marketData.hasOwnProperty('BTC'))
-                                    marketData['BTC'] = {};
-
-                                marketData['BTC'].last = new Number(market.last_price);
-                                marketData['BTC'].baseVolume = new Number(market['24hvol']);
-                                marketData['BTC'].quoteVolume = new Number(market['24hvol'] / market.last_price);
-                                marketData['BTC'].ask = new Number(market.top_ask);
-                                marketData['BTC'].bid = new Number(market.top_bid);
-                            }
-
-                            if (market.exchange == 'LTC' && market.code == symbol) {
-                                if (!marketData.hasOwnProperty('LTC'))
-                                    marketData['LTC'] = {};
-
-                                marketData['LTC'].last = new Number(market.last_price);
-                                marketData['LTC'].baseVolume = new Number(market['24hvol']);
-                                marketData['LTC'].quoteVolume = new Number(market['24hvol'] / market.last_price);
-                                marketData['LTC'].ask = new Number(market.top_ask);
-                                marketData['LTC'].bid = new Number(market.top_bid);
-                            }
-
-                        });
-                    });
-                    taskCallback();
-                });
-            },
-            function(taskCallback){
-                var depthTasks = [];
-                Object.keys(symbolToAlgorithmMap).forEach(function(symbol){
-                    var marketData = profitStatus[symbolToAlgorithmMap[symbol]][symbol].exchangeInfo['Mintpal'];
-                    if (marketData.hasOwnProperty('BTC') && marketData['BTC'].bid > 0){
-                        depthTasks.push(function(callback){
-                            _this.getMarketDepthFromMintpal('BTC', symbol, marketData['BTC'].bid, callback) 
-                        });
-                    }
-                    if (marketData.hasOwnProperty('LTC') && marketData['LTC'].bid > 0){
-                        depthTasks.push(function(callback){
-                            _this.getMarketDepthFromMintpal('LTC', symbol, marketData['LTC'].bid, callback) 
-                        });
-                    }
-                });
-
-                if (!depthTasks.length){
-                    taskCallback();
-                    return;
-                }
-                async.series(depthTasks, function(err){
-                    if (err){
-                        taskCallback(err);
-                        return;
-                    }
-                    taskCallback();
-                });
-            }
-        ], function(err){
-            if (err){
-                callback(err);
-                return;
-            }
-            callback(null);
-        });
-    };
-    this.getMarketDepthFromMintpal = function(symbolA, symbolB, coinPrice, callback){
-        mintpalApi.getBuyOrderBook(symbolA, symbolB, function(err, response){
-            if (err){
-                callback(err);
-                return;
-            }
-            var depth = new Number(0);
-            if (response.hasOwnProperty('data')){
-                var totalQty = new Number(0);
-                response['data'].forEach(function(order){
-                    var price = new Number(order.price);
-                    var limit = new Number(coinPrice * portalConfig.profitSwitch.depth);
-                    var qty = new Number(order.amount);
-                    // only measure the depth down to configured depth
-                    if (price >= limit){
-                       depth += (qty * price);
-                       totalQty += qty;
-                    }
-                });
-            }
-
-            var marketData = profitStatus[symbolToAlgorithmMap[symbolB]][symbolB].exchangeInfo['Mintpal'];
-            marketData[symbolA].depth = depth;
-            if (totalQty > 0)
-                marketData[symbolA].weightedBid = new Number(depth / totalQty);
-            callback();
-        });
-    };
-
-
     this.getProfitDataBittrex = function(callback){
         async.series([
             function(taskCallback){
@@ -683,12 +473,6 @@ module.exports = function(logger){
         profitabilityTasks = [];
         if (portalConfig.profitSwitch.usePoloniex)
             profitabilityTasks.push(_this.getProfitDataPoloniex);
-
-        if (portalConfig.profitSwitch.useCryptsy)
-            profitabilityTasks.push(_this.getProfitDataCryptsy);
-
-        if (portalConfig.profitSwitch.useMintpal)
-            profitabilityTasks.push(_this.getProfitDataMintpal);
 
         if (portalConfig.profitSwitch.useBittrex)
             profitabilityTasks.push(_this.getProfitDataBittrex);

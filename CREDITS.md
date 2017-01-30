@@ -9,7 +9,6 @@ To support development of this project feel free to donate :)
 * QRK: `QehPDAhzVQWPwDPQvmn7iT3PoFUGT7o8bC`
 * DRK: `XcQmhp8ANR7okWAuArcNFZ2bHSB81jpapQ`
 * DOGE: `DBGGVtwAAit1NPZpRm5Nz9VUFErcvVvHYW`
-* Cryptsy Trade Key: `254ca13444be14937b36c44ba29160bd8f02ff76`
 
 Credits
 -------

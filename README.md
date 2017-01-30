@@ -310,7 +310,6 @@ Explanation for each field:
         "updateInterval": 600,
         "depth": 0.90,
         "usePoloniex": true,
-        "useCryptsy": true,
         "useBittrex": true
     }
 }
