@@ -362,35 +362,52 @@ module.exports = function(logger){
             logger[severity](logSystem, symbol, message);
             callback(null); // fail gracefully for each coin
         });
+        if (symbol == 'PPC') {
+            daemon.cmd('getblocktemplate', [{"mode": "template" }], function(result) {
+                if (result[0].error != null) {
+                    logger.error(logSystem, symbol, 'Error while reading daemon info: ' + JSON.stringify(result[0]));
+                    callback(null); // fail gracefully for each coin
+                    return;
+                }
+                var coinStatus = profitStatus[symbolToAlgorithmMap[symbol]][symbol];
+                var response = result[0].response;
 
-        daemon.cmd('getblocktemplate', [{"capabilities": [ "coinbasetxn", "workid", "coinbase/append" ]}], function(result) {
-            if (result[0].error != null) {
-                logger.error(logSystem, symbol, 'Error while reading daemon info: ' + JSON.stringify(result[0]));
-                callback(null); // fail gracefully for each coin
-                return;
-            }
-            var coinStatus = profitStatus[symbolToAlgorithmMap[symbol]][symbol];
-            var response = result[0].response;
+                // some shitcoins dont provide target, only bits, so we need to deal with both
+                var target = response.target ? bignum(response.target, 16) : util.bignumFromBitsHex(response.bits);
+                coinStatus.difficulty = parseFloat((diff1 / target.toNumber()).toFixed(9));
+                logger.warn(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
 
-            // some shitcoins dont provide target, only bits, so we need to deal with both
-            var target = response.target ? bignum(response.target, 16) : util.bignumFromBitsHex(response.bits);
-            coinStatus.difficulty = parseFloat((diff1 / target.toNumber()).toFixed(9));
-            logger.warn(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
-
-	    if (coinStatus.name == 'dogecoindark'){coinStatus.reward = response.coinbasevalue / 1000000;}
-	    else if (coinStatus.name == 'cryptobullion'){coinStatus.reward = response.coinbasevalue / 1000000;}
-	    else if (coinStatus.name == 'tekcoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
-	    else if (coinStatus.name == 'battlecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
-	    else if (coinStatus.name == 'opensourcecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
-	    else if (coinStatus.name == 'legendarycoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
-	    else if (coinStatus.name == 'novacoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
-	    else if (coinStatus.name == 'tagcoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
-
-
-
+                coinStatus.reward = response.coinbasevalue / 1000000;
+                callback(null);
+            });
+        } else {
+            daemon.cmd('getblocktemplate', [{"capabilities": [ "coinbasetxn", "workid", "coinbase/append" ]}], function(result) {
+                if (result[0].error != null) {
+                    logger.error(logSystem, symbol, 'Error while reading daemon info: ' + JSON.stringify(result[0]));
+                    callback(null); // fail gracefully for each coin
+                    return;
+                }
+                var coinStatus = profitStatus[symbolToAlgorithmMap[symbol]][symbol];
+                var response = result[0].response;
+    
+                // some shitcoins dont provide target, only bits, so we need to deal with both
+                var target = response.target ? bignum(response.target, 16) : util.bignumFromBitsHex(response.bits);
+                coinStatus.difficulty = parseFloat((diff1 / target.toNumber()).toFixed(9));
+                logger.warn(logSystem, symbol, 'difficulty is ' + coinStatus.difficulty);
+    
+            if (coinStatus.name == 'dogecoindark'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else if (coinStatus.name == 'cryptobullion'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else if (coinStatus.name == 'tekcoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else if (coinStatus.name == 'battlecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else if (coinStatus.name == 'opensourcecoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else if (coinStatus.name == 'legendarycoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else if (coinStatus.name == 'novacoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+            else if (coinStatus.name == 'tagcoin'){coinStatus.reward = response.coinbasevalue / 1000000;}
+    
             else{coinStatus.reward = response.coinbasevalue / 100000000;}
             callback(null);
-        });
+            });
+	}
     };
 
 
