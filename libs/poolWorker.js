@@ -173,9 +173,13 @@ module.exports = function(logger){
 		}
    	 };
 
-            handlers.share = function(isValidShare, isValidBlock, data, coin){
-                shareProcessor.handleShare(isValidShare, isValidBlock, data, coin);
+            handlers.share = function(isValidShare, isValidBlock, data, coin, aux){
+                shareProcessor.handleShare(isValidShare, isValidBlock, data, coin, aux);
             };
+
+            handlers.auxblock = function(isValidBlock, height, hash, tx, diff, coin){
+                shareProcessor.handleAuxBlock(isValidBlock, height, hash, tx, diff, coin);
+              };
         }
 
         var authorizeFN = function (ip, port, workerName, password, callback) {
@@ -210,13 +214,18 @@ module.exports = function(logger){
             else if (!isValidShare)
                 logger.fatal(logSystem, logComponent, logSubCat, 'Share rejected: ' + shareData);
 
-            handlers.share(isValidShare, isValidBlock, data, poolOptions.coin.name)
+            handlers.share(isValidShare, isValidBlock, data, poolOptions.coin.name, false)
             //loop through auxcoins
-            for(var i = 0; i < myAuxes.length; i++) {
-                coin = myAuxes[i].name;
-                handlers.share(isValidShare, isValidBlock, data, coin);
-            }
-
+	    for(var i = 0; i < myAuxes.length; i++) {
+	        coin = myAuxes[i].name;
+	        handlers.share(isValidShare, false, data, coin, true);
+	    }
+        }).on('auxblock', function(symbol, height, hash, tx, amount, diff, mnr){
+        	for(var i = 0; i < myAuxes.length; i++) {
+        		if (myAuxes[i].symbol == symbol)
+		            coin = myAuxes[i].name;
+	        }
+        	handlers.auxblock(true, height, hash, tx, diff, coin);
         }).on('difficultyUpdate', function(workerName, diff){
             logger.debug(logSystem, logComponent, logSubCat, 'Difficulty update to diff ' + diff + ' workerName=' + JSON.stringify(workerName));
             handlers.diff(workerName, diff);

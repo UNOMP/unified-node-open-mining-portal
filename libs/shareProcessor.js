@@ -69,8 +69,27 @@ module.exports = function(logger, poolConfig){
     });
 
 
-    this.handleShare = function(isValidShare, isValidBlock, shareData, coin){
+    this.handleAuxBlock = function(isValidBlock, height, hash, tx, diff, coin){
 
+        var redisCommands = [];
+
+        if (isValidBlock){
+            redisCommands.push(['rename', coin + ':shares:roundCurrent', coin + ':shares:round' + height]);
+            redisCommands.push(['sadd', coin + ':blocksPending', [hash, tx, height].join(':')]);
+            redisCommands.push(['hincrby', coin + ':stats', 'validBlocks', 1]);
+        }
+        else if (hash){
+            redisCommands.push(['hincrby', coin + ':stats', 'invalidBlocks', 1]);
+        }
+
+        connection.multi(redisCommands).exec(function(err, replies){
+            if (err)
+                logger.error(logSystem, logComponent, logSubCat, 'Error with share processor multi ' + JSON.stringify(err));
+        });
+
+    };
+
+    this.handleShare = function(isValidShare, isValidBlock, shareData, coin, aux){
         var redisCommands = [];
         shareData.worker = shareData.worker.trim();
 
@@ -91,9 +110,10 @@ module.exports = function(logger, poolConfig){
            doesn't overwrite an existing entry, and timestamp as score lets us query shares from last X minutes to
            generate hashrate for each worker and pool. */
         var dateNow = Date.now();
-        var hashrateData = [ isValidShare ? shareData.difficulty : -shareData.difficulty, shareData.worker, dateNow];
-        redisCommands.push(['zadd', coin + ':hashrate', dateNow / 1000 | 0, hashrateData.join(':')]);
-
+        if (aux != true){
+            var hashrateData = [ isValidShare ? shareData.difficulty : -shareData.difficulty, shareData.worker, dateNow];
+            redisCommands.push(['zadd', coin + ':hashrate', dateNow / 1000 | 0, hashrateData.join(':')]);
+        }
         if (isValidBlock){
             redisCommands.push(['rename', coin + ':shares:roundCurrent', coin + ':shares:round' + shareData.height]);
             redisCommands.push(['sadd', coin + ':blocksPending', [shareData.blockHash, shareData.txHash, shareData.height, shareData.worker, shareData.time,shareData.blockReward].join(':')]);
