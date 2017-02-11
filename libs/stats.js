@@ -20,14 +20,11 @@ function rediscreateClient(port, host, pass, db) {
 module.exports = function(logger, portalConfig, poolConfigs){
 
     var _this = this;
-
     var logSystem = 'Stats';
-
-    var redisClients = [];
-    fubar = [];
-
     var redisStats;
 
+    var coinsArray = [];
+    var redisClients = [];
     this.statHistory = [];
     this.statPoolHistory = [];
     this.statAlgoHistory = [];
@@ -42,11 +39,10 @@ module.exports = function(logger, portalConfig, poolConfigs){
     var canDoStats = true;
 
     Object.keys(poolConfigs).forEach(function(coin){
-fubar.push(coin);
+        coinsArray.push(coin);
         if (!canDoStats) return;
 
         var poolConfig = poolConfigs[coin];
-
         var redisConfig = poolConfig.redis;
 
         for (var i = 0; i < redisClients.length; i++){
@@ -91,7 +87,6 @@ fubar.push(coin);
     };
 
     function gatherStatHistory(){
-
         var retentionTime = (((Date.now() / 1000) - portalConfig.website.stats.historicalRetention) | 0).toString();
 
         redisStats.zrangebyscore(['statHistory', retentionTime, '+inf'], function(err, replies){
@@ -135,13 +130,18 @@ fubar.push(coin);
         };
         for (var pool in stats.pools) {
             for (var worker in stats.pools[pool].workers) {
-            if (data.worker[worker] == null) {
-                data.worker[worker] = {
-                    algos: {}
-                }
-            }
-                data.worker[worker].algos[stats.pools[pool].algorithm] = {
-                    hashrate: stats.pools[pool].workers[worker].hashrateString
+                if (data.worker[worker] == null) {
+                    data.worker[worker] = {
+                        algos: {}
+                    }
+                    data.worker[worker].algos[stats.pools[pool].algorithm] = {
+                        hashrate: stats.pools[pool].workers[worker].hashrate
+                    }
+                } else {
+                    var totalHash = data.worker[worker].algos[stats.pools[pool].algorithm].hashrate + stats.pools[pool].workers[worker].hashrate;
+                    data.worker[worker].algos[stats.pools[pool].algorithm] = {
+                        hashrate: totalHash
+                    }
                 }
             }
         }
@@ -169,49 +169,36 @@ this.getCoins = function(cback){
     };
 
     this.getPayout = function(address, cback){
-
         async.waterfall([
-
             function(callback){
-
                 _this.getBalanceByAddress(address, function(){
-
                     callback(null, 'test');
                 });
-
             }
-
         ], function(err, total){
-
             cback(total.toFixed());
-
         });
     };
 
 
     this.getBalanceByAddress = function(address, cback){
-
         var client = redisClients[0].client,
-            coins = fubar,
-            balances = [];
-            payouts = [];
+        balances = [],
+        payouts = [];
 
-                    client.hgetall('Payouts:' + address, function(error, txns){
-                                                                         //logger.error(logSystem, 'TEMP', 'txnid variable is:' + txnid);
+        client.hgetall('Payouts:' + address, function(error, txns){
+            if (error) {
+                callback ('There was no payouts found');
+                return;
+            }
+            if(txns === null){
+                var index = [];
+            } else{
+                payouts=txns;
+            }
+        });
 
-                                                                        if (error) {
-                                                                                callback ('There was no payouts found');
-                                                                                return;
-                                                                        }
-                                                                        if(txns === null){
-                                                                               var index = [];
-                                                                               } else{
-                                                                               payouts=txns;
-
-                                                                               }
-
-                                                                        });
-        async.each(coins, function(coin, cb){
+        async.each(coinsArray, function(coin, cb){
             client.hget(coin + ':balances', address, function(error, result){
                 if (error){
                     callback('There was an error getting balances');
@@ -222,33 +209,33 @@ this.getCoins = function(cback){
                 }else{
                     result = result;
                 }
-            client.hget(coin + ':payouts', address, function(error, paid){
-                if (error){
-                    callback('There was an error getting payouts');
-                    return;
-                }
-                if(paid === null) {
-                    paid = 0;
-                }else{
-                    paid = paid;
-                }
-                balances.push({
-                    coin:coin,
-                    balance:result,
-		    paid:paid
+                client.hget(coin + ':payouts', address, function(error, paid){
+                    if (error){
+                        callback('There was an error getting payouts');
+                        return;
+                    }
+                    if(paid === null) {
+                        paid = 0;
+                    }else{
+                        paid = paid;
+                    }
+                    balances.push({
+                        coin:coin,
+                        balance:result,
+                        paid:paid
+                    });
+                    cb();
                 });
-                cb();
-            });
             });
         }, function(err){
-if (err){
-console.log('ERROR FROM STATS.JS ' + err);
-            cback();
-} else {
-            _this.stats.balances = balances;
-            _this.stats.address = address;
-            cback();
-}
+            if (err){
+                console.log('ERROR FROM STATS.JS ' + err);
+                cback();
+            } else {
+                _this.stats.balances = balances;
+                _this.stats.address = address;
+                cback();
+            }
         });
     };
 
@@ -256,13 +243,11 @@ console.log('ERROR FROM STATS.JS ' + err);
     this.getGlobalStats = function(callback){
 
         var statGatherTime = Date.now() / 1000 | 0;
-
         var allCoinStats = {};
 
         async.each(redisClients, function(client, callback){
             var windowTime = (((Date.now() / 1000) - portalConfig.website.stats.hashrateWindow) | 0).toString();
             var redisCommands = [];
-
 
             var redisCommandTemplates = [
                 ['zremrangebyscore', ':hashrate', '-inf', '(' + windowTime],
@@ -282,7 +267,6 @@ console.log('ERROR FROM STATS.JS ' + err);
                     redisCommands.push(clonedTemplates);
                 });
             });
-
 
             client.client.multi(redisCommands).exec(function(err, replies){
                 if (err){
@@ -348,16 +332,17 @@ console.log('ERROR FROM STATS.JS ' + err);
                             coinStats.workers[worker] = {
                                 shares: workerShares,
                                 invalidshares: 0,
+				hashrate: 0,
                                 hashrateString: null
                             };
-                    }
-                    else {
+                    } else {
                         if (worker in coinStats.workers)
                             coinStats.workers[worker].invalidshares -= workerShares; // workerShares is negative number!
                         else
                             coinStats.workers[worker] = {
                                 shares: 0,
                                 invalidshares: -workerShares,
+				hashrate: 0,
                                 hashrateString: null
                             };
                     }
@@ -365,7 +350,6 @@ console.log('ERROR FROM STATS.JS ' + err);
 
                 var shareMultiplier = Math.pow(2, 32) / algos[coinStats.algorithm].multiplier;
                 coinStats.hashrate = shareMultiplier * coinStats.shares / portalConfig.website.stats.hashrateWindow;
-
                 coinStats.workerCount = Object.keys(coinStats.workers).length;
                 portalStats.global.workers += coinStats.workerCount;
 
@@ -382,6 +366,7 @@ console.log('ERROR FROM STATS.JS ' + err);
                 portalStats.algos[algo].workers += Object.keys(coinStats.workers).length;
 
                 for (var worker in coinStats.workers) {
+		    coinStats.workers[worker].hashrate = (shareMultiplier * coinStats.workers[worker].shares / portalConfig.website.stats.hashrateWindow);
                     coinStats.workers[worker].hashrateString = _this.getReadableHashRateString(shareMultiplier * coinStats.workers[worker].shares / portalConfig.website.stats.hashrateWindow);
                 }
 
@@ -397,8 +382,6 @@ console.log('ERROR FROM STATS.JS ' + err);
 
             _this.stats = portalStats;
             _this.statsString = JSON.stringify(portalStats);
-
-
 
             _this.statHistory.push(portalStats);
             addStatPoolHistory(portalStats);
@@ -427,7 +410,6 @@ console.log('ERROR FROM STATS.JS ' + err);
             });
             callback();
         });
-
     };
 
     this.getReadableHashRateString = function(hashrate){
@@ -439,5 +421,4 @@ console.log('ERROR FROM STATS.JS ' + err);
         } while (hashrate > 1000);
         return hashrate.toFixed(2) + byteUnits[i];
     };
-
 };
