@@ -39,6 +39,7 @@
         "url": "https://github.com/daygle/unified-node-open-mining-portal.git"
     },
     "dependencies": {
+	"node-merged-pool": "git://github.com/UNOMP/node-merged-pool",
         "merged-pooler": "git://github.com/daygle/node-stratum-pool",
         "dateformat": "1.0.12",
 	"log4js": "0.6.31",
