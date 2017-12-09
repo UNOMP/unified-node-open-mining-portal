@@ -15,9 +15,9 @@
 	"multipool",
 	"multicoin"
     ],
-    "homepage": "https://github.com/UNOMP/unified-node-open-mining-portal",
+    "homepage": "https://github.com/daygle/unified-node-open-mining-portal",
     "bugs": {
-        "url": "https://github.com/UNOMP/unified-node-open-mining-portal/issues"
+        "url": "https://github.com/daygle/unified-node-open-mining-portal/issues"
     },
     "license": "GPL-2.0",
     "contributors": [
@@ -36,10 +36,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/UNOMP/unified-node-open-mining-portal.git"
+        "url": "https://github.com/daygle/unified-node-open-mining-portal.git"
     },
     "dependencies": {
-        "merged-pooler": "git://github.com/UNOMP/node-merged-pool",
+        "merged-pooler": "git://github.com/daygle/node-stratum-pool",
         "dateformat": "1.0.12",
 	"log4js": "0.6.31",
 	"bitcoin": "3.0.1",
@@ -55,9 +55,9 @@
         "colors": "1.1.2",
         "node-watch": "0.3.5",
         "request": "2.69.0",
-        "node-poloniex": "git://github.com/sigwo/poloniex.js",
-        "node-bittrex": "git://github.com/n0mad01/node.bittrex.api",
-        "node-cryptopia": "git://github.com/sigwo/node-cryptopia",
+        "node-poloniex": "git://github.com/daygle/poloniex.js",
+        "node-bittrex": "git://github.com/daygle/node.bittrex.api",
+        "node-cryptopia": "git://github.com/daygle/node-cryptopia",
         "nonce": "1.0.3",
         "bignum": "0.11.0",
         "extend": "3.0.0"
