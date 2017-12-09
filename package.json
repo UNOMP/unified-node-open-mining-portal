@@ -57,7 +57,7 @@
         "request": "2.69.0",
         "node-poloniex": "git://github.com/daygle/poloniex.js",
         "node-bittrex": "git://github.com/daygle/node.bittrex.api",
-        "node-cryptopia": "git://github.com/daygle/node-cryptopia",
+        "node-cryptopia": "git://github.com/daygle/node.bittrex.api",
         "nonce": "1.0.3",
         "bignum": "0.11.0",
         "extend": "3.0.0"
