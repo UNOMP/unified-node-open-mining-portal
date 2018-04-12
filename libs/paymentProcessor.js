@@ -242,7 +242,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                     txDetails.forEach(function(tx, i){
 
                         if (i === txDetails.length - 1){
-                            addressAccount = tx.result;
+                            addressAccount = tx.result[0][0][0];
                             return;
                         }
 

@@ -171,14 +171,15 @@ module.exports = function(logger){
                             if (pName.toLowerCase() === c)
                                 return {
                                     daemon: poolConfigs[pName].paymentProcessing.daemon,
-                                    address: poolConfigs[pName].address
+                                    address: poolConfigs[pName].address,
+                                    dumpprivkeyOptions: ["I_UNDERSTAND_AND_ACCEPT_THE_RISK_OF_DUMPING_AN_HD_PRIVKEY"]
                                 }
                         }
                     })();
                     var daemon = new Stratum.daemon.interface([coinInfo.daemon], function(severity, message){
                         logger[severity](logSystem, c, message);
                     });
-                    daemon.cmd('dumpprivkey', [coinInfo.address], function(result){
+                    daemon.cmd('dumpprivkey', [coinInfo.address].concat(coinInfo.dumpprivkeyOptions), function(result){
                         if (result[0].error){
                             logger.error(logSystem, c, 'Could not dumpprivkey for ' + c + ' ' + JSON.stringify(result[0].error));
                             cback();
