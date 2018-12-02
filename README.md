@@ -8,6 +8,9 @@ This portal is an extremely efficient, highly scalable, all-in-one, easy to setu
 It contains a merged stratum pool server; reward/payment/share processor for multipooling; and an (*in progress*)
 responsive user-friendly front-end website featuring mining instructions, in-depth live statistics, and an admin center.
 
+A custom setup can be purchased at:
+https://www.fiverr.com/ahmedbodi/setup-a-cryptocurrency-mining-pool
+
 #### Production Usage Notice - Do it with caution!
 This is beta software. All of the following are things that can change and break an existing setup: functionality of any feature,
 structure of configuration files and structure of redis data. If you use this software in production then *DO NOT* pull new code straight into 
