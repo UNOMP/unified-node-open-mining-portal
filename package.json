@@ -60,7 +60,7 @@
         "node-cryptopia": "git://github.com/sigwo/node-cryptopia",
         "nonce": "1.0.3",
         "bignum": "0.11.0",
-        "extend": "3.0.0"
+        "extend": "3.0.2"
     },
     "engines": {
         "node": ">=0.10"
