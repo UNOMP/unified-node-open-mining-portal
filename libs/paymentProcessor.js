@@ -389,6 +389,8 @@ function SetupForPool(logger, poolOptions, setupFinished){
 		    var test = Object.keys(workers);
                     var addressAmounts = {};
                     var totalSent = 0;
+		    var splitted_address = [w].toString();
+		    splitted_address = splitted_address.split('.',1);
 		      test.forEach(function(w) {
 			daemon.cmd('validateaddress', [w], function (results) {
     			  var validWorkerAddress = results[0].response.isvalid;
@@ -406,6 +408,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                 var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
  			    if (toSend >= minPaymentSatoshis) {
                     var address = worker.address = (worker.address || getProperAddress(w));
+		    var address = address.split('.',1);
                     worker.sent = addressAmounts[address] = satoshisToCoins(toSend);
                     worker.balanceChange = Math.min(worker.balance, toSend) * -1;
                     totalSent += toSend;
@@ -577,7 +580,7 @@ logger.info(logSystem, logComponent, addressAmounts);
 
 
     var getProperAddress = function(address){
-        if (address.length === 40){
+        if (address.length === 60){
             return util.addressFromEx(poolOptions.address, address);
         }
         else return address;
