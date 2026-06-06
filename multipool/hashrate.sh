@@ -98,6 +98,11 @@ fi
                                 then
                                         modifier=4294967296
                                         divisor=1048576
+                                elif [ $Algo = "x13" ]
+                                then
+                                //how to determine this modifier???
+                                        modifier=4294967296
+                                        divisor=1048576
                                 else
                                         modifier=65536
                                         divisor=1048576
