@@ -125,6 +125,9 @@ echo "Start: $starttime End: $endtime"
                 elif [ $Algo = "sha256" ]
                 then
                         thisalgoP=`echo "scale=8;$thisalgoP * 1000" | bc -l`
+                elif [ $Algo = "x13" ]
+                then
+                        thisalgoP=`echo "scale=8;$thisalgoP * 1" | bc -l`
                 elif [ $Algo = "x11" ]
                 then
                         thisalgoP=`echo "scale=8;$thisalgoP * 1" | bc -l`
