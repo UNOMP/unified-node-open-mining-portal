@@ -47,7 +47,7 @@
         "redis": "2.4.2",
         "mysql": "2.10.2",
         "async": "1.5.2",
-        "express": "4.13.4",
+        "express": "4.19.2",
         "body-parser": "1.15.0",
         "compression": "1.6.1",
         "dot": "1.0.3",
